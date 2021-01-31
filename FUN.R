@@ -70,7 +70,7 @@ MobanWithGroupGP <- function(data) {
     mutate_all(replace_na, replace = 0) %>%
     mutate(
       系列名称 = toupper(系列名称),
-      版本 = if_else(str_detect(系列名称, "_AND_"), "AND",
+      版本 = if_else(str_detect(系列名称, "_AND"), "AND",
         if_else(str_detect(系列名称, "_IOS_"), "IOS",
           "PC"
         )

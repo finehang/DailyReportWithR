@@ -4,6 +4,8 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 数据导入 --------------------------------------------------------------------
 
 {
+  dataFei <- readxl::read_xls("新飞乐乐.xls")
+  dataZhiQi <- readxl::read_xls("新志启.xls")
   dataBela <- readxl::read_xls("新赤子城-Bela.xls")
   dataMimi <- readxl::read_xls("新赤子城-mimi.xls")
   dataPeach <- readxl::read_xls("新赤子城-peach.xls")
@@ -127,7 +129,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 {
   dataNovelSky1 <- dataNovelSky %>%
     MobanWithoutGroup(gro = "NovelSky") %>%
-    select(回收, 购, 注册)
+    select(-c(回收, 购买, 注册))
 
   dataNovelSky1 %>% SaveCsv(name = "NovelSky")
 }
@@ -220,6 +222,17 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 }
 
 
+# 志启 ----------------------------------------------------------------------
+
+{
+  dataZhiQi1 <- dataZhiQi %>% 
+    MobanWithoutGroup(gro = "志启") %>% 
+    mutate(CPI = 花费 / 安装) %>% 
+    select(-c(回收, 购买, 注册))
+  
+  dataZhiQi1 %>% SaveCsv(name = "志启")
+}
+
 # microcard J+M -----------------------------------------------------------
 
 {
@@ -240,11 +253,13 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 {
   dataRe1 <- dataRe %>%
     MobanWithoutGroup(gro = "remini") %>%
-    MobanSelectDefault(selection = "group")
+    MobanSelectDefault(selection = "group") %>% 
+    select(-回收)
 
-  dataReJ1 <- dataRe %>%
+  dataReJ1 <- dataReJ %>%
     MobanWithoutGroup(gro = "reminiJane") %>%
     MobanSelectDefault(selection = "group")
+  select(-回收)
 
   bind_rows(dataRe1, dataReJ1) %>% SaveCsv(name = "remini")
 }
@@ -299,12 +314,20 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 }
 
 
+
+# 飞乐乐 ---------------------------------------------------------------------
+
+{
+  dataFei %>% MobanWithoutGroup(gro = "飞乐乐") %>% 
+    SaveCsv(name = "飞乐乐")
+}
+
 # 华述 ----------------------------------------------------------------------
 
 {
   dataHuaShu1 <- dataHuaShu %>%
     MobanWithoutGroup(gro = "华述") %>%
-    select(回收, 购买, 注册)
+    select(-c(回收, 购买, 注册))
 
   dataHuaShu1 %>% SaveCsv(name = "华述")
 }
@@ -347,7 +370,8 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     select(-回收, -注册)
 
   dataKeyCredit1 <- dataKeyCredit %>%
-    MobanWithGroupGeo()
+    MobanWithGroupGeo() %>% 
+    select(-回收, -注册)
 
   dataPayCash1 <- dataPayCash %>%
     MobanWithGroupGeo() %>%
