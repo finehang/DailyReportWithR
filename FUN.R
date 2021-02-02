@@ -1,6 +1,6 @@
 pacman::p_load(tidyverse, readxl, lubridate)
 
-MobanWithoutGroup <- function(data, gro="group") {
+MobanWithoutGroup <- function(data, gro = "group") {
   data <- data %>%
     mutate_all(replace_na, replace = 0) %>%
     mutate(group = gro) %>%
@@ -122,11 +122,11 @@ Dream <- function(data) {
   return(data)
 }
 
-Zx <- function(data){
-  data <- data %>% 
+Zx <- function(data) {
+  data <- data %>%
     mutate_all(replace_na, replace = 0) %>%
-    mutate(类别 = if_else(str_detect(系列名称, "_AEO_"), "AEO", "NOAEO")) %>% 
-    group_by(类别) %>% 
+    mutate(类别 = if_else(str_detect(系列名称, "_AEO_"), "AEO", "NOAEO")) %>%
+    group_by(类别) %>%
     summarise(
       日期 = as.character(Sys.Date() - 1),
       金额 = sum(as.numeric(金额)),
@@ -136,21 +136,30 @@ Zx <- function(data){
   return(data)
 }
 
-ZxAeo <- function(data){
-  data <- data %>% filter(类别 == "AEO") %>% 
+ZxAeo <- function(data) {
+  data <- data %>%
+    filter(类别 == "AEO") %>%
     select(日期, 类别, 金额, 购买次数)
 }
 
-ZxNoAeo <- function(data){
-  data <- data %>% filter(类别 == "NOAEO") %>% 
+ZxNoAeo <- function(data) {
+  data <- data %>%
+    filter(类别 == "NOAEO") %>%
     select(日期, 类别, 金额, 安装量)
 }
 
-Mao <- function(data){
-  data <- data %>% 
+Mao <- function(data) {
+  data <- data %>%
     mutate_all(replace_na, replace = 0) %>%
     mutate(产品 = if_else(str_detect(广告账户名称, "避难所"), "避难所", "Immortal")) %>%
-    mutate(平台 = if_else(str_detect(系列名称, "IOS"), "IOS", "AND")) %>%
+    mutate(
+      系列名称 = toupper(系列名称),
+      平台 = if_else(str_detect(系列名称, "_AND"), "AND",
+        if_else(str_detect(系列名称, "_IOS_"), "IOS",
+          "PC"
+        )
+      )
+    ) %>%
     group_by(产品, 平台) %>%
     summarise(
       日期 = as.character(Sys.Date() - 1),
@@ -172,9 +181,77 @@ NovelCat <- function(data) {
     )))
 }
 
+CarFixFB <- function(data) {
+  if ("花费金额 (USD)" %in% names(data)) {
+    data <- data %>% mutate(花费金额 = `花费金额 (USD)`)
+    return(data)
+  } else {
+    return(data)
+  }
+}
 
-SaveCsv <- function(data, name = "name"){
-      readr::write_excel_csv(tibble(blankLine = c(" ")), file = "./result.csv", append = T)
-      readr::write_excel_csv(tibble(name), file = "./result.csv", col_names = F, append = T)
-      readr::write_excel_csv(data, file = "./result.csv", col_names = T, append = T)
+CarFB <- function(data) {
+  data <- data %>%
+    na.omit() %>%
+    mutate_all(replace_na, replace = 0) %>%
+    mutate(
+      国家 = `国家/地区`,
+      广告系列名称 = toupper(广告系列名称),
+      平台 = if_else(str_detect(广告系列名称, "_AND"), "AND",
+        if_else(str_detect(广告系列名称, "_IOS_"), "IOS",
+          "PC"
+        )
+      )
+    ) %>%
+    group_by(日期, 平台, 国家) %>%
+    summarise(
+      代投渠道 = "Gath",
+      媒体 = "FB",
+      安装量 = sum(as.numeric(应用安装)),
+      点击量 = sum(as.numeric(`点击量（全部）`)),
+      展示次数 = sum(as.numeric(展示次数)),
+      花费金额 = sum(as.numeric(花费金额))
+    ) %>%
+    select(代投渠道, 日期, 媒体, 平台, 国家, everything())
+
+  return(data)
+}
+
+CarGG <- function(data) {
+  data <- data %>%
+    na.omit() %>%
+    mutate(
+      日期 = 天,
+      国家 = str_split(广告系列, "_", simplify = T)[, 4],
+      广告系列 = toupper(广告系列),
+      平台 = if_else(str_detect(广告系列, "_AND"), "AND",
+        if_else(str_detect(广告系列, "_IOS_"), "IOS",
+          "PC"
+        )
+      )
+    ) %>%
+    group_by(日期, 国家, 平台) %>%
+    summarise(
+      代投渠道 = "Gath",
+      媒体 = "GG",
+      安装量 = sum(as.numeric(安装次数)),
+      点击量 = sum(as.numeric(点击次数)),
+      展示次数 = sum(as.numeric(展示次数)),
+      花费金额 = sum(as.numeric(费用))
+    ) %>%
+    select(代投渠道, 日期, 媒体, 平台, 国家, everything())
+
+  return(data)
+}
+
+SaveCsv <- function(data, name = "name") {
+  readr::write_excel_csv(tibble(blankLine = c(" ")), file = "./result.csv", append = T)
+  readr::write_excel_csv(tibble(name), file = "./result.csv", col_names = F, append = T)
+  readr::write_excel_csv(data, file = "./result.csv", col_names = T, append = T)
+}
+
+SaveCar <- function(data, name = "name") {
+  readr::write_excel_csv(tibble(blankLine = c(" ")), file = "./0二手车.csv", append = T)
+  readr::write_excel_csv(tibble(name), file = "./0二手车.csv", col_names = F, append = T)
+  readr::write_excel_csv(data, file = "./0二手车.csv", col_names = T, append = T)
 }

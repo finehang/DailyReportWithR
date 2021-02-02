@@ -4,12 +4,9 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 数据导入 --------------------------------------------------------------------
 
 {
+  dataLiAo <- readxl::read_xls("新深圳理奥.xls")
   dataSuoerTP <- readxl::read_xls("新SuperTP.xls")
-  dataFei <- readxl::read_xls("新飞乐乐.xls")
   dataZhiQi <- readxl::read_xls("新志启.xls")
-  dataBela <- readxl::read_xls("新赤子城-Bela.xls")
-  dataMimi <- readxl::read_xls("新赤子城-mimi.xls")
-  dataPeach <- readxl::read_xls("新赤子城-peach.xls")
   dataKeyCredit <- readxl::read_xls("新KeyCredit.xls")
   dataPayCash <- readxl::read_xls("新PayCash.xls")
   dataZx <- readxl::read_xls("新ZxCash.xls")
@@ -357,13 +354,32 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     SaveCsv(name = "上海灵分_PayCash")
 }
 
+
+# 深圳理奥 --------------------------------------------------------------------
+{
+  dataLiAo %>% MobanWithGroupGeo() %>% 
+    select(-c(购买, 注册)) %>% 
+    SaveCsv(name = "深圳理奥")
+}
+
+
 # 玩德游戏 --------------------------------------------------------------------
 
 {
-  dataWanDe %>%
+  dataWanDe1 <- dataWanDe %>%
     MobanWithGroupGeo() %>%
-    select(-注册, -购买) %>%
-    SaveCsv(name = "玩德游戏")
+    select(-注册, -购买)
+  
+  dataWanDe2 <- tibble(
+    日期 = "　", 地区 = "总计",
+    安装 = sum(dataWanDe1$安装),
+    点击 = sum(dataWanDe1$点击),
+    展示次数 = sum(dataWanDe1$展示次数),
+    花费 = sum(dataWanDe1$花费),
+    回收 = sum(dataWanDe1$回收)
+  )
+  
+  bind_rows(dataWanDe1, dataWanDe2) %>% SaveCsv(name = "玩德游戏")
 }
 
 
@@ -375,6 +391,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     MobanSelectDefault() %>%
     SaveCsv(name = "万友互娱")
 }
+
 # Sancamap ----------------------------------------------------------------
 {
   dataSan %>%
@@ -393,24 +410,6 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 }
 
 
-# 赤子城 ---------------------------------------------------------------------
-
-{
-  dataPeach1 <- dataPeach %>%
-    MobanWithoutGroup("Peach") %>%
-    select(日期, group, 花费, 安装, 点击, 展示次数)
-
-  dataBela1 <- dataBela %>%
-    MobanWithoutGroup("Bela") %>%
-    select(日期, group, 花费, 安装, 点击, 展示次数)
-
-  dataMimi1 <- dataMimi %>%
-    MobanWithoutGroup("Bela") %>%
-    select(日期, group, 花费, 安装, 点击, 展示次数)
-
-  bind_rows(dataPeach1, dataBela1, dataMimi1) %>% SaveCsv(name = "赤子城")
-}
-
 
 # NovelCat ----------------------------------------------------------------
 
@@ -422,7 +421,6 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     mutate(CPI = 花费 / 安装, ROI = 回收 / 花费) %>%
     SaveCsv(name = "NovelCat")
 }
-
 
 # readict M+J -------------------------------------------------------------
 
@@ -437,6 +435,82 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     select(日期, 版本, 地区, 安装, 点击, 展示次数)
 
   bind_rows(dataReadictJ1, dataReadictM1) %>% SaveCsv(name = "readict ")
+}
+
+# 赤子城 ---------------------------------------------------------------------
+{
+  if (wday(now()) >= 2 & wday(now()) <= 6 & hour(now()) > 15) {
+    dataBela <- readxl::read_xls("新赤子城-Bela.xls")
+    dataMimi <- readxl::read_xls("新赤子城-mimi.xls")
+    dataPeach <- readxl::read_xls("新赤子城-peach.xls")
+
+    dataPeach1 <- dataPeach %>%
+      MobanWithGroupGeo() %>%
+      select(日期, 地区, 花费, 安装, 点击, 展示次数)
+
+    dataPeach2 <- tibble(
+      日期 = "　", 地区 = "总计",
+      花费 = sum(dataPeach1$花费),
+      安装 = sum(dataPeach1$安装),
+      点击 = sum(dataPeach1$点击),
+      展示次数 = sum(dataPeach1$展示次数)
+    )
+
+    bind_rows(dataPeach1, dataPeach2) %>%
+      SaveCsv(name = "赤子城Peach")
+
+    dataBela1 <- dataBela %>%
+      MobanWithGroupGeo() %>%
+      select(日期, 地区, 花费, 安装, 点击, 展示次数)
+
+    dataBela2 <- tibble(
+      日期 = "　", 地区 = "总计",
+      花费 = sum(dataBela1$花费),
+      安装 = sum(dataBela1$安装),
+      点击 = sum(dataBela1$点击),
+      展示次数 = sum(dataBela1$展示次数)
+    )
+
+    bind_rows(dataBela1, dataBela2) %>%
+      SaveCsv(name = "赤子城Bela")
+
+    dataMimi1 <- dataMimi %>%
+      MobanWithoutGroup("Bela") %>%
+      select(日期, group, 花费, 安装, 点击, 展示次数) %>%
+      SaveCsv(name = "赤子城Mimi")
+  } else {
+    cat("NotNow!")
+  }
+}
+
+# 二手车 ---------------------------------------------------------------------
+
+if (wday(now()) >= 2 & wday(now()) <= 6 & hour(now()) > 14) {
+  {
+    dataCarFB <- readxl::read_xlsx("二手车FB.xlsx", col_names = T)
+    dataCarGG <- readxl::read_xlsx("二手车GG.xlsx", skip = 2, col_names = T)
+    dataFixFB <- readxl::read_xlsx("修车FB.xlsx", col_names = T)
+    dataFixGG <- readxl::read_xlsx("修车GG.xlsx", skip = 2, col_names = T)
+    readr::write_excel_csv(tibble(数据汇总 = "数据汇总"), file = "0二手车.csv", col_names = F)
+
+    dataCarFB1 <- dataCarFB %>%
+      CarFixFB() %>%
+      CarFB()
+    dataCarGG1 <- dataCarGG %>% CarGG()
+    dataFixFB1 <- dataFixFB %>%
+      CarFixFB() %>%
+      CarFB()
+    dataFixGG1 <- dataFixGG %>% CarGG()
+
+    bind_rows(dataCarFB1, dataCarGG1) %>%
+      arrange(日期) %>%
+      SaveCar(name = "Car")
+    bind_rows(dataFixFB1, dataFixGG1) %>%
+      arrange(日期) %>%
+      SaveCar(name = "Fix")
+  }
+} else {
+  cat("NotNow!")
 }
 
 cat("任務終了")
