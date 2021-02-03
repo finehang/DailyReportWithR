@@ -244,14 +244,8 @@ CarGG <- function(data) {
   return(data)
 }
 
-SaveCsv <- function(data, name = "name") {
-  readr::write_excel_csv(tibble(blankLine = c(" ")), file = "./result.csv", append = T)
-  readr::write_excel_csv(tibble(name), file = "./result.csv", col_names = F, append = T)
-  readr::write_excel_csv(data, file = "./result.csv", col_names = T, append = T)
-}
-
-SaveCar <- function(data, name = "name") {
-  readr::write_excel_csv(tibble(blankLine = c(" ")), file = "./0二手车.csv", append = T)
-  readr::write_excel_csv(tibble(name), file = "./0二手车.csv", col_names = F, append = T)
-  readr::write_excel_csv(data, file = "./0二手车.csv", col_names = T, append = T)
+SaveCsv <- function(data, name = "name", filename = "result", append = T) {
+  readr::write_excel_csv(tibble(blankLine = c(" ")), file = paste0("./", filename, ".csv"), col_names = F, append = append)
+  readr::write_excel_csv(tibble(name), file = paste0("./", filename, ".csv"), col_names = F, append = T)
+  readr::write_excel_csv(data, file = paste0("./", filename, ".csv"), col_names = T, append = T)
 }
