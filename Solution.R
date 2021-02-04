@@ -4,6 +4,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 数据导入 --------------------------------------------------------------------
 
 {
+  dataZhiQi <- readxl::read_xls("新智启辰远.xls")
   dataTPJ <- readxl::read_xls("新博客来TPReal-J.xls")
   dataTPM <- readxl::read_xls("新博客来TPReal-M.xls")
   dataZhangYun <- readxl::read_xls("新掌中云.xls")
@@ -11,7 +12,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataTrinku <- readxl::read_xls("新看看-trinku.xls")
   dataLiAo <- readxl::read_xls("新深圳理奥.xls")
   dataSuoerTP <- readxl::read_xls("新SuperTP.xls")
-  dataZhiQi <- readxl::read_xls("新志启.xls")
+  dataGuangHeng <- readxl::read_xls("新广恒通盛.xls")
   dataKeyCredit <- readxl::read_xls("新KeyCredit.xls")
   dataPayCash <- readxl::read_xls("新PayCash.xls")
   dataZx <- readxl::read_xls("新ZxCash.xls")
@@ -35,7 +36,6 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataSan <- readxl::read_xls("新sancamap.xls")
   dataGuai <- readxl::read_xls("新怪猫.xls")
   dataLing <- readxl::read_xls("新上海灵分.xls")
-  dataBegin <- readxl::read_xls("新Beginlive.xls")
   dataShen <- readxl::read_xls("新神兽传奇.xls")
   dataVideo <- readxl::read_xls("新凯丽金-videochat.xls")
   dataHaya <- readxl::read_xls("新凯丽金-Haya.xls")
@@ -199,6 +199,14 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   bind_rows(dataShen1, dataShen2) %>% SaveCsv(name = "神兽传奇")
 }
 
+# 智启辰远 --------------------------------------------------------------------
+
+{
+  dataZhiQi %>% MobanWithGroupGeo() %>% 
+    select(-c(购买, 注册)) %>% 
+    SaveCsv(name = "智启辰远")
+}
+
 # 掌云 ----------------------------------------------------------------------
 
 {
@@ -225,16 +233,6 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     SaveCsv(name = "CashIndiHub")
 }
 
-# 志启 ----------------------------------------------------------------------
-
-{
-  dataZhiQi %>%
-    MobanWithoutGroup(gro = "志启") %>%
-    mutate(CPI = 花费 / 安装) %>%
-    select(-c(回收, 购买, 注册)) %>%
-    SaveCsv(name = "志启")
-}
-
 # microcard J+M -----------------------------------------------------------
 
 {
@@ -243,7 +241,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     select(日期, group, 展示次数, 点击, 花费)
   
   dataTPM1 <- dataTPM %>%
-    MobanWithoutGroup(gro = "TPJane") %>%
+    MobanWithoutGroup(gro = "TPMonika") %>%
     select(日期, group, 展示次数, 点击, 花费)
   
   dataMicroJ1 <- dataMicroJ %>%
@@ -319,6 +317,17 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     select(日期, group, 安装, 花费) %>%
     SaveCsv(name = "叨叨叨")
 }
+
+# 广恒通盛 ----------------------------------------------------------------------
+
+{
+  dataGuangHeng %>%
+    MobanWithoutGroup(gro = "广恒通盛") %>%
+    mutate(CPI = 花费 / 安装) %>%
+    select(-c(回收, 购买, 注册)) %>%
+    SaveCsv(name = "广恒通盛")
+}
+
 
 # 华述 ----------------------------------------------------------------------
 
