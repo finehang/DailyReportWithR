@@ -402,11 +402,11 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 
 {
   dataWanDe1 <- dataWanDe %>%
-    MobanWithGroupGeo() %>%
+    MobanWithGroupGP() %>%
     select(-注册, -购买)
   
   dataWanDe2 <- tibble(
-    日期 = "　", 地区 = "总计",
+    日期 = "　", 系统 = " ",地区 = "总计",
     安装 = sum(dataWanDe1$安装),
     点击 = sum(dataWanDe1$点击),
     展示次数 = sum(dataWanDe1$展示次数),
