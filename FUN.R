@@ -244,6 +244,45 @@ CarGG <- function(data) {
   return(data)
 }
 
+LiAo <- function(data) {
+  data <- data %>%
+    mutate_all(replace_na, replace = 0) %>%
+    mutate(产品 = if_else(str_detect(广告账户名称, "Vungo"), "Vungo",
+      if_else(str_detect(广告账户名称, "FunRummy"), "FunRummy",
+        if_else(str_detect(广告账户名称, "3Patti_48"), "3Patti_48",
+          if_else(str_detect(广告账户名称, "GinRummy"), "GinRummy", "None")
+        )
+      )
+    )) %>%
+    group_by(产品) %>%
+    summarise(
+      日期 = as.character(Sys.Date() - 1),
+      地区 = "IN",
+      安装 = sum(as.numeric(安装量)),
+      点击 = sum(as.numeric(点击量)),
+      展示次数 = sum(as.numeric(展示次数)),
+      花费 = sum(as.numeric(金额)),
+      购物转化值 = sum(as.numeric(购物转化值)),
+      CPI = 花费 / 安装
+    )
+  return(data)
+}
+
+You <- function(data) {
+  data <- data %>%
+    mutate_all(replace_na, replace = 0) %>%
+    mutate(产品 = if_else(str_detect(广告账户名称, "Teen"), "Teen Patti",
+      if_else(str_detect(广告账户名称, "Pop"), "Pop Solitaire", "None")
+    )) %>%
+    group_by(产品) %>%
+    summarise(
+      日期 = as.character(Sys.Date() - 1),
+      花费 = sum(as.numeric(金额))
+    ) %>%
+    select(日期, 产品, 花费)
+  return(data)
+}
+
 SaveCsv <- function(data, name = "name", filename = "result", append = T) {
   readr::write_excel_csv(tibble(blankLine = c(" ")), file = paste0("./", filename, ".csv"), col_names = F, append = append)
   readr::write_excel_csv(tibble(name), file = paste0("./", filename, ".csv"), col_names = F, append = T)
