@@ -5,11 +5,9 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 
 {
   dataMai <- readxl::read_xls("新麦尔.xls")
-  dataMaiJ <- readxl::read_xls("新麦尔-J.xls")
   dataYouQing <- readxl::read_xls("新杭州优擎.xls")
   dataBlink <- readxl::read_xls("新看看-Blink.xls")
   dataLuxury <- readxl::read_xls("新LuxuryRummy.xls")
-  dataRupeecash <- readxl::read_xls("新rupeecash.xls")
   dataZhongMeng <- readxl::read_xls("新北京中梦.xls")
   dataZhiQi <- readxl::read_xls("新智启辰远.xls")
   dataTPJ <- readxl::read_xls("新博客来TPReal-J.xls")
@@ -51,6 +49,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataStr <- tibble(blankLine = c(" ", " "))
   readr::write_excel_csv(tibble(数据汇总 = "数据汇总"), file = "./result.csv", col_names = F)
   # dataKeyCredit <- readxl::read_xls("新KeyCredit.xls")
+  # dataRupeecash <- readxl::read_xls("新rupeecash.xls")
   # dataPayCash <- readxl::read_xls("新PayCash.xls")
   # dataLing <- readxl::read_xls("新上海灵分.xls")
   # dataZx <- readxl::read_xls("新ZxCash.xls")
@@ -59,6 +58,67 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   # dataWanYou <- readxl::read_xls("新万友互娱.xls")
   # dataRe <- readxl::read_xls("新remini.xls")
   # dataReJ <- readxl::read_xls("新reminiJane.xls")
+}
+
+# 暂停 ----------------------------------------------------------------------
+
+{
+  # dataCashIndi %>%
+  #   MobanWithoutGroup() %>%
+  #   mutate(CPI = 花费 / 注册) %>%
+  #   select(日期, 安装, 花费, CPI) %>%
+  #   SaveCsv(name = "CashIndiHub")
+}
+{
+  # dataRe1 <- dataRe %>%
+  #   MobanWithoutGroup(gro = "remini") %>%
+  #   MobanSelectDefault(selection = "group") %>%
+  #   select(-回收)
+  #
+  # dataReJ1 <- dataReJ %>%
+  #   MobanWithoutGroup(gro = "reminiJane") %>%
+  #   MobanSelectDefault(selection = "group") %>%
+  #   select(-回收)
+  #
+  # bind_rows(dataRe1, dataReJ1) %>% SaveCsv(name = "remini")
+}
+{
+  # dataZx %>%
+  #   Zx() %>%
+  #   ZxAeo() %>%
+  #   SaveCsv(name = "ZxWithAeo")
+  #
+  # dataZx %>%
+  #   Zx() %>%
+  #   ZxNoAeo() %>%
+  #   SaveCsv(name = "ZxWithOutAeo")
+}
+{
+  # dataKeyCredit %>%
+  #   MobanWithGroupGeo() %>%
+  #   select(-回收, -注册) %>%
+  #   SaveCsv(name = "上海灵分_KeyCredit")
+  #
+  # dataPayCash %>%
+  #   MobanWithGroupGeo() %>%
+  #   select(-回收, -注册, -购买) %>%
+  #   SaveCsv(name = "上海灵分_PayCash")
+  #
+  # dataRupeecash %>%
+  #   MobanWithoutGroup(gro = "Rupeecash") %>%
+  #   select(-回收, -注册) %>%
+  #   SaveCsv(name = "上海灵分_Rupeecash")
+  #
+  # dataLing %>%
+  #   MobanWithoutGroup(gro = "SoCredit") %>%
+  #   select(-回收, -注册) %>%
+  #   SaveCsv(name = "上海灵分_SoCredit")
+}
+{
+  # dataWanYou %>%
+  #   MobanWithoutGroup(gro = "万友互娱") %>%
+  #   MobanSelectDefault() %>%
+  #   SaveCsv(name = "万友互娱")
 }
 
 # 白鲸 ----------------------------------------------------------------------
@@ -105,7 +165,6 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     SaveCsv(name = "RummyPalace")
 }
 
-
 # SuperTP -----------------------------------------------------------------
 
 {
@@ -115,15 +174,14 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     SaveCsv(name = "SuperTP")
 }
 
-
 # Luxury ------------------------------------------------------------------
+
 {
   dataLuxury %>%
-    MobanWithoutGroup(gro = "Luxury") %>%
-    select(日期, group, 花费) %>%
+    Luxury() %>%
+    select(日期, 产品, 花费) %>%
     SaveCsv(name = "Luxury")
 }
-
 
 # Jeruk --------------------------------------------------------------------
 
@@ -185,18 +243,17 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # readict M+J -------------------------------------------------------------
 
 {
-  # dataReadictJ1 <- dataReadictJ %>%
-  #   MobanWithGroupGP() %>%
-  #   select(日期, 版本, 地区, 安装, 点击, 展示次数) %>%
-  #   filter(地区 != "unknown")
-  #
-  # dataReadictM1 <- dataReadictM %>%
-  #   MobanWithGroupGP() %>%
-  #   select(日期, 版本, 地区, 安装, 点击, 展示次数)
-  #
-  # bind_rows(dataReadictJ1, dataReadictM1) %>% SaveCsv(name = "readict ")
-}
+  dataReadictJ1 <- dataReadictJ %>%
+    MobanWithGroupGP() %>%
+    select(日期, 版本, 地区, 安装, 点击, 展示次数) %>%
+    filter(地区 != "unknown")
 
+  dataReadictM1 <- dataReadictM %>%
+    MobanWithGroupGP() %>%
+    select(日期, 版本, 地区, 安装, 点击, 展示次数)
+
+  bind_rows(dataReadictJ1, dataReadictM1) %>% SaveCsv(name = "readict ")
+}
 
 # 江苏明通新墨香 -----------------------------------------------------------------
 
@@ -286,16 +343,6 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   bind_rows(dataZhangYun1, dataZhangYun2) %>% SaveCsv(name = "掌云")
 }
 
-# CashIndiHub -------------------------------------------------------------
-
-{
-  # dataCashIndi %>%
-  #   MobanWithoutGroup() %>%
-  #   mutate(CPI = 花费 / 注册) %>%
-  #   select(日期, 安装, 花费, CPI) %>%
-  #   SaveCsv(name = "CashIndiHub")
-}
-
 # microcard J+M -----------------------------------------------------------
 
 {
@@ -317,22 +364,6 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 
   bind_rows(dataTPJ1, dataTPM1) %>% SaveCsv(name = "博客来TP")
   bind_rows(dataMicroJ1, dataMicroM1) %>% SaveCsv(name = "博客来Rummy")
-}
-
-# remini ------------------------------------------------------------------
-
-{
-  dataRe1 <- dataRe %>%
-    MobanWithoutGroup(gro = "remini") %>%
-    MobanSelectDefault(selection = "group") %>%
-    select(-回收)
-
-  dataReJ1 <- dataReJ %>%
-    MobanWithoutGroup(gro = "reminiJane") %>%
-    MobanSelectDefault(selection = "group") %>%
-    select(-回收)
-
-  bind_rows(dataRe1, dataReJ1) %>% SaveCsv(name = "remini")
 }
 
 # videochat ---------------------------------------------------------------
@@ -358,20 +389,6 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataHallo1 %>% SaveCsv(name = "Videochat_Hallo")
 }
 
-# ZxCash ------------------------------------------------------------------
-
-{
-  # dataZx %>%
-  #   Zx() %>%
-  #   ZxAeo() %>%
-  #   SaveCsv(name = "ZxWithAeo")
-  #
-  # dataZx %>%
-  #   Zx() %>%
-  #   ZxNoAeo() %>%
-  #   SaveCsv(name = "ZxWithOutAeo")
-}
-
 # 北京中梦 --------------------------------------------------------------------
 
 {
@@ -380,6 +397,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     select(-c(购买, 注册)) %>%
     SaveCsv(name = "北京中梦")
 }
+
 # 叨叨叨SpendCash ------------------------------------------------------------
 
 {
@@ -394,14 +412,11 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 {
   dataGuangHeng %>%
     MobanWithoutGroup(gro = "广恒通盛") %>%
-    mutate(CPI = 花费 / 安装) %>%
-    select(-c(回收, 购买, 注册)) %>%
+    select(日期, group, 花费, 安装) %>%
     SaveCsv(name = "广恒通盛")
 }
 
-
 # 优擎 ----------------------------------------------------------------------
-
 
 {
   dataYouQing %>%
@@ -436,11 +451,11 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   bind_rows(dataTrinku1, dataBliss1, dataBlink1) %>% SaveCsv(name = "看看在线")
 }
 
-
 # 麦尔 ----------------------------------------------------------------------
 
 {
-  dataMai %>% MobanWithoutGroup(gro = "IN") %>% 
+  dataMai %>%
+    MobanWithoutGroup(gro = "IN") %>%
     SaveCsv(name = "麦尔")
 }
 
@@ -453,47 +468,16 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     SaveCsv(name = "喵石")
 }
 
-# 上海灵分 --------------------------------------------------------------------
-{
-  # dataKeyCredit %>%
-  #   MobanWithGroupGeo() %>%
-  #   select(-回收, -注册) %>%
-  #   SaveCsv(name = "上海灵分_KeyCredit")
-  #
-  # dataPayCash %>%
-  #   MobanWithGroupGeo() %>%
-  #   select(-回收, -注册, -购买) %>%
-  #   SaveCsv(name = "上海灵分_PayCash")
-  #
-  # dataRupeecash %>%
-  #   MobanWithoutGroup(gro = "Rupeecash") %>%
-  #   select(-回收, -注册) %>%
-  #   SaveCsv(name = "上海灵分_Rupeecash")
-  #
-  # dataLing %>%
-  #   MobanWithoutGroup(gro = "SoCredit") %>%
-  #   select(-回收, -注册) %>%
-  #   SaveCsv(name = "上海灵分_SoCredit")
-}
-
 # 深圳理奥 --------------------------------------------------------------------
+
 {
   dataLiAo %>%
     LiAo() %>%
     SaveCsv(name = "深圳理奥")
 }
 
-
-# 万友互娱 --------------------------------------------------------------------
-
-{
-  # dataWanYou %>%
-  #   MobanWithoutGroup(gro = "万友互娱") %>%
-  #   MobanSelectDefault() %>%
-  #   SaveCsv(name = "万友互娱")
-}
-
 # Sancamap ----------------------------------------------------------------
+
 {
   dataSan %>%
     MobanWithoutGroup(gro = "Sancamap") %>%
@@ -510,6 +494,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 }
 
 # 赤子城 ---------------------------------------------------------------------
+
 {
   if (wday(now()) >= 2 & wday(now()) <= 6 & hour(now()) > 15) {
     dataBela <- readxl::read_xls("赤子城-bela.xls")

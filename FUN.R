@@ -19,7 +19,6 @@ MobanWithoutGroup <- function(data, gro = "group") {
   return(data)
 }
 
-
 MobanWithGroupGeo <- function(data) {
   data <- data %>%
     mutate_all(replace_na, replace = 0) %>%
@@ -37,7 +36,6 @@ MobanWithGroupGeo <- function(data) {
     select(日期, everything())
   return(data)
 }
-
 
 MobanWithGroupPlatform <- function(data) {
   data <- data %>%
@@ -95,7 +93,6 @@ MobanSelectDefault <- function(data, selection = NULL) {
   data <- data %>% select(c(日期, group, 安装, 点击, 展示次数, 花费, 回收, all_of(selection)))
   return(data)
 }
-
 
 BaiJing <- function(data) {
   data <- data %>%
@@ -280,6 +277,22 @@ You <- function(data) {
       花费 = sum(as.numeric(金额))
     ) %>%
     select(日期, 产品, 花费)
+  return(data)
+}
+
+Luxury <- function(data) {
+  data <- data %>%
+    mutate(
+      系列名称 = toupper(系列名称),
+      产品 = if_else(str_detect(系列名称, "AEO"), "AEO/VO",
+        if_else(str_detect(系列名称, "VO"), "AEO/VO", "other")
+      )
+    ) %>%
+    group_by(产品) %>%
+    summarise(
+      日期 = as.character(Sys.Date() - 1),
+      花费 = sum(as.numeric(金额))
+    )
   return(data)
 }
 
