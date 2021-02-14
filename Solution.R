@@ -548,7 +548,8 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 
 # 二手车 ---------------------------------------------------------------------
 
-if (wday(now()) >= 2 & wday(now()) <= 6 & hour(now()) > 14) {{ dataCarFB <- readxl::read_xlsx("二手车FB.xlsx", col_names = T)
+if (wday(now()) >= 2 & wday(now()) <= 6 & hour(now()) > 14) {
+  dataCarFB <- readxl::read_xlsx("二手车FB.xlsx", col_names = T)
   dataCarGG <- readxl::read_xlsx("二手车GG.xlsx", skip = 2, col_names = T)
   dataFixFB <- readxl::read_xlsx("修车FB.xlsx", col_names = T)
   dataFixGG <- readxl::read_xlsx("修车GG.xlsx", skip = 2, col_names = T)
@@ -567,7 +568,8 @@ if (wday(now()) >= 2 & wday(now()) <= 6 & hour(now()) > 14) {{ dataCarFB <- read
     SaveCsv(name = "Car", filename = "0二手车", append = F)
   bind_rows(dataFixFB1, dataFixGG1) %>%
     arrange(日期) %>%
-    SaveCsv(name = "Fix", filename = "0二手车") }} else {
+    SaveCsv(name = "Fix", filename = "0二手车") 
+  } else {
   cat("NotNow!")
 }
 

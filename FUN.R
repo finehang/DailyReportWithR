@@ -245,9 +245,13 @@ LiAo <- function(data) {
   data <- data %>%
     mutate_all(replace_na, replace = 0) %>%
     mutate(产品 = if_else(str_detect(广告账户名称, "Vungo"), "Vungo",
-      if_else(str_detect(广告账户名称, "FunRummy"), "FunRummy",
-        if_else(str_detect(广告账户名称, "3Patti_48"), "3Patti_48",
-          if_else(str_detect(广告账户名称, "GinRummy"), "GinRummy", "None")
+      if_else(str_detect(广告账户名称, "3Patti_44"), "Vungo",
+        if_else(str_detect(广告账户名称, "FunRummy"), "FunRummy",
+          if_else(str_detect(广告账户名称, "3Patti_48"), "3Patti_48",
+            if_else(str_detect(广告账户名称, "GinRummy"), "GinRummy",
+              "None"
+            )
+          )
         )
       )
     )) %>%
@@ -284,8 +288,8 @@ Luxury <- function(data) {
   data <- data %>%
     mutate(
       系列名称 = toupper(系列名称),
-      产品 = if_else(str_detect(系列名称, "AEO"), "AEO/VO",
-        if_else(str_detect(系列名称, "VO"), "AEO/VO", "other")
+      产品 = if_else(str_detect(系列名称, "1084"), "AEO",
+        if_else(str_detect(系列名称, "1083"), "VO", "other")
       )
     ) %>%
     group_by(产品) %>%
