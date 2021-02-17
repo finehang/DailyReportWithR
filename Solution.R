@@ -4,6 +4,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 数据导入 --------------------------------------------------------------------
 
 {
+  dataZuoTou <- readxl::read_xls("新座头鲸.xls")
   dataMai <- readxl::read_xls("新麦尔.xls")
   dataYouQing <- readxl::read_xls("新杭州优擎.xls")
   dataBlink <- readxl::read_xls("新看看-Blink.xls")
@@ -343,6 +344,14 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   bind_rows(dataZhangYun1, dataZhangYun2) %>% SaveCsv(name = "掌云")
 }
 
+# 座头鲸 ---------------------------------------------------------------------
+
+{
+  dataZuoTou %>% 
+    MobanWithoutGroup(gro = "座头鲸") %>% 
+    select(日期, group, 安装, 点击, 展示次数) %>% 
+    SaveCsv(name = "座头鲸")
+}
 # microcard J+M -----------------------------------------------------------
 
 {
@@ -496,7 +505,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 赤子城 ---------------------------------------------------------------------
 
 {
-  if (wday(now()) >= 2 & wday(now()) <= 6 & hour(now()) > 15) {
+  if ((wday(now()) >= 2 & wday(now()) <= 6 & hour(now()) > 15) | (wday(now()) <= 1 & wday(now()) >= 7 & hour(now()) > 18)) {
     dataBela <- readxl::read_xls("赤子城-bela.xls")
     dataMimi <- readxl::read_xls("赤子城-mimi.xls")
     dataPeach <- readxl::read_xls("赤子城-peach.xls")
@@ -548,7 +557,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 
 # 二手车 ---------------------------------------------------------------------
 
-if (wday(now()) >= 2 & wday(now()) <= 6 & hour(now()) > 14) {
+if ((wday(now()) >= 2 & wday(now()) <= 6 & hour(now()) > 15) | (wday(now()) <= 1 & wday(now()) >= 7 & hour(now()) > 18)) {
   dataCarFB <- readxl::read_xlsx("二手车FB.xlsx", col_names = T)
   dataCarGG <- readxl::read_xlsx("二手车GG.xlsx", skip = 2, col_names = T)
   dataFixFB <- readxl::read_xlsx("修车FB.xlsx", col_names = T)
