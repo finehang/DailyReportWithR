@@ -9,7 +9,6 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataYouQing <- readxl::read_xls("新杭州优擎.xls")
   dataBlink <- readxl::read_xls("新看看-Blink.xls")
   dataLuxury <- readxl::read_xls("新LuxuryRummy.xls")
-  dataZhongMeng <- readxl::read_xls("新北京中梦.xls")
   dataZhiQi <- readxl::read_xls("新智启辰远.xls")
   dataTPJ <- readxl::read_xls("新博客来TPReal-J.xls")
   dataTPM <- readxl::read_xls("新博客来TPReal-M.xls")
@@ -396,15 +395,6 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 
   bind_rows(dataVideo1, dataWinnie1, dataHaya1) %>% SaveCsv(name = "Videochat")
   dataHallo1 %>% SaveCsv(name = "Videochat_Hallo")
-}
-
-# 北京中梦 --------------------------------------------------------------------
-
-{
-  dataZhongMeng %>%
-    MobanWithGroupGeo() %>%
-    select(-c(购买, 注册)) %>%
-    SaveCsv(name = "北京中梦")
 }
 
 # 叨叨叨SpendCash ------------------------------------------------------------
