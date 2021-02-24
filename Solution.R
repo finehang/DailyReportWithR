@@ -597,10 +597,10 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     )
 
     bind_rows(dataBela1, dataBela2) %>%
-      SaveCsv(name = "赤子城Bela", filename = "0赤子城")
+      SaveCsv(name = "赤子城Bela", filename = "0赤子城", append = F)
     
     bind_rows(dataPeach1, dataPeach2) %>%
-      SaveCsv(name = "赤子城Peach", filename = "0赤子城", append = F)
+      SaveCsv(name = "赤子城Peach", filename = "0赤子城")
 
     dataMimi1 <- dataMimi %>%
       MobanWithoutGroup("Mimi") %>%
