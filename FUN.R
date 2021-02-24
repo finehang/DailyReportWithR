@@ -43,8 +43,10 @@ MobanWithGroupPlatform <- function(data) {
     mutate(
       系列名称 = toupper(系列名称),
       版本 = if_else(str_detect(系列名称, "_AND_"), "AND",
-        if_else(str_detect(系列名称, "_IOS_"), "IOS",
-          "PC"
+        if_else(str_detect(系列名称, "安卓"), "AND",
+          if_else(str_detect(系列名称, "IOS"), "IOS",
+            "PC"
+          )
         )
       )
     ) %>%
@@ -68,9 +70,11 @@ MobanWithGroupGP <- function(data) {
     mutate_all(replace_na, replace = 0) %>%
     mutate(
       系列名称 = toupper(系列名称),
-      版本 = if_else(str_detect(系列名称, "_AND"), "AND",
-        if_else(str_detect(系列名称, "_IOS_"), "IOS",
-          "PC"
+      版本 = if_else(str_detect(系列名称, "_AND_"), "AND",
+        if_else(str_detect(系列名称, "安卓"), "AND",
+          if_else(str_detect(系列名称, "IOS"), "IOS",
+            "PC"
+          )
         )
       )
     ) %>%
@@ -286,6 +290,7 @@ You <- function(data) {
 
 Luxury <- function(data) {
   data <- data %>%
+    mutate_all(replace_na, replace = 0) %>%
     mutate(
       系列名称 = toupper(系列名称),
       产品 = if_else(str_detect(系列名称, "1084"), "AEO",
@@ -296,6 +301,25 @@ Luxury <- function(data) {
     summarise(
       日期 = as.character(Sys.Date() - 1),
       花费 = sum(as.numeric(金额))
+    )
+  return(data)
+}
+
+Fei <- function(data) {
+  data <- data %>%
+    mutate_all(replace_na, replace = 0) %>%
+    mutate(
+      广告账户名称 = toupper(广告账户名称),
+      平台 = if_else(str_detect(广告账户名称, "WEB"), "WEB", "APP")
+    ) %>%
+    group_by(平台) %>%
+    summarise(
+      日期 = as.character(Sys.Date() - 1),
+      安装 = sum(as.numeric(安装量)),
+      点击 = sum(as.numeric(点击量)),
+      展示次数 = sum(as.numeric(展示次数)),
+      花费 = sum(as.numeric(金额)),
+      回收 = sum(as.numeric(购物转化值))
     )
   return(data)
 }
