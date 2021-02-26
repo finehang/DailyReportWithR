@@ -4,6 +4,7 @@ MobanWithoutGroup <- function(data, gro = "group") {
   data <- data %>%
     mutate_all(replace_na, replace = 0) %>%
     mutate(group = gro) %>%
+    filter(地区 != "unknown") %>% 
     group_by(group) %>%
     summarise(
       日期 = as.character(Sys.Date() - 1),
@@ -22,6 +23,7 @@ MobanWithoutGroup <- function(data, gro = "group") {
 MobanWithGroupGeo <- function(data) {
   data <- data %>%
     mutate_all(replace_na, replace = 0) %>%
+    dplyr::filter(地区 != "unknown") %>% 
     group_by(地区) %>%
     summarise(
       日期 = as.character(Sys.Date() - 1),
@@ -40,6 +42,7 @@ MobanWithGroupGeo <- function(data) {
 MobanWithGroupPlatform <- function(data) {
   data <- data %>%
     mutate_all(replace_na, replace = 0) %>%
+    dplyr::filter(地区 != "unknown") %>% 
     mutate(
       系列名称 = toupper(系列名称),
       版本 = if_else(str_detect(系列名称, "_AND_"), "AND",
@@ -68,6 +71,7 @@ MobanWithGroupPlatform <- function(data) {
 MobanWithGroupGP <- function(data) {
   data <- data %>%
     mutate_all(replace_na, replace = 0) %>%
+    dplyr::filter(地区 != "unknown") %>% 
     mutate(
       系列名称 = toupper(系列名称),
       版本 = if_else(str_detect(系列名称, "_AND_"), "AND",
@@ -145,7 +149,9 @@ ZxAeo <- function(data) {
 
 ZxNoAeo <- function(data) {
   data <- data %>%
-    filter(类别 == "NOAEO") %>%
+
+
+    dplyr::filter(类别 == "NOAEO") %>%
     select(日期, 类别, 金额, 安装量)
 }
 
