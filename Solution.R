@@ -9,8 +9,6 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataHotSpot <- readxl::read_xls("新HOtSpot.xls")
   dataRummyIOS <- readxl::read_xls("新博客来_IOS14.xls")
   dataDreamTP <- readxl::read_xls("新DreamTP.xls")
-  dataDouShiAND <- readr::read_csv("ANDAF.csv")
-  dataDouShiIOS <- readr::read_csv("IOSAF.csv")
   dataTakeCash <- readxl::read_xls("新TakeCash.xls")
   dataCashMap <- readxl::read_xls("新CashMap.xls")
   dataDouShiM <- readxl::read_xls("新圣斗士_M.xls")
@@ -542,28 +540,6 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 圣斗士 ---------------------------------------------------------------------
 
 {
-  dataDouShiJ1 <- dataDouShiJ %>%
-    MobanWithGroupGP() %>%
-    mutate(代理 = "GatherOne", 国家 = 地区)
-  dataDouShiJ2 <- dataDouShiJ %>%
-    MobanWithoutGroup(gro = "圣斗士Jane") %>%
-    mutate(代理 = "GatherOne", 国家 = "总计")
-
-  bind_rows(dataDouShiJ1, dataDouShiJ2) %>%
-    select(日期, 代理, 地区, 国家, 安装, 展示次数, 点击, 花费) %>%
-    SaveCsv(name = "圣斗士Jane")
-
-  dataDouShiM1 <- dataDouShiM %>%
-    MobanWithGroupGP() %>%
-    mutate(代理 = "GatherOne", 国家 = 地区)
-  dataDouShiM2 <- dataDouShiM %>%
-    MobanWithoutGroup(gro = "圣斗士Monika") %>%
-    mutate(代理 = "GatherOne", 国家 = "总计")
-
-  bind_rows(dataDouShiM1, dataDouShiM2) %>%
-    select(日期, 代理, 地区, 国家, 安装, 展示次数, 点击, 花费) %>%
-    SaveCsv(name = "圣斗士Monika")
-
   dataDouShiAll <- bind_rows(dataDouShiJ, dataDouShiM)
 
   dataDouShiAll1 <- dataDouShiAll %>%
@@ -578,13 +554,6 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 
   bind_rows(dataDouShiAll1, dataDouShiAll2) %>%
     SaveCsv(name = "圣斗士汇总")
-
-  dataDouShiAND1 <- dataDouShiAND[-1, c("广告系列", "激活")]
-  dataDouShiIOS1 <- dataDouShiIOS[-1, c("广告系列", "激活")]
-
-  dataDouShiAND1 %>%
-    mutate(优化 = if_else(str_detect(广告系列, "jane"), "Jane", "Monika")) %>%
-    group_by(优化)
 }
 
 # 首推 ----------------------------------------------------------------------
