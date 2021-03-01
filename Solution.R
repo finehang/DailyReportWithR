@@ -4,6 +4,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 数据导入 --------------------------------------------------------------------
 
 {
+  dataFuYun <- readxl::read_xls("新福韵.xls")
   dataAce <- readxl::read_xls("新Ace.xls")
   dataKaiXin <- readxl::read_xls("新开心BakBak.xls")
   dataHotSpot <- readxl::read_xls("新HOtSpot.xls")
@@ -142,7 +143,15 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 白鲸 ----------------------------------------------------------------------
 
 {
+  dataBaiMovzy0 <- dataBaiMovzy %>%
+    filter(str_detect(toupper(广告账户名称), "IOS14")) %>%
+    MobanWithGroupGP() %>%
+    mutate(产品 = "白鲸Movzy") %>%
+    BaiJing() %>%
+    mutate(版本 = "IOS14")
+
   dataBaiMovzy1 <- dataBaiMovzy %>%
+    filter(!str_detect(toupper(广告账户名称), "IOS14")) %>%
     MobanWithGroupGP() %>%
     mutate(产品 = "白鲸Movzy") %>%
     BaiJing()
@@ -161,7 +170,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     mutate(产品 = "白鲸video player") %>%
     BaiJing()
 
-  bind_rows(dataBaiMovzy1, dataBaiYoung1, dataBaiPlayer1) %>%
+  bind_rows(dataBaiMovzy0, dataBaiMovzy1, dataBaiYoung1, dataBaiPlayer1) %>%
     SaveCsv(name = "白鲸")
   dataBaiYolk1 %>% SaveCsv(name = "白鲸Yolk")
 }
@@ -461,6 +470,15 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     SaveCsv(name = "Videochat_Hallo")
 }
 
+# 福韵 ----------------------------------------------------------------------
+
+{
+  dataFuYun %>% 
+    MobanWithoutGroup(gro = "福韵") %>% 
+    select(-c(购买, 注册)) %>% 
+    SaveCsv(name = "福韵")
+}
+
 #  叨叨叨SpendCash------------------------------------------------------------
 
 {
@@ -568,12 +586,12 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 {
   dataShouTui %>%
     MobanWithoutGroup(gro = "首推") %>%
-    select(日期, group, 安装, 花费, 购买) %>%
+    select(日期, group, 花费, 安装, 购买) %>%
     SaveCsv(name = "首推")
 
   dataShouTuiF %>%
     MobanWithoutGroup(gro = "首推Fingertip") %>%
-    select(日期, group, 安装, 花费, 购买) %>%
+    select(日期, group, 花费, 安装, 购买) %>%
     SaveCsv(name = "首推Fingertip")
 }
 # Sancamap ----------------------------------------------------------------
