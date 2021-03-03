@@ -4,6 +4,8 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 数据导入 --------------------------------------------------------------------
 
 {
+  dataPromeHiPal <- readxl::read_xls("新Prometheus_HiPal.xls")
+  dataPromeMoreKash <- readxl::read_xls("新Prometheus_MoreKash.xls")
   dataBauCuaKing <- readxl::read_xls("新BauCuaKing.xls")
   dataXiangGang <- readxl::read_xls("新香港瑞兆.xls")
   dataFuYun <- readxl::read_xls("新福韵.xls")
@@ -22,6 +24,8 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataFortune <- readxl::read_xls("新FortuneClub.xls")
   dataBaCay <- readxl::read_xls("新BaCayPoker.xls")
   dataRummyIOS14 <- readxl::read_xls("新博客来_IOS14.xls")
+  dataTPGOJ <- readxl::read_xls("新博客来_TPGO_J.xls")
+  dataTPGOM <- readxl::read_xls("新博客来_TPGO_M.xls")
   dataRummyJ <- readxl::read_xls("新博客来Rummy_IOS_J.xls")
   dataRummyM <- readxl::read_xls("新博客来Rummy_IOS_M.xls")
   dataShouTuiF <- readxl::read_xls("新Fingertip.xls")
@@ -30,15 +34,12 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataBlink <- readxl::read_xls("新看看_Blink.xls")
   dataLuxury <- readxl::read_xls("新LuxuryRummy.xls")
   dataZhiQi <- readxl::read_xls("新智启辰远.xls")
-  dataTPJ <- readxl::read_xls("新博客来TPReal-J.xls")
-  dataTPM <- readxl::read_xls("新博客来TPReal-M.xls")
   dataZhangYun <- readxl::read_xls("新掌中云.xls")
   dataKanBlink <- readxl::read_xls("新看看_Blink.xls")
   dataKanBliss <- readxl::read_xls("新看看_BlissLite.xls")
   dataKanTrinku <- readxl::read_xls("新看看_Trinku.xls")
   dataKanLocku <- readxl::read_xls("新看看_Locku.xls")
   dataLiAo <- readxl::read_xls("新深圳理奥.xls")
-  dataSpend <- readxl::read_xls("新SpendCash.xls")
   dataWanDe <- readxl::read_xls("新玩德游戏.xls")
   dataMicroJ <- readxl::read_xls("新microcard-J.xls")
   dataMicroM <- readxl::read_xls("新microcard-M.xls")
@@ -409,12 +410,12 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # microcard J+M -----------------------------------------------------------
 
 {
-  dataTPJ1 <- dataTPJ %>%
-    MobanWithoutGroup(gro = "TP_AND_J") %>%
+  dataTPGOJ1 <- dataTPGOJ %>%
+    MobanWithoutGroup(gro = "TP_GO_FB_J") %>%
     select(日期, group, 展示次数, 点击, 花费)
 
-  dataTPM1 <- dataTPM %>%
-    MobanWithoutGroup(gro = "TP_AND_M") %>%
+  dataTPGOM1 <- dataTPGOM %>%
+    MobanWithoutGroup(gro = "TP_GO_FB_M") %>%
     select(日期, group, 展示次数, 点击, 花费)
 
   dataRummyJ1 <- dataRummyJ %>%
@@ -430,30 +431,51 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     select(日期, group, 展示次数, 点击, 花费)
 
   dataMicroJ1 <- dataMicroJ %>%
-    MobanWithoutGroup(gro = "rummy_AND_J") %>%
+    MobanWithoutGroup(gro = "Rummy_AND_J") %>%
     select(日期, group, 展示次数, 点击, 花费)
 
   dataMicroM1 <- dataMicroM %>%
-    MobanWithoutGroup(gro = "rummy_AND_M") %>%
+    MobanWithoutGroup(gro = "Rummy_AND_M") %>%
     select(日期, group, 展示次数, 点击, 花费)
 
-  bind_rows(dataTPJ1, dataTPM1) %>% SaveCsv(name = "博客来TP")
+  bind_rows(dataTPGOJ1, dataTPGOM1) %>% SaveCsv(name = "博客来TPGO")
   bind_rows(dataRummyJ1, dataRummyM1) %>% SaveCsv(name = "博客来Rummy_IOS")
   bind_rows(dataMicroJ1, dataMicroM1) %>% SaveCsv(name = "博客来Rummy_AND")
   dataRummyIOS141 %>% SaveCsv(name = "博客来RummyIOS141")
 }
 
+# Prometheus --------------------------------------------------------------
+
+{
+  dataPromeHiPal1 <- dataPromeHiPal %>%
+    MobanWithoutGroup(gro = "HiPal") %>%
+    select(-c(购买, 注册))
+
+  dataPromeMoreKash1 <- dataPromeMoreKash %>%
+    MobanWithoutGroup(gro = "MoreKash") %>%
+    select(-c(购买, 注册))
+
+  bind_rows(dataPromeHiPal1, dataPromeMoreKash1) %>% SaveCsv(name = "Prometheus")
+}
 # 凯丽金videochat -------------------------------------------------------------
 
 {
-  dataKaiStich1 <- dataKaiStich %>%
-    MobanWithoutGroup(gro = "Stich") %>%
+  dataKaiFaU1 <- dataKaiFaU %>%
+    MobanWithoutGroup(gro = "FaU") %>%
     MobanSelectDefault(selection = "注册")
-  
+
   dataKaiJoyo1 <- dataKaiJoyo %>%
     MobanWithoutGroup(gro = "Joyo") %>%
     MobanSelectDefault(selection = "注册")
+
+  dataKaiHaya1 <- dataKaiHaya %>%
+    MobanWithoutGroup(gro = "Haya") %>%
+    MobanSelectDefault(selection = "注册")
   
+  dataKaiStich1 <- dataKaiStich %>%
+    MobanWithoutGroup(gro = "Stich") %>%
+    MobanSelectDefault(selection = "注册")
+
   dataKaiVideo1 <- dataKaiVideo %>%
     MobanWithoutGroup(gro = "Video") %>%
     MobanSelectDefault(selection = "注册")
@@ -462,15 +484,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     MobanWithoutGroup(gro = "Winnie") %>%
     MobanSelectDefault(selection = "注册")
 
-  dataKaiHaya1 <- dataKaiHaya %>%
-    MobanWithoutGroup(gro = "Haya") %>%
-    MobanSelectDefault(selection = "注册")
-
-  dataKaiFaU1 <- dataKaiFaU %>%
-    MobanWithoutGroup(gro = "FaU") %>%
-    MobanSelectDefault(selection = "注册")
-
-  bind_rows(dataKaiStich1, dataKaiJoyo1, dataKaiVideo1, dataKaiWinnie1, dataKaiHaya1, dataKaiFaU1) %>%
+  bind_rows(dataKaiFaU1, dataKaiJoyo1, dataKaiHaya1, dataKaiStich1, dataKaiVideo1, dataKaiWinnie1) %>%
     SaveCsv(name = "Videochat")
 
   dataKaiHallo %>%
@@ -488,15 +502,6 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     SaveCsv(name = "福韵")
 }
 
-#  叨叨叨SpendCash------------------------------------------------------------
-
-{
-  dataSpend %>%
-    MobanWithoutGroup(gro = "叨叨叨") %>%
-    select(日期, group, 安装, 花费) %>%
-    SaveCsv(name = "叨叨叨")
-}
-
 # 飞乐乐 ----------------------------------------------------------------------
 
 {
@@ -510,23 +515,19 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 
 {
   dataKanLocku1 <- dataKanLocku %>%
-    MobanWithGroupGeo() %>%
-    mutate(产品 = "Locku") %>%
+    MobanWithGroupGeo(name = "Locku") %>%
     select(-c(购买, 注册))
-  
+
   dataKanTrinku1 <- dataKanTrinku %>%
-    MobanWithGroupGeo() %>%
-    mutate(产品 = "Trinku") %>%
+    MobanWithGroupGeo(name = "Trinku") %>%
     select(-c(购买, 注册))
 
   dataKanBlink1 <- dataKanBlink %>%
-    MobanWithGroupGeo() %>%
-    mutate(产品 = "Blink") %>%
+    MobanWithGroupGeo(name = "Blink") %>%
     select(-c(购买, 注册))
 
   dataKanBliss1 <- dataKanBliss %>%
-    MobanWithGroupGeo() %>%
-    mutate(产品 = "Bliss") %>%
+    MobanWithGroupGeo(name = "Bliss") %>%
     select(-c(购买, 注册))
 
   dataKanBliss2 <- tibble(
@@ -537,12 +538,11 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     展示次数 = sum(dataKanBliss1$展示次数),
     花费 = sum(dataKanBliss1$花费),
     回收 = sum(dataKanBliss1$回收),
-    产品 = "Bliss"
+    Group = "Bliss"
   )
 
 
   bind_rows(dataKanLocku1, dataKanTrinku1, dataKanBlink1, dataKanBliss1, dataKanBliss2) %>%
-    select(产品, everything()) %>%
     SaveCsv(name = "看看在线")
 }
 
@@ -558,20 +558,20 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 融创 ----------------------------------------------------------------------
 
 {
-  dataRongDoan %>%
-    MobanWithGroupGeo() %>%
-    select(-c(安装, 回收, 购买)) %>%
-    SaveCsv(name = "融创_Doan")
-  
-  dataRongFacevay %>%
-    MobanWithGroupGeo() %>%
-    select(-c(安装, 回收, 购买)) %>%
-    SaveCsv(name = "融创_Facevay")
-  
-  dataRongVinvay %>%
-    MobanWithGroupGeo() %>%
-    select(-c(安装, 回收, 购买)) %>%
-    SaveCsv(name = "融创_Vinvay")
+  dataRongDoan1 <- dataRongDoan %>%
+    MobanWithGroupGeo(name = "RongDoan") %>%
+    select(-c(安装, 回收, 购买))
+
+  dataRongFacevay1 <- dataRongFacevay %>%
+    MobanWithGroupGeo(name = "RongFacevay") %>%
+    select(-c(安装, 回收, 购买))
+
+  dataRongVinvay1 <- dataRongVinvay %>%
+    MobanWithGroupGeo(name = "RongVinvay") %>%
+    select(-c(安装, 回收, 购买))
+
+  bind_rows(dataRongDoan1, dataRongFacevay1, dataRongVinvay1) %>%
+    SaveCsv(name = "融创")
 }
 # 深圳理奥 --------------------------------------------------------------------
 
@@ -609,14 +609,14 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 
 {
   dataShouTui %>%
-    MobanWithoutGroup(gro = "首推") %>%
+    MobanWithoutGroup(gro = "首推_Online") %>%
     select(日期, group, 花费, 安装, 购买) %>%
-    SaveCsv(name = "首推")
+    SaveCsv(name = "首推_Online")
 
   dataShouTuiF %>%
-    MobanWithoutGroup(gro = "首推Fingertip") %>%
+    MobanWithoutGroup(gro = "首推_Fingertip") %>%
     select(日期, group, 花费, 安装, 购买) %>%
-    SaveCsv(name = "首推Fingertip")
+    SaveCsv(name = "首推_Fingertip")
 }
 
 # 香港瑞兆 --------------------------------------------------------------------
@@ -629,35 +629,33 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # Sancamap ----------------------------------------------------------------
 
 {
-  dataSan %>%
-    MobanWithoutGroup(gro = "Sancamap") %>%
-    MobanSelectDefault() %>%
-    select(-回收) %>%
-    SaveCsv(name = "Sancamap")
-
-  dataAce %>%
+  dataAce1 <- dataAce %>%
     MobanWithoutGroup(gro = "Ace") %>%
     MobanSelectDefault() %>%
-    select(-回收) %>%
-    SaveCsv(name = "Ace")
+    select(-回收)
 
-  dataBaCay %>%
+  dataSan1 <- dataSan %>%
+    MobanWithoutGroup(gro = "Sancamap") %>%
+    MobanSelectDefault() %>%
+    select(-回收)
+
+  dataBaCay1 <- dataBaCay %>%
     MobanWithoutGroup(gro = "BaCay") %>%
     MobanSelectDefault() %>%
-    select(-回收) %>%
-    SaveCsv(name = "BaCay")
+    select(-回收)
 
-  dataFortune %>%
+  dataFortune1 <- dataFortune %>%
     MobanWithoutGroup(gro = "Fortune") %>%
     MobanSelectDefault() %>%
-    select(-回收) %>%
-    SaveCsv(name = "Fortune")
-  
-  dataBauCuaKing %>%
+    select(-回收)
+
+  dataBauCuaKing1 <- dataBauCuaKing %>%
     MobanWithoutGroup(gro = "BauCuaKing") %>%
     MobanSelectDefault() %>%
-    select(-回收) %>%
-    SaveCsv(name = "BauCuaKing")
+    select(-回收)
+
+  bind_rows(dataAce1, dataSan1, dataBaCay1, dataFortune1, dataBauCuaKing1) %>%
+    SaveCsv(name = "领麦Sancamap")
 }
 
 # 怪猫 ----------------------------------------------------------------------
@@ -679,13 +677,13 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     dataCarFB1 <- dataCarFB %>%
       CarFixFB() %>%
       CarFB()
-    
+
     dataCarGG1 <- dataCarGG %>% CarGG()
-    
+
     dataFixFB1 <- dataFixFB %>%
       CarFixFB() %>%
       CarFB()
-    
+
     dataFixGG1 <- dataFixGG %>% CarGG()
 
     bind_rows(dataCarFB1, dataCarGG1) %>%
