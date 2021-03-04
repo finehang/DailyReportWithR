@@ -670,19 +670,19 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 {
   if ((wday(now()) >= 2 & wday(now()) <= 6 & hour(now()) > 13) | ((wday(now()) <= 1 | wday(now()) >= 7) & hour(now()) > 18)) {
     # dataCarFB <- readxl::read_xlsx("二手车FB.xlsx", col_names = T)
-    dataCarGG <- readxl::read_xlsx("二手车GG.xlsx", skip = 2, col_names = T)
-    # dataFixFB <- readxl::read_xlsx("修车FB.xlsx", col_names = T)
+    # dataCarGG <- readxl::read_xlsx("二手车GG.xlsx", skip = 2, col_names = T)
+    dataFixFB <- readxl::read_xlsx("修车FB.xlsx", col_names = T)
     dataFixGG <- readxl::read_xlsx("修车GG.xlsx", skip = 2, col_names = T)
 
     # dataCarFB1 <- dataCarFB %>%
     #   CarFixFB() %>%
     #   CarFB()
 
-    dataCarGG1 <- dataCarGG %>% CarGG()
+    # dataCarGG1 <- dataCarGG %>% CarGG()
 
-    # dataFixFB1 <- dataFixFB %>%
-    #   CarFixFB() %>%
-    #   CarFB()
+    dataFixFB1 <- dataFixFB %>%
+      CarFixFB() %>%
+      CarFB()
 
     dataFixGG1 <- dataFixGG %>% CarGG()
 
@@ -723,7 +723,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
       select(日期, 地区, 花费, 安装, 点击, 展示次数)
 
     dataBela2 <- tibble(
-      日期 = "　", 地区 = "总计",
+      日期 = "总计",
       花费 = sum(dataBela1$花费),
       安装 = sum(dataBela1$安装),
       点击 = sum(dataBela1$点击),
