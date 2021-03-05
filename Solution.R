@@ -4,6 +4,8 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 数据导入 --------------------------------------------------------------------
 
 {
+  dataKuHappy <- readxl::read_xls("新酷玩_Happy.xls")
+  dataMiYi <- readxl::read_xls("新米易.xls")
   dataPromeHiPal <- readxl::read_xls("新Prometheus_HiPal.xls")
   dataPromeMoreKash <- readxl::read_xls("新Prometheus_MoreKash.xls")
   dataBauCuaKing <- readxl::read_xls("新BauCuaKing.xls")
@@ -33,7 +35,8 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataZuoTou <- readxl::read_xls("新座头鲸.xls")
   dataBlink <- readxl::read_xls("新看看_Blink.xls")
   dataLuxury <- readxl::read_xls("新LuxuryRummy.xls")
-  dataZhiQi <- readxl::read_xls("新智启辰远.xls")
+  dataZhiQiLuckyDay <- readxl::read_xls("新智启辰远_LuckyDay.xls")
+  dataZhiQiLuckyDice <- readxl::read_xls("新智启辰远_LuckyDice.xls")
   dataZhangYun <- readxl::read_xls("新掌中云.xls")
   dataKanBlink <- readxl::read_xls("新看看_Blink.xls")
   dataKanBliss <- readxl::read_xls("新看看_BlissLite.xls")
@@ -357,10 +360,15 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 智启辰远 --------------------------------------------------------------------
 
 {
-  dataZhiQi %>%
-    MobanWithGroupGeo() %>%
+  dataZhiQiLuckyDay %>%
+    MobanWithGroupGeo(name = "LuckyDay") %>%
     select(-c(购买, 注册, 花费, 回收)) %>%
-    SaveCsv(name = "智启辰远")
+    SaveCsv(name = "智启辰远LuckyDay")
+  
+  dataZhiQiLuckyDice %>%
+    MobanWithGroupGeo(name = "LuckyDice") %>%
+    select(-c(购买, 注册, 花费, 回收)) %>%
+    SaveCsv(name = "智启辰远LuckyDice")
 }
 
 # 掌云 ----------------------------------------------------------------------
@@ -546,6 +554,14 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     SaveCsv(name = "看看在线")
 }
 
+# 米易 ----------------------------------------------------------------------
+
+{
+  dataMiYi %>% 
+    MobanWithoutGroup() %>% 
+    select(日期, 花费, 展示次数, 点击, 安装, 注册) %>% 
+    SaveCsv(name = "米易")
+}
 # 喵石 ----------------------------------------------------------------------
 
 {
