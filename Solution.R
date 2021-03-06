@@ -4,6 +4,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 数据导入 --------------------------------------------------------------------
 
 {
+  dataYouLiang <- readxl::read_xls("新杭州优量.xls")
   dataKuHappy <- readxl::read_xls("新酷玩_Happy.xls")
   dataMiYi <- readxl::read_xls("新米易.xls")
   dataPromeHiPal <- readxl::read_xls("新Prometheus_HiPal.xls")
@@ -38,6 +39,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataZhiQiLuckyDay <- readxl::read_xls("新智启辰远_LuckyDay.xls")
   dataZhiQiLuckyDice <- readxl::read_xls("新智启辰远_LuckyDice.xls")
   dataZhangYun <- readxl::read_xls("新掌中云.xls")
+  dataKanTW <- readxl::read_xls("新看看_TW.xls")
   dataKanBlink <- readxl::read_xls("新看看_Blink.xls")
   dataKanBliss <- readxl::read_xls("新看看_BlissLite.xls")
   dataKanTrinku <- readxl::read_xls("新看看_Trinku.xls")
@@ -519,15 +521,30 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     SaveCsv(name = "飞乐乐")
 }
 
+# 杭州优量 --------------------------------------------------------------------
+
+{
+  dataYouLiang %>% 
+    MobanWithoutGroup(gro = "优量") %>% 
+    select(-c(购买, 注册)) %>% 
+    SaveCsv(name = "杭州优量")
+}
 # 看看在线 --------------------------------------------------------------------
 
 {
+  dataKanTW %>% 
+    MobanWithGroupGeo(name = "TW") %>%
+    mutate(安装成本 = 花费 / 安装, ROI = 回收 / 花费) %>% 
+    select(Group, 日期, 地区, 安装, 花费, 回收, 安装成本, ROI) %>% 
+    SaveCsv(name = "看看台湾")
+
+  dataKanTrinku %>%
+    MobanWithGroupGeo(name = "Trinku") %>%
+    select(-c(购买, 注册)) %>% 
+    SaveCsv(name = "Trinku")
+  
   dataKanLocku1 <- dataKanLocku %>%
     MobanWithGroupGeo(name = "Locku") %>%
-    select(-c(购买, 注册))
-
-  dataKanTrinku1 <- dataKanTrinku %>%
-    MobanWithGroupGeo(name = "Trinku") %>%
     select(-c(购买, 注册))
 
   dataKanBlink1 <- dataKanBlink %>%
@@ -548,10 +565,6 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     回收 = sum(dataKanBliss1$回收),
     Group = "Bliss"
   )
-
-
-  bind_rows(dataKanLocku1, dataKanTrinku1, dataKanBlink1, dataKanBliss1, dataKanBliss2) %>%
-    SaveCsv(name = "看看在线")
 }
 
 # 米易 ----------------------------------------------------------------------
