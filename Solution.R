@@ -177,7 +177,22 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     mutate(产品 = "白鲸video player") %>%
     BaiJing()
 
-  bind_rows(dataBaiMovzy1, dataBaiYoung1, dataBaiPlayer1) %>%
+  dataBaiMovzyIOS14 <- tibble(
+    日期 = as.character(Sys.Date() - 1),
+    产品 = "白鲸Movzy",
+    地区 = c("CA", "GB", "PH", "US"),
+    版本 = "IOS14",
+    安装 = 0
+  )
+  dataBaiPlayerIOS14 <- tibble(
+    日期 = as.character(Sys.Date() - 1),
+    产品 = "白鲸video player",
+    地区 = c("CA", "GB", "PH", "US"),
+    版本 = "IOS14",
+    安装 = 0
+  )
+
+  bind_rows(dataBaiMovzyIOS14, dataBaiPlayerIOS14, dataBaiMovzy1, dataBaiYoung1, dataBaiPlayer1) %>%
     SaveCsv(name = "白鲸")
   dataBaiYolk1 %>% SaveCsv(name = "白鲸Yolk")
 }
