@@ -16,18 +16,18 @@ MobanWithoutGroup <- function(data, gro = "group") {
       购买 = sum(as.numeric(购买次数)),
       注册 = sum(as.numeric(完成注册))
     ) %>%
-    select(日期, everything())
+    select(group, 日期, everything())
   return(data)
 }
 
-MobanWithGroupGeo <- function(data, name = "Gro") {
+MobanWithGroupGeo <- function(data, gro = "Gro") {
   data <- data %>%
     mutate_all(replace_na, replace = 0) %>%
     dplyr::filter(地区 != "unknown") %>%
     group_by(地区) %>%
     summarise(
       日期 = as.character(Sys.Date() - 1),
-      Group = name,
+      Group = gro,
       安装 = sum(as.numeric(安装量)),
       点击 = sum(as.numeric(点击量)),
       展示次数 = sum(as.numeric(展示次数)),
