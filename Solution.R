@@ -384,7 +384,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     MobanWithGroupGeo(gro = "LuckyDay") %>%
     select(-c(购买, 注册, 花费, 回收)) %>%
     SaveCsv(name = "智启辰远LuckyDay")
-  
+
   dataZhiQiLuckyDice %>%
     MobanWithGroupGeo(gro = "LuckyDice") %>%
     select(-c(购买, 注册, 花费, 回收)) %>%
@@ -425,7 +425,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     MobanWithGroupGeo() %>%
     select(花费, 注册) %>%
     SaveCsv(name = "CashMap")
-  
+
   dataPPcash %>%
     MobanWithGroupGeo() %>%
     select(花费, 注册) %>%
@@ -443,11 +443,10 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # microcard J+M -----------------------------------------------------------
 
 {
-  
   dataRummyIOS141 <- dataRummyIOS14 %>%
     MobanWithoutGroup(gro = "RummyIOS14") %>%
     select(日期, group, 展示次数, 点击, 花费)
-  
+
   dataTPGOJ1 <- dataTPGOJ %>%
     MobanWithoutGroup(gro = "TP_GO_FB_J") %>%
     select(日期, group, 展示次数, 点击, 花费)
@@ -509,7 +508,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataKaiHaya1 <- dataKaiHaya %>%
     MobanWithoutGroup(gro = "Haya") %>%
     MobanSelectDefault(selection = "注册")
-  
+
   dataKaiStich1 <- dataKaiStich %>%
     MobanWithoutGroup(gro = "Stich") %>%
     MobanSelectDefault(selection = "注册")
@@ -552,25 +551,25 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 杭州优量 --------------------------------------------------------------------
 
 {
-  dataYouLiang %>% 
-    MobanWithoutGroup(gro = "优量") %>% 
-    select(-c(注册)) %>% 
+  dataYouLiang %>%
+    MobanWithoutGroup(gro = "优量") %>%
+    select(-c(注册)) %>%
     SaveCsv(name = "杭州优量")
 }
 # 看看在线 --------------------------------------------------------------------
 
 {
-  dataKanTW %>% 
+  dataKanTW %>%
     MobanWithGroupGeo(gro = "TW") %>%
-    mutate(安装成本 = 花费 / 安装, ROI = 回收 / 花费) %>% 
-    select(Group, 日期, 地区, 安装, 花费, 回收, 安装成本, ROI) %>% 
+    mutate(安装成本 = 花费 / 安装, ROI = 回收 / 花费) %>%
+    select(Group, 日期, 地区, 安装, 花费, 回收, 安装成本, ROI) %>%
     SaveCsv(name = "看看台湾")
 
   dataKanTrinku %>%
     MobanWithGroupGeo(gro = "Trinku") %>%
-    select(-c(购买, 注册)) %>% 
+    select(-c(购买, 注册)) %>%
     SaveCsv(name = "Trinku")
-  
+
   dataKanLocku1 <- dataKanLocku %>%
     MobanWithGroupGeo(gro = "Locku") %>%
     select(-c(购买, 注册))
@@ -598,21 +597,21 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 酷玩 ----------------------------------------------------------------------
 
 {
-  dataKuChall1 <- dataKuChall %>% 
+  dataKuChall1 <- dataKuChall %>%
     MobanWithoutGroup(gro = "酷玩Chall")
-  
-  dataKuHappy1 <- dataKuHappy %>% 
+
+  dataKuHappy1 <- dataKuHappy %>%
     MobanWithoutGroup(gro = "酷玩Happy")
-  
-  bind_rows(dataKuChall1, dataKuHappy1) %>% 
+
+  bind_rows(dataKuChall1, dataKuHappy1) %>%
     SaveCsv(name = "酷玩")
 }
 # 米易 ----------------------------------------------------------------------
 
 {
-  dataMiYi %>% 
-    MobanWithoutGroup() %>% 
-    select(日期, 花费, 展示次数, 点击, 安装, 注册) %>% 
+  dataMiYi %>%
+    MobanWithoutGroup() %>%
+    select(日期, 花费, 展示次数, 点击, 安装, 注册) %>%
     SaveCsv(name = "米易")
 }
 # 喵石 ----------------------------------------------------------------------
@@ -648,17 +647,17 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataLiAo %>%
     LiAo() %>%
     SaveCsv(name = "深圳理奥")
-  
-  dataLiAo33 %>% 
-    MobanWithoutGroup(gro = "LiAo33") %>% 
-    select(-c(购买, 注册)) %>% 
-    mutate(CPI = 花费 / 安装) %>% 
+
+  dataLiAo33 %>%
+    MobanWithoutGroup(gro = "LiAo33") %>%
+    select(-c(购买, 注册)) %>%
+    mutate(CPI = 花费 / 安装) %>%
     SaveCsv(name = "深圳理奥LiAo33")
-  
-  dataLiAo39 %>% 
-    MobanWithoutGroup(gro = "LiAo39") %>% 
-    select(-c(购买, 注册)) %>% 
-    mutate(CPI = 花费 / 安装) %>% 
+
+  dataLiAo39 %>%
+    MobanWithoutGroup(gro = "LiAo39") %>%
+    select(-c(购买, 注册)) %>%
+    mutate(CPI = 花费 / 安装) %>%
     SaveCsv(name = "深圳理奥LiAo39")
 }
 
