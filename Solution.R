@@ -4,29 +4,38 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 数据导入 --------------------------------------------------------------------
 
 {
+  dataGouQiGaga <- readxl::read_xls("新枸杞_Gaga.xls")
+  dataGouQiLili <- readxl::read_xls("新枸杞_Lili.xls")
+  dataHuaCe <- readxl::read_xls("新华策天城.xls")
+  dataLingPay <- readxl::read_xls("新灵分_Pay.xls")
+  dataLingKey <- readxl::read_xls("新灵分_Key.xls")
+  dataLingSo <- readxl::read_xls("新灵分_SoCredit.xls")
+  dataTai <- readxl::read_xls("新泰坤.xls")
+  dataZxCash <- readxl::read_xls("新邦振_ZxCash.xls")
   dataYouLiang <- readxl::read_xls("新杭州优量.xls")
   dataKuChall <- readxl::read_xls("新酷玩_Chall77.xls")
   dataKuHappy <- readxl::read_xls("新酷玩_Happy.xls")
   dataMiYi <- readxl::read_xls("新米易.xls")
   dataPromeHiPal <- readxl::read_xls("新Prometheus_HiPal.xls")
   dataPromeMoreKash <- readxl::read_xls("新Prometheus_MoreKash.xls")
-  dataBauCuaKing <- readxl::read_xls("新BauCuaKing.xls")
+  dataBauCuaKing <- readxl::read_xls("新海南翎麦_BauCuaKing.xls")
   dataXiangGang <- readxl::read_xls("新香港瑞兆.xls")
-  dataFuYun <- readxl::read_xls("新福韵.xls")
+  dataFuYunPattPlus <- readxl::read_xls("新福韵_PattPlus.xls")
+  dataFuYunRummy <- readxl::read_xls("新福韵_Rummy.xls")
   dataAce <- readxl::read_xls("新Ace.xls")
   dataKaiXin <- readxl::read_xls("新开心_BakBak.xls")
   dataHotSpot <- readxl::read_xls("新HotSpot.xls")
   dataDreamTP <- readxl::read_xls("新DreamTP.xls")
   dataTakeCash <- readxl::read_xls("新TakeCash.xls")
   dataPPcash <- readxl::read_xls("新PPcash.xls")
-  dataCashMap <- readxl::read_xls("新CashMap.xls")
+  dataCashMap <- readxl::read_xls("新洪禄_CashMap.xls")
   dataDouShi <- readxl::read_xls("新圣斗士.xls")
   dataFei <- readxl::read_xls("新飞乐乐.xls")
   dataRongDoan <- readxl::read_xls("新融创汇通_Doan.xls")
   dataRongFacevay <- readxl::read_xls("新融创汇通_Facevay.xls")
   dataRongVinvay <- readxl::read_xls("新融创汇通_Vinvay.xls")
   dataFortune <- readxl::read_xls("新FortuneClub.xls")
-  dataBaCay <- readxl::read_xls("新BaCayPoker.xls")
+  dataBaCay <- readxl::read_xls("新海南翎麦_BaCayPoker.xls")
   dataRummyIOS14 <- readxl::read_xls("新博客来_IOS14.xls")
   dataTPGOJ <- readxl::read_xls("新博客来_TPGO_J.xls")
   dataTPGOM <- readxl::read_xls("新博客来_TPGO_M.xls")
@@ -35,7 +44,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataRummyANDJ <- readxl::read_xls("新博客来_Rummy_AND_J.xls")
   dataRummyANDM <- readxl::read_xls("新博客来_Rummy_AND_M.xls")
   dataShouTuiF <- readxl::read_xls("新Fingertip.xls")
-  dataShouTui <- readxl::read_xls("新首推.xls")
+  # dataShouTui <- readxl::read_xls("新首推.xls")
   dataZuoTou <- readxl::read_xls("新座头鲸.xls")
   dataBlink <- readxl::read_xls("新看看_Blink.xls")
   dataLuxury <- readxl::read_xls("新LuxuryRummy.xls")
@@ -50,6 +59,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataLiAo <- readxl::read_xls("新深圳理奥.xls")
   dataLiAo39 <- readxl::read_xls("新理奥_Vungo39.xls")
   dataLiAo33 <- readxl::read_xls("新理奥_Vungo33.xls")
+  dataWanDeGG <- readxl::read_xlsx("玩德.xlsx", skip = 2, col_names = T)
   dataWanDe <- readxl::read_xls("新玩德游戏.xls")
   dataJeruk <- readxl::read_xls("新JerukLive.xls")
   dataNovelSky <- readxl::read_xls("新NovelSky.xls")
@@ -266,6 +276,41 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 玩德游戏 --------------------------------------------------------------------
 
 {
+  dataWanDeGG1 <- dataWanDeGG %>% 
+    na.omit() %>% 
+    mutate(版本 = if_else(str_detect(广告系列, "AND"), "AND", "IOS"),
+           地区 = if_else(str_detect(广告系列, "ID"), "ID",
+                        str_sub(广告系列, 23,24)),
+           安装量 = 安装次数,
+           点击量 = 点击次数, 
+           金额 = 费用) %>% 
+    group_by(版本, 地区) %>% 
+    summarise(
+      日期 = as.character(Sys.Date() - 1),
+      安装 = sum(as.numeric(安装量)),
+      点击 = sum(as.numeric(点击量)),
+      展示次数 = sum(as.numeric(展示次数)),
+      花费 = sum(as.numeric(金额)),
+      CPI = 花费 / 安装,
+      CTR = 点击 / 展示次数,
+      CVR = 安装 / 点击
+    ) %>%
+    select(日期, 版本, 地区, 安装, 花费, CPI, 点击, 展示次数, CTR, CVR)
+  
+  dataWanDeGG2 <- tibble(
+    日期 = "　", 版本 = "　", 地区 = "总计",
+    安装 = sum(dataWanDeGG1$安装),
+    点击 = sum(dataWanDeGG1$点击),
+    展示次数 = sum(dataWanDeGG1$展示次数),
+    花费 = sum(dataWanDeGG1$花费)
+  ) %>%
+    mutate(
+      CPI = 花费 / 安装,
+      CTR = 点击 / 展示次数,
+      CVR = 安装 / 点击
+    )
+  
+  
   dataWanDe1 <- dataWanDe %>%
     MobanWithGroupGP() %>%
     mutate(
@@ -288,6 +333,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
       CVR = 安装 / 点击
     )
 
+  bind_rows(dataWanDeGG1, dataWanDeGG2) %>% SaveCsv(name = "玩德游戏GG")
   bind_rows(dataWanDe1, dataWanDe2) %>% SaveCsv(name = "玩德游戏")
 }
 
@@ -419,19 +465,6 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     SaveCsv(name = "座头鲸")
 }
 
-# CashMap -----------------------------------------------------------------
-{
-  dataCashMap %>%
-    MobanWithGroupGeo() %>%
-    select(花费, 注册) %>%
-    SaveCsv(name = "CashMap")
-
-  dataPPcash %>%
-    MobanWithGroupGeo() %>%
-    select(花费, 注册) %>%
-    SaveCsv(name = "PPcash")
-}
-
 # TakeCash ----------------------------------------------------------------
 {
   dataTakeCash %>%
@@ -530,15 +563,43 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     SaveCsv(name = "Videochat_Hallo")
 }
 
+# 邦振 ----------------------------------------------------------------------
+
+{
+  dataZxCash %>% 
+    MobanWithoutGroup(gro = "邦振ZxCash") %>% 
+    select(-c(回收, 购买, 注册)) %>% 
+    SaveCsv(name = "邦振ZxCash")
+}
 # 福韵 ----------------------------------------------------------------------
 
 {
-  dataFuYun %>%
-    MobanWithoutGroup(gro = "福韵") %>%
-    select(-c(购买, 注册)) %>%
-    SaveCsv(name = "福韵")
+  dataFuYunRummy %>%
+    MobanWithoutGroup(gro = "福韵Rummy") %>%
+    select(花费, 安装) %>%
+    SaveCsv(name = "福韵Rummy")
+  
+  dataFuYunPattPlus %>%
+    MobanWithoutGroup(gro = "福韵PattPlus") %>%
+    select(花费, 安装) %>%
+    SaveCsv(name = "福韵PattPlus")
 }
 
+# 枸杞 ----------------------------------------------------------------------
+
+{
+  dataGouQiGaga %>% 
+    MobanWithGroupGeo(gro = "枸杞Gaga") %>% 
+    mutate(CPI = 花费 / 注册) %>% 
+    select(Group, 日期, 地区, 花费, 注册, CPI) %>% 
+    SaveCsv(name = "枸杞Gaga")
+  
+  dataGouQiLili %>% 
+    MobanWithGroupGeo(gro = "枸杞Lili") %>% 
+    mutate(CPI = 花费 / 注册) %>% 
+    select(Group, 日期, 地区, 花费, 注册, CPI) %>% 
+    SaveCsv(name = "枸杞Lili")
+}
 # 飞乐乐 ----------------------------------------------------------------------
 
 {
@@ -555,6 +616,28 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     MobanWithoutGroup(gro = "优量") %>%
     select(-c(注册)) %>%
     SaveCsv(name = "杭州优量")
+}
+
+# 洪禄CashMap -----------------------------------------------------------------
+{
+  dataCashMap %>%
+    MobanWithGroupGeo() %>%
+    select(花费, 注册) %>%
+    SaveCsv(name = "洪禄CashMap")
+  
+  dataPPcash %>%
+    MobanWithGroupGeo() %>%
+    select(花费, 注册) %>%
+    SaveCsv(name = "洪禄PPcash")
+}
+
+# 华策天城 --------------------------------------------------------------------
+
+{
+  dataHuaCe %>% 
+    MobanWithoutGroup(gro = "华策天城") %>% 
+    select(-c(回收, 购买, 注册)) %>% 
+    SaveCsv(name = "华策天城")
 }
 # 看看在线 --------------------------------------------------------------------
 
@@ -605,6 +688,22 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 
   bind_rows(dataKuChall1, dataKuHappy1) %>%
     SaveCsv(name = "酷玩")
+}
+
+# 灵分 ----------------------------------------------------------------------
+
+{
+  dataLingKey %>% 
+    Ling(name = "灵分Key") %>% 
+    SaveCsv(name = "灵分Key")
+  
+  dataLingPay %>% 
+    Ling(name = "灵分Pay") %>% 
+    SaveCsv(name = "灵分Pay")
+  
+  dataLingSo %>% 
+    Ling(name = "灵分So") %>% 
+    SaveCsv(name = "灵分So")
 }
 # 米易 ----------------------------------------------------------------------
 
@@ -685,18 +784,26 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     SaveCsv(name = "圣斗士汇总")
 }
 
+# 泰坤 ----------------------------------------------------------------------
+
+{
+  dataTai %>% 
+    MobanWithoutGroup(gro = "泰坤") %>% 
+    select(-c(回收, 购买, 注册)) %>% 
+    SaveCsv(name = "泰坤")
+}
 # 首推 ----------------------------------------------------------------------
 
 {
-  dataShouTui %>%
-    MobanWithoutGroup(gro = "首推_Online") %>%
-    select(日期, group, 花费, 安装, 购买) %>%
-    SaveCsv(name = "首推_Online")
-
-  dataShouTuiF %>%
-    MobanWithoutGroup(gro = "首推_Fingertip") %>%
-    select(日期, group, 花费, 安装, 购买) %>%
-    SaveCsv(name = "首推_Fingertip")
+  # dataShouTui %>%
+  #   MobanWithoutGroup(gro = "首推_Online") %>%
+  #   select(日期, group, 花费, 安装, 购买) %>%
+  #   SaveCsv(name = "首推_Online")
+  # 
+  # dataShouTuiF %>%
+  #   MobanWithoutGroup(gro = "首推_Fingertip") %>%
+  #   select(日期, group, 花费, 安装, 购买) %>%
+  #   SaveCsv(name = "首推_Fingertip")
 }
 
 # 香港瑞兆 --------------------------------------------------------------------

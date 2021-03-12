@@ -329,6 +329,13 @@ Fei <- function(data) {
   return(data)
 }
 
+Ling <- function(data, name) {
+  data <- data %>%
+    MobanWithoutGroup(gro = name) %>%
+    select(group, 日期, 安装, 点击, 展示次数, 花费, 注册, 回收, 购买)
+  return(data)
+}
+
 SaveCsv <- function(data, name = "name", filename = "result", append = T) {
   readr::write_excel_csv(tibble(blankLine = c(" ")), file = paste0("./", filename, ".csv"), col_names = F, append = append)
   readr::write_excel_csv(tibble(name), file = paste0("./", filename, ".csv"), col_names = F, append = T)
