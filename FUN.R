@@ -46,9 +46,9 @@ with_os <- function(data) {
     dplyr::filter(地区 != "unknown") %>%
     mutate(
       系列名称 = toupper(系列名称),
-      版本 = if_else(str_detect(系列名称, "AND"), "AND",
+      版本 = if_else(str_detect(系列名称, "IOS"), "IOS",
         if_else(str_detect(系列名称, "安卓"), "AND",
-          if_else(str_detect(系列名称, "IOS"), "IOS",
+          if_else(str_detect(系列名称, "_AND"), "AND",
             "PC"
           )
         )
@@ -75,9 +75,9 @@ with_go <- function(data) {
     dplyr::filter(地区 != "unknown") %>%
     mutate(
       系列名称 = toupper(系列名称),
-      版本 = if_else(str_detect(系列名称, "AND"), "AND",
+      版本 = if_else(str_detect(系列名称, "IOS"), "IOS",
         if_else(str_detect(系列名称, "安卓"), "AND",
-          if_else(str_detect(系列名称, "IOS"), "IOS",
+          if_else(str_detect(系列名称, "_AND"), "AND",
             "PC"
           )
         )

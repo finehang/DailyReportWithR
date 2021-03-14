@@ -14,6 +14,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataTai <- readxl::read_xls("新泰坤.xls")
   dataZxCash <- readxl::read_xls("新邦振_ZxCash.xls")
   dataYouLiang <- readxl::read_xls("新杭州优量.xls")
+  dataYouQing <- readxl::read_xls("新杭州优擎.xls")
   dataKuChall <- readxl::read_xls("新酷玩_Chall77.xls")
   dataKuHappy <- readxl::read_xls("新酷玩_Happy.xls")
   dataMiYi <- readxl::read_xls("新米易.xls")
@@ -617,6 +618,13 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     save_csv(name = "杭州优量")
 }
 
+# 杭州优擎 --------------------------------------------------------------------
+
+{
+  dataYouQing %>%
+    you() %>%
+    save_csv(name = "杭州优擎")
+}
 # 洪禄CashMap -----------------------------------------------------------------
 {
   dataCashMap %>%
@@ -854,7 +862,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 
 # 二手车 ---------------------------------------------------------------------
 {
-  if ((wday(now()) >= 2 & wday(now()) <= 6 & hour(now()) > 13) | ((wday(now()) <= 1 | wday(now()) >= 7) & hour(now()) > 18)) {
+  if ((wday(now()) >= 2 & wday(now()) <= 6 & hour(now()) > 13) | ((wday(now()) <= 1 | wday(now()) >= 7) & hour(now()) > 17)) {
     # dataCarFB <- readxl::read_xlsx("二手车FB.xlsx", col_names = T)
     # dataCarGG <- readxl::read_xlsx("二手车GG.xlsx", skip = 2, col_names = T)
     dataFixFB <- readxl::read_xlsx("修车FB.xlsx", col_names = T)
@@ -886,7 +894,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 赤子城 ---------------------------------------------------------------------
 
 {
-  if ((wday(now()) >= 2 & wday(now()) <= 6 & hour(now()) > 15) | ((wday(now()) <= 1 | wday(now()) >= 7) & hour(now()) > 18)) {
+  if ((wday(now()) >= 2 & wday(now()) <= 6 & hour(now()) > 15) | ((wday(now()) <= 1 | wday(now()) >= 7) & hour(now()) > 17)) {
     dataBela <- readxl::read_xls("赤子城-bela.xls")
     dataMimi <- readxl::read_xls("赤子城-mimi.xls")
     dataPeach <- readxl::read_xls("赤子城-peach.xls")
