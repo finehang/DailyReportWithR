@@ -1,6 +1,6 @@
 pacman::p_load(tidyverse, readxl, lubridate)
 
-MobanWithoutGroup <- function(data, gro = "group") {
+no_group <- function(data, gro = "group") {
   data <- data %>%
     mutate_all(replace_na, replace = 0) %>%
     mutate(group = gro) %>%
@@ -20,7 +20,7 @@ MobanWithoutGroup <- function(data, gro = "group") {
   return(data)
 }
 
-MobanWithGroupGeo <- function(data, gro = "Gro") {
+with_geo <- function(data, gro = "Gro") {
   data <- data %>%
     mutate_all(replace_na, replace = 0) %>%
     dplyr::filter(地区 != "unknown") %>%
@@ -40,13 +40,13 @@ MobanWithGroupGeo <- function(data, gro = "Gro") {
   return(data)
 }
 
-MobanWithGroupPlatform <- function(data) {
+with_os <- function(data) {
   data <- data %>%
     mutate_all(replace_na, replace = 0) %>%
     dplyr::filter(地区 != "unknown") %>%
     mutate(
       系列名称 = toupper(系列名称),
-      版本 = if_else(str_detect(系列名称, "_AND_"), "AND",
+      版本 = if_else(str_detect(系列名称, "AND"), "AND",
         if_else(str_detect(系列名称, "安卓"), "AND",
           if_else(str_detect(系列名称, "IOS"), "IOS",
             "PC"
@@ -69,13 +69,13 @@ MobanWithGroupPlatform <- function(data) {
   return(data)
 }
 
-MobanWithGroupGP <- function(data) {
+with_go <- function(data) {
   data <- data %>%
     mutate_all(replace_na, replace = 0) %>%
     dplyr::filter(地区 != "unknown") %>%
     mutate(
       系列名称 = toupper(系列名称),
-      版本 = if_else(str_detect(系列名称, "_AND"), "AND",
+      版本 = if_else(str_detect(系列名称, "AND"), "AND",
         if_else(str_detect(系列名称, "安卓"), "AND",
           if_else(str_detect(系列名称, "IOS"), "IOS",
             "PC"
@@ -98,19 +98,45 @@ MobanWithGroupGP <- function(data) {
   return(data)
 }
 
-MobanSelectDefault <- function(data, selection = NULL) {
+select_default <- function(data, selection = NULL) {
   data <- data %>% select(c(日期, group, 安装, 点击, 展示次数, 花费, 回收, all_of(selection)))
   return(data)
 }
 
-BaiJing <- function(data) {
+tap <- function(data) {
+  data <- data %>%
+    mutate_all(replace_na, replace = 0) %>%
+    dplyr::filter(地区 != "unknown") %>%
+    mutate(产品 = if_else(str_detect(广告账户名称, "SEA"), "SEA", "NA")) %>% 
+    mutate(
+      系列名称 = toupper(系列名称),
+      版本 = if_else(str_detect(系列名称, "AND"), "AND",
+        if_else(str_detect(系列名称, "安卓"), "AND",
+          if_else(str_detect(系列名称, "IOS"), "IOS",
+            "PC"
+          )
+        )
+      )
+    ) %>%
+    group_by(产品, 版本, 地区) %>%
+    summarise(
+      日期 = as.character(Sys.Date() - 1),
+      花费 = sum(as.numeric(金额)),
+      安装 = sum(as.numeric(安装量)),
+      回收 = sum(as.numeric(购物转化值))
+    )  %>% 
+    select(产品, 日期, everything())
+  return(data)
+}
+
+bai_jing <- function(data) {
   data <- data %>%
     select(日期, 产品, 地区, 版本, 安装) %>%
     dplyr::filter(地区 != "unknown")
   return(data)
 }
 
-ZhangYue <- function(data) {
+zhang_yue <- function(data) {
   data <- data %>%
     mutate(
       千次展示费用 = 花费 / 展示次数 * 1000,
@@ -122,13 +148,13 @@ ZhangYue <- function(data) {
   return(data)
 }
 
-Dream <- function(data) {
+dream <- function(data) {
   data <- data %>%
     mutate(地区 = as.character(fct_other(as_factor(地区), keep = c("ID", "US"), other_level = "全球")))
   return(data)
 }
 
-Zx <- function(data) {
+zx <- function(data) {
   data <- data %>%
     mutate_all(replace_na, replace = 0) %>%
     mutate(类别 = if_else(str_detect(系列名称, "_AEO_"), "AEO", "NOAEO")) %>%
@@ -142,19 +168,19 @@ Zx <- function(data) {
   return(data)
 }
 
-ZxAeo <- function(data) {
+zx_aeo <- function(data) {
   data <- data %>%
     filter(类别 == "AEO") %>%
     select(日期, 类别, 金额, 购买次数)
 }
 
-ZxNoAeo <- function(data) {
+zx_no_aeo <- function(data) {
   data <- data %>%
     dplyr::filter(类别 == "NOAEO") %>%
     select(日期, 类别, 金额, 安装量)
 }
 
-Mao <- function(data) {
+mao <- function(data) {
   data <- data %>%
     mutate_all(replace_na, replace = 0) %>%
     mutate(产品 = if_else(str_detect(广告账户名称, "避难所"), "避难所", "Immortal")) %>%
@@ -179,7 +205,7 @@ Mao <- function(data) {
   return(data)
 }
 
-NovelCat <- function(data) {
+novel_cat <- function(data) {
   data <- data %>%
     mutate(地区 = as.character(fct_other(as_factor(地区),
       keep = c("MY", "PH", "SG", "US"),
@@ -187,7 +213,7 @@ NovelCat <- function(data) {
     )))
 }
 
-CarFixFB <- function(data) {
+car_fix_fb <- function(data) {
   if ("花费金额 (USD)" %in% names(data)) {
     data <- data %>% mutate(花费金额 = `花费金额 (USD)`)
     return(data)
@@ -196,7 +222,7 @@ CarFixFB <- function(data) {
   }
 }
 
-CarFB <- function(data) {
+car_fb <- function(data) {
   data <- data %>%
     na.omit() %>%
     mutate_all(replace_na, replace = 0) %>%
@@ -223,7 +249,7 @@ CarFB <- function(data) {
   return(data)
 }
 
-CarGG <- function(data) {
+car_gg <- function(data) {
   data <- data %>%
     na.omit() %>%
     mutate(
@@ -250,7 +276,7 @@ CarGG <- function(data) {
   return(data)
 }
 
-LiAo <- function(data) {
+li_ao <- function(data) {
   data <- data %>%
     mutate_all(replace_na, replace = 0) %>%
     mutate(产品 = if_else(str_detect(广告账户名称, "Vungo"), "Vungo",
@@ -278,7 +304,7 @@ LiAo <- function(data) {
   return(data)
 }
 
-You <- function(data) {
+you <- function(data) {
   data <- data %>%
     mutate_all(replace_na, replace = 0) %>%
     mutate(产品 = if_else(str_detect(广告账户名称, "Teen"), "Teen Patti",
@@ -293,7 +319,7 @@ You <- function(data) {
   return(data)
 }
 
-Luxury <- function(data) {
+luxury <- function(data) {
   data <- data %>%
     mutate_all(replace_na, replace = 0) %>%
     mutate(
@@ -310,7 +336,7 @@ Luxury <- function(data) {
   return(data)
 }
 
-Fei <- function(data) {
+fei <- function(data) {
   data <- data %>%
     mutate_all(replace_na, replace = 0) %>%
     mutate(
@@ -329,14 +355,32 @@ Fei <- function(data) {
   return(data)
 }
 
-Ling <- function(data, name) {
+ling <- function(data, name) {
   data <- data %>%
     MobanWithoutGroup(gro = name) %>%
     select(group, 日期, 安装, 点击, 展示次数, 花费, 注册, 回收, 购买)
   return(data)
 }
 
-SaveCsv <- function(data, name = "name", filename = "result", append = T) {
+col_sum <- function(data) {
+  sum <- data %>%
+    ungroup() %>%
+    select(where(~ is_double(.))) %>%
+    colSums()
+  data <- bind_rows(data, sum) %>% 
+    mutate_all(replace_na, replace = "")
+  return(data)
+}
+
+sum_split <- function(data, split) {
+  data <- data %>%
+    group_by({{split}}) %>% 
+    group_split() %>%
+    map_dfr(~ col_sum(.))
+  return(data)
+}
+
+save_csv <- function(data, name = "name", filename = "result", append = T) {
   readr::write_excel_csv(tibble(blankLine = c(" ")), file = paste0("./", filename, ".csv"), col_names = F, append = append)
   readr::write_excel_csv(tibble(name), file = paste0("./", filename, ".csv"), col_names = F, append = T)
   readr::write_excel_csv(data, file = paste0("./", filename, ".csv"), col_names = T, append = T)
