@@ -4,9 +4,15 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 数据导入 --------------------------------------------------------------------
 
 {
+  dataFei6 <- readr::read_csv("飞6.csv")
+  dataFei5 <- readr::read_csv("飞5.csv")
+  dataFei4 <- readr::read_csv("飞4.csv")
+  dataFei3 <- readr::read_csv("飞3.csv")
+  dataFei2 <- readr::read_csv("飞2.csv")
+  dataFei1 <- readr::read_csv("飞1.csv")
+  dataFeiFB <- readxl::read_xls("新飞乐乐_FB.xls")
   dataAJiBi <- readxl::read_xls("新阿吉比.xls")
   dataHuanLe <- readxl::read_xls("新海南翎麦_欢乐语音.xls")
-  dataTap <- readxl::read_xls("新Taptap.xls")
   dataGouQiGaga <- readxl::read_xls("新枸杞_Gaga.xls")
   dataGouQiLili <- readxl::read_xls("新枸杞_Lili.xls")
   dataHuaCe <- readxl::read_xls("新华策天城.xls")
@@ -27,7 +33,6 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataTakeCash <- readxl::read_xls("新TakeCash.xls")
   dataPPcash <- readxl::read_xls("新PPcash.xls")
   dataCashMap <- readxl::read_xls("新洪禄_CashMap.xls")
-  dataFei <- readxl::read_xls("新飞乐乐.xls")
   dataRongDoan <- readxl::read_xls("新融创汇通_Doan.xls")
   dataRongFacevay <- readxl::read_xls("新融创汇通_Facevay.xls")
   dataRongVinvay <- readxl::read_xls("新融创汇通_Vinvay.xls")
@@ -158,8 +163,17 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # Tap ---------------------------------------------------------------------
 
 {
-  dataTap %>% tap() %>% sum_split(版本) %>% 
-      save_csv(name = "Taptap", filename = "0Tap", append = F)
+  if (hour(now()) > 15) {
+    date_tap <- as.character(Sys.Date())
+  } else {
+    date_tap <- as.character(Sys.Date() - 1)
+  }
+  dataTap <- readxl::read_xls("新Taptap.xls")
+  dataTap %>%
+    tap() %>%
+    sum_split(版本) %>%
+    mutate(日期 = date_tap) %>%
+    save_csv(name = "Taptap", filename = "0Tap", append = F)
 }
 
 # 白鲸 ----------------------------------------------------------------------
@@ -591,7 +605,28 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 飞乐乐 ----------------------------------------------------------------------
 
 {
-  dataFei %>%
+  dataFeiFBALL <- bind_rows(dataFei1, dataFei2, dataFei3, dataFei4, dataFei5, dataFei6) %>% 
+    select(-c(报告开始日期, 报告结束日期))
+
+  bb <- dataFeiFBALL %>%
+    mutate(产品 = if_else(str_detect(帐户名称, "Pro"), "Pro Betting tips",
+      if_else(str_detect(帐户名称, "BetPawa"), "BetPawa",
+        if_else(str_detect(帐户名称, "Beton"), "Beton",
+          if_else(str_detect(帐户名称, "OneBet"), "OneBet",
+            if_else(str_detect(帐户名称, "onebet tips"), "onebet tips",
+              if_else(str_detect(帐户名称, "Bet365"), "Bet365",
+                "暂无"
+              )
+            )
+          )
+        )
+      )
+    )) %>% 
+    sum_split(产品) %>% 
+    select(产品, everything()) %>% 
+    save_csv(name = "飞乐乐FB")
+
+  dataFeiFB %>%
     fei() %>%
     select(日期, everything()) %>%
     save_csv(name = "飞乐乐")

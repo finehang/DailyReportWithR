@@ -365,7 +365,7 @@ ling <- function(data, name) {
 col_sum <- function(data) {
   sum <- data %>%
     ungroup() %>%
-    select(where(~ is_double(.))) %>%
+    select(where(~ is.numeric(.))) %>%
     colSums()
   data <- bind_rows(data, sum) %>% 
     mutate_all(replace_na, replace = "")
