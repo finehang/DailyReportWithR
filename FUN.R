@@ -122,7 +122,7 @@ tap <- function(data) {
     summarise(
       日期 = as.character(Sys.Date() - 1),
       花费 = sum(as.numeric(金额)),
-      安装 = sum(as.numeric(安装量)),
+      # 安装 = sum(as.numeric(安装量)),
       回收 = sum(as.numeric(购物转化值))
     )  %>% 
     select(产品, 日期, everything())
