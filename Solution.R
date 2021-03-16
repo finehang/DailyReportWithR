@@ -4,6 +4,13 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 数据导入 --------------------------------------------------------------------
 
 {
+  dataShouTuiAny <- readxl::read_xls("新首推_Any9.xls")
+  dataShouTuiFinger <- readxl::read_xls("新首推_Finger.xls")
+  dataDaoSuperb <- readxl::read_xls("新叨叨_Superb.xls")
+  dataDaoSpendCash <- readxl::read_xls("新叨叨_SpendCash.xls")
+  dataFeiYuPortable <- readxl::read_xls("新飞羽_Portable.xls")
+  dataJinMiHappy <- readxl::read_xls("新金米_Happy.xls")
+  dataJinMiGolden <- readxl::read_xls("新金米_GoldenWallet.xls")
   dataFei6 <- readr::read_csv("飞6.csv")
   dataFei5 <- readr::read_csv("飞5.csv")
   dataFei4 <- readr::read_csv("飞4.csv")
@@ -45,17 +52,12 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataRummyIOSM <- readxl::read_xls("新博客来_Rummy_IOS_M.xls")
   dataRummyANDJ <- readxl::read_xls("新博客来_Rummy_AND_J.xls")
   dataRummyANDM <- readxl::read_xls("新博客来_Rummy_AND_M.xls")
-  dataShouTuiF <- readxl::read_xls("新Fingertip.xls")
-  dataBlink <- readxl::read_xls("新看看_Blink.xls")
   dataLuxury <- readxl::read_xls("新LuxuryRummy.xls")
   dataZhiQiLuckyDay <- readxl::read_xls("新智启辰远_LuckyDay.xls")
   dataZhiQiLuckyDice <- readxl::read_xls("新智启辰远_LuckyDice.xls")
   dataZhangYun <- readxl::read_xls("新掌中云.xls")
   dataKanTW <- readxl::read_xls("新看看_TW.xls")
-  dataKanBlink <- readxl::read_xls("新看看_Blink.xls")
-  dataKanBliss <- readxl::read_xls("新看看_BlissLite.xls")
-  dataKanTrinku <- readxl::read_xls("新看看_Trinku.xls")
-  dataKanLocku <- readxl::read_xls("新看看_Locku.xls")
+  dataKanKuki <- readxl::read_xls("新看看_Kuki.xls")
   dataLiAo <- readxl::read_xls("新深圳理奥.xls")
   dataLiAo39 <- readxl::read_xls("新理奥_Vungo39.xls")
   dataLiAo33 <- readxl::read_xls("新理奥_Vungo33.xls")
@@ -94,7 +96,6 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   # dataWanYou <- readxl::read_xls("新万友互娱.xls")
   # dataRe <- readxl::read_xls("新remini.xls")
   # dataReJ <- readxl::read_xls("新reminiJane.xls")
-  # dataShouTui <- readxl::read_xls("新首推.xls")
   # dataDouShi <- readxl::read_xls("新圣斗士.xls")
   # dataZuoTou <- readxl::read_xls("新座头鲸.xls")
   # dataLingPay <- readxl::read_xls("新灵分_Pay.xls")
@@ -599,8 +600,22 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 {
   dataAJiBi %>% 
     no_group(gro = "阿吉比") %>% 
-    select(-c(购买, 注册)) %>% 
+    select(-c(注册)) %>% 
     save_csv(name = "阿吉比")
+}
+
+# 叨叨 ----------------------------------------------------------------------
+
+{
+  dataDaoSuperb %>% 
+    no_group(gro = "叨叨Superb") %>% 
+    select(日期, 花费, 安装, 购买) %>% 
+    save_csv(name = "叨叨Superb")
+  
+  dataDaoSpendCash %>% 
+    no_group(gro = "叨叨SpendCash") %>% 
+    select(日期, 花费, 安装, 购买) %>% 
+    save_csv(name = "叨叨SpendCash")
 }
 # 飞乐乐 ----------------------------------------------------------------------
 
@@ -632,6 +647,13 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     save_csv(name = "飞乐乐")
 }
 
+# 飞羽 ----------------------------------------------------------------------
+
+{
+  dataFeiYuPortable %>% 
+    no_group(gro = "飞羽Portable") %>% 
+    save_csv(name = "飞羽Portable")
+}
 # 杭州优量 --------------------------------------------------------------------
 
 {
@@ -686,36 +708,27 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     mutate(安装成本 = 花费 / 安装, ROI = 回收 / 花费) %>%
     select(Group, 日期, 地区, 安装, 花费, 回收, 安装成本, ROI) %>%
     save_csv(name = "看看台湾")
-
-  dataKanTrinku %>%
-    with_geo(gro = "Trinku") %>%
-    select(-c(购买, 注册)) %>%
-    save_csv(name = "Trinku")
-
-  dataKanLocku1 <- dataKanLocku %>%
-    with_geo(gro = "Locku") %>%
-    select(-c(购买, 注册))
-
-  dataKanBlink1 <- dataKanBlink %>%
-    with_geo(gro = "Blink") %>%
-    select(-c(购买, 注册))
-
-  dataKanBliss1 <- dataKanBliss %>%
-    with_geo(gro = "Bliss") %>%
-    select(-c(购买, 注册))
-
-  dataKanBliss2 <- tibble(
-    日期 = "",
-    地区 = "总计",
-    安装 = sum(dataKanBliss1$安装),
-    点击 = sum(dataKanBliss1$点击),
-    展示次数 = sum(dataKanBliss1$展示次数),
-    花费 = sum(dataKanBliss1$花费),
-    回收 = sum(dataKanBliss1$回收),
-    Group = "Bliss"
-  )
+  
+  dataKanKuki %>%
+    with_geo(gro = "Kuki") %>%
+    mutate(安装成本 = 花费 / 安装, ROI = 回收 / 花费) %>%
+    select(Group, 日期, 地区, 安装, 花费, 回收, 安装成本, ROI) %>%
+    save_csv(name = "看看Kuki")
 }
 
+# 金米 ----------------------------------------------------------------------
+
+{
+  dataJinMiGolden %>% 
+    no_group(gro = "金米Golden") %>% 
+    select(日期, 花费, 安装, 购买) %>% 
+    save_csv(name = "金米Golden")
+  
+  dataJinMiHappy %>% 
+    no_group(gro = "金米Happy") %>% 
+    select(日期, 花费, 安装, 购买) %>% 
+    save_csv(name = "金米Happy")
+}
 # 酷玩 ----------------------------------------------------------------------
 
 {
@@ -834,15 +847,14 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 首推 ----------------------------------------------------------------------
 
 {
-  # dataShouTui %>%
-  #   no_group(gro = "首推_Online") %>%
-  #   select(日期, group, 花费, 安装, 购买) %>%
-  #   save_csv(name = "首推_Online")
-  # 
-  # dataShouTuiF %>%
-  #   no_group(gro = "首推_Fingertip") %>%
-  #   select(日期, group, 花费, 安装, 购买) %>%
-  #   save_csv(name = "首推_Fingertip")
+  dataShouTuiAny %>%
+    no_group(gro = "首推Any9") %>%
+    select(日期, 花费, 安装, 购买) %>%
+    save_csv(name = "首推Any9")
+  dataShouTuiFinger %>%
+    no_group(gro = "首推Finger") %>%
+    select(日期, 花费, 安装, 购买) %>%
+    save_csv(name = "首推Finger")
 }
 
 # 香港瑞兆 --------------------------------------------------------------------
