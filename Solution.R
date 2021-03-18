@@ -4,6 +4,9 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 数据导入 --------------------------------------------------------------------
 
 {
+  dataLinkWorld <- readxl::read_xls("新LinkWorld.xls")
+  dataJinxiang <- readxl::read_xls("新小金象_Cash.xls")
+  dataCaiShen <- readxl::read_xls("新财神卡.xls")
   dataShouTuiAny <- readxl::read_xls("新首推_Any9.xls")
   dataShouTuiFinger <- readxl::read_xls("新首推_Finger.xls")
   dataDaoSuperb <- readxl::read_xls("新叨叨_Superb.xls")
@@ -25,6 +28,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataHuaCe <- readxl::read_xls("新华策天城.xls")
   dataYouLiang <- readxl::read_xls("新杭州优量.xls")
   dataYouQing <- readxl::read_xls("新杭州优擎.xls")
+  dataKuFairgame <- readxl::read_xls("新酷玩_Fairgame.xls")
   dataKuChall <- readxl::read_xls("新酷玩_Chall77.xls")
   dataKuHappy <- readxl::read_xls("新酷玩_Happy.xls")
   dataPromeHiPal <- readxl::read_xls("新Prometheus_HiPal.xls")
@@ -52,7 +56,8 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataRummyIOSM <- readxl::read_xls("新博客来_Rummy_IOS_M.xls")
   dataRummyANDJ <- readxl::read_xls("新博客来_Rummy_AND_J.xls")
   dataRummyANDM <- readxl::read_xls("新博客来_Rummy_AND_M.xls")
-  dataLuxury <- readxl::read_xls("新LuxuryRummy.xls")
+  dataMerlingenSpinToWorld <- readxl::read_xls("新Merlingen_SpinToWorld.xls")
+  dataMerlingenLuxury <- readxl::read_xls("新LuxuryRummy.xls")
   dataZhiQiLuckyDay <- readxl::read_xls("新智启辰远_LuckyDay.xls")
   dataZhiQiLuckyDice <- readxl::read_xls("新智启辰远_LuckyDice.xls")
   dataZhangYun <- readxl::read_xls("新掌中云.xls")
@@ -69,6 +74,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataSan <- readxl::read_xls("新Sancamap.xls")
   dataGuai <- readxl::read_xls("新怪猫.xls")
   dataShen <- readxl::read_xls("新神兽传奇.xls")
+  dataKaiTakTak <- readxl::read_xls("新凯丽金_TakTak.xls")
   dataKaiStich <- readxl::read_xls("新凯丽金_Stich.xls")
   dataKaiJoyo <- readxl::read_xls("新凯丽金_Joyo.xls")
   dataKaiVideo <- readxl::read_xls("新凯丽金_VideoChat.xls")
@@ -98,12 +104,12 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   # dataReJ <- readxl::read_xls("新reminiJane.xls")
   # dataDouShi <- readxl::read_xls("新圣斗士.xls")
   # dataZuoTou <- readxl::read_xls("新座头鲸.xls")
-  # dataLingPay <- readxl::read_xls("新灵分_Pay.xls")
-  # dataLingKey <- readxl::read_xls("新灵分_Key.xls")
-  # dataLingSo <- readxl::read_xls("新灵分_SoCredit.xls")
+  dataLingPay <- readxl::read_xls("新灵分_Pay.xls")
+  dataLingKey <- readxl::read_xls("新灵分_Key.xls")
+  dataLingSo <- readxl::read_xls("新灵分_SoCredit.xls")
   # dataTai <- readxl::read_xls("新泰坤.xls")
   # dataZxCash <- readxl::read_xls("新邦振_ZxCash.xls")
-  # dataMiYi <- readxl::read_xls("新米易.xls")
+  dataMiYi <- readxl::read_xls("新米易.xls")
 }
 
 # 暂停 ----------------------------------------------------------------------
@@ -132,27 +138,6 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   #   select(-回收)
   #
   # bind_rows(dataRe1, dataReJ1) %>% save_csv(name = "remini")
-}
-{
-  # dataKeyCredit %>%
-  #   with_geo() %>%
-  #   select(-回收, -注册) %>%
-  #   save_csv(name = "上海灵分_KeyCredit")
-  #
-  # dataPayCash %>%
-  #   with_geo() %>%
-  #   select(-回收, -注册, -购买) %>%
-  #   save_csv(name = "上海灵分_PayCash")
-  #
-  # dataRupeecash %>%
-  #   no_group(gro = "Rupeecash") %>%
-  #   select(-回收, -注册) %>%
-  #   save_csv(name = "上海灵分_Rupeecash")
-  #
-  # dataLing %>%
-  #   no_group(gro = "SoCredit") %>%
-  #   select(-回收, -注册) %>%
-  #   save_csv(name = "上海灵分_SoCredit")
 }
 {
   # dataWanYou %>%
@@ -259,10 +244,14 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # Luxury ------------------------------------------------------------------
 
 {
-  dataLuxury %>%
+  dataMerlingenLuxury %>%
     luxury() %>%
     select(日期, 产品, 花费) %>%
     save_csv(name = "Luxury")
+  dataMerlingenSpinToWorld %>%
+    no_group(gro = "SpinToWorld") %>%
+    select(日期, 花费) %>%
+    save_csv(name = "SpinToWorld")
 }
 
 # Jeruk --------------------------------------------------------------------
@@ -341,7 +330,8 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
       CPI = 花费 / 安装,
       CTR = 点击 / 展示次数,
       CVR = 安装 / 点击
-    )
+    ) %>%
+    select(日期, 版本, 地区, 安装, 花费, CPI, 点击, 展示次数, CTR, CVR)
 
   bind_rows(dataWanDeGG1, dataWanDeGG2) %>% save_csv(name = "玩德游戏GG")
   bind_rows(dataWanDe1, dataWanDe2) %>% save_csv(name = "玩德游戏")
@@ -467,6 +457,13 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   #   save_csv(name = "座头鲸")
 }
 
+# LinkWorld ---------------------------------------------------------------
+
+{
+  dataLinkWorld %>% 
+    no_group(gro = "LinkWorld") %>%
+    save_csv(name = "LinkWorld")
+}
 # microcard J+M -----------------------------------------------------------
 
 {
@@ -547,8 +544,12 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataKaiWinnie1 <- dataKaiWinnie %>%
     no_group(gro = "Winnie") %>%
     select_default(selection = "注册")
+  
+  dataKaiTakTak1 <- dataKaiTakTak %>%
+    no_group(gro = "TakTak") %>%
+    select_default(selection = "注册")
 
-  bind_rows(dataKaiFaU1, dataKaiJoyo1, dataKaiHaya1, dataKaiStich1, dataKaiVideo1, dataKaiWinnie1) %>%
+  bind_rows(dataKaiFaU1, dataKaiJoyo1, dataKaiHaya1, dataKaiStich1, dataKaiVideo1, dataKaiWinnie1, dataKaiTakTak1) %>%
     save_csv(name = "Videochat")
 
   dataKaiHallo %>%
@@ -604,6 +605,14 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     save_csv(name = "阿吉比")
 }
 
+# 财神卡 ---------------------------------------------------------------------
+
+{
+  dataCaiShen %>% 
+    no_group(gro = "财神卡") %>% 
+    select(-c(购买, 注册)) %>% 
+    save_csv(name = "财神卡")
+}
 # 叨叨 ----------------------------------------------------------------------
 
 {
@@ -652,6 +661,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 {
   dataFeiYuPortable %>% 
     no_group(gro = "飞羽Portable") %>% 
+    select(日期, 花费, 安装, 购买) %>% 
     save_csv(name = "飞羽Portable")
 }
 # 杭州优量 --------------------------------------------------------------------
@@ -737,33 +747,36 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 
   dataKuHappy1 <- dataKuHappy %>%
     no_group(gro = "酷玩Happy")
+  
+  dataKuFairgame1 <- dataKuFairgame %>%
+    no_group(gro = "酷玩Fairgame")
 
-  bind_rows(dataKuChall1, dataKuHappy1) %>%
+  bind_rows(dataKuChall1, dataKuHappy1, dataKuFairgame1) %>%
     save_csv(name = "酷玩")
 }
 
 # 灵分 ----------------------------------------------------------------------
 
 {
-  # dataLingKey %>% 
-  #   ling(name = "灵分Key") %>% 
-  #   save_csv(name = "灵分Key")
-  # 
-  # dataLingPay %>% 
-  #   ling(name = "灵分Pay") %>% 
-  #   save_csv(name = "灵分Pay")
-  # 
-  # dataLingSo %>% 
-  #   ling(name = "灵分So") %>% 
-  #   save_csv(name = "灵分So")
+  dataLingKey %>%
+    ling(name = "灵分Key") %>%
+    save_csv(name = "灵分Key")
+
+  dataLingPay %>%
+    ling(name = "灵分Pay") %>%
+    save_csv(name = "灵分Pay")
+
+  dataLingSo %>%
+    ling(name = "灵分So") %>%
+    save_csv(name = "灵分So")
 }
 # 米易 ----------------------------------------------------------------------
 
 {
-  # dataMiYi %>%
-  #   no_group() %>%
-  #   select(日期, 花费, 展示次数, 点击, 安装, 注册) %>%
-  #   save_csv(name = "米易")
+  dataMiYi %>%
+    no_group() %>%
+    select(日期, 花费, 展示次数, 点击, 安装, 注册) %>%
+    save_csv(name = "米易")
 }
 # 喵石 ----------------------------------------------------------------------
 
@@ -863,6 +876,15 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataXiangGang %>%
     no_group(gro = "香港瑞兆") %>%
     save_csv(name = "香港瑞兆")
+}
+
+# 小金象 ---------------------------------------------------------------------
+
+{
+  dataJinxiang %>% 
+    with_geo(gro = "小金象") %>% 
+    select(日期, 地区, 点击, 展示次数, 花费, 安装) %>% 
+    save_csv(name = "小金象")
 }
 # Sancamap ----------------------------------------------------------------
 

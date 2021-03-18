@@ -216,21 +216,20 @@ novel_cat <- function(data) {
 car_fix_fb <- function(data) {
   if ("花费金额 (USD)" %in% names(data)) {
     data <- data %>% mutate(花费金额 = `花费金额 (USD)`)
-    return(data)
+    return(data[-1,])
   } else {
-    return(data)
+    return(data[-1,])
   }
 }
 
 car_fb <- function(data) {
   data <- data %>%
-    na.omit() %>%
     mutate_all(replace_na, replace = 0) %>%
     mutate(
       国家 = `国家/地区`,
       广告系列名称 = toupper(广告系列名称),
-      平台 = if_else(str_detect(广告系列名称, "_AND"), "AND",
-        if_else(str_detect(广告系列名称, "_IOS_"), "IOS",
+      平台 = if_else(str_detect(广告系列名称, "AND"), "AND",
+        if_else(str_detect(广告系列名称, "IOS"), "IOS",
           "PC"
         )
       )
@@ -248,21 +247,21 @@ car_fb <- function(data) {
 
   return(data)
 }
-
 car_gg <- function(data) {
   data <- data %>%
     na.omit() %>%
     mutate(
       日期 = 天,
-      国家 = str_split(广告系列, "_", simplify = T)[, 4],
+      国家 = str_split(str_replace(广告系列, "USA", "US"), "_", simplify = T)[, 4],
       广告系列 = toupper(广告系列),
-      平台 = if_else(str_detect(广告系列, "_AND"), "AND",
-        if_else(str_detect(广告系列, "_IOS_"), "IOS",
+      平台 = if_else(str_detect(广告系列, "AND"), "AND",
+        if_else(str_detect(广告系列, "IOS"), "IOS",
           "PC"
         )
       )
     ) %>%
-    group_by(日期, 国家, 平台) %>%
+    
+    group_by(日期, 平台, 国家) %>%
     summarise(
       代投渠道 = "Gath",
       媒体 = "GG",
@@ -280,9 +279,9 @@ li_ao <- function(data) {
   data <- data %>%
     mutate_all(replace_na, replace = 0) %>%
     mutate(产品 = if_else(str_detect(广告账户名称, "Vungo"), "Vungo",
-      if_else(str_detect(广告账户名称, "3Patti_44"), "Vungo",
+      if_else(str_detect(广告账户名称, "44"), "Vungo",
         if_else(str_detect(广告账户名称, "FunRummy"), "FunRummy",
-          if_else(str_detect(广告账户名称, "3Patti_48"), "3Patti_48",
+          if_else(str_detect(广告账户名称, "48"), "3Patti_48",
             if_else(str_detect(广告账户名称, "GinRummy"), "GinRummy",
               "None"
             )
@@ -357,7 +356,7 @@ fei <- function(data) {
 
 ling <- function(data, name) {
   data <- data %>%
-    MobanWithoutGroup(gro = name) %>%
+    no_group(gro = name) %>%
     select(group, 日期, 安装, 点击, 展示次数, 花费, 注册, 回收, 购买)
   return(data)
 }
