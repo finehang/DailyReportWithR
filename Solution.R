@@ -4,6 +4,12 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 数据导入 --------------------------------------------------------------------
 
 {
+  dataKuLuckyRich <- readxl::read_xls("新酷玩_LuckyRich.xls")
+  dataKuFunny <- readxl::read_xls("新酷玩_FunnyFree.xls")
+  dataKuClassic <- readxl::read_xls("新酷玩_ClassicTP.xls")
+  dataKuFairgame <- readxl::read_xls("新酷玩_Fairgame.xls")
+  dataKuChall <- readxl::read_xls("新酷玩_Chall77.xls")
+  dataKuHappy <- readxl::read_xls("新酷玩_Happy.xls")
   dataTouZi <- readxl::read_xls("新骰子.xls")
   dataJingLiang <- readxl::read_xls("新上海鲸量.xls")
   dataLinkWorld <- readxl::read_xls("新LinkWorld.xls")
@@ -32,9 +38,6 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataYouLiangPoker <- readxl::read_xls("新杭州优量_PokerEmperor.xls")
   dataYouLiangRummy <- readxl::read_xls("新杭州优量_Rummy.xls")
   dataYouQing <- readxl::read_xls("新杭州优擎.xls")
-  dataKuFairgame <- readxl::read_xls("新酷玩_Fairgame.xls")
-  dataKuChall <- readxl::read_xls("新酷玩_Chall77.xls")
-  dataKuHappy <- readxl::read_xls("新酷玩_Happy.xls")
   dataPromeHiPal <- readxl::read_xls("新Prometheus_HiPal.xls")
   dataPromeMoreKash <- readxl::read_xls("新Prometheus_MoreKash.xls")
   dataBauCuaKing <- readxl::read_xls("新海南翎麦_BauCuaKing.xls")
@@ -761,8 +764,17 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   
   dataKuFairgame1 <- dataKuFairgame %>%
     no_group(gro = "酷玩Fairgame")
+  
+  dataKuLuckyRich1 <- dataKuLuckyRich %>%
+    no_group(gro = "酷玩LuckyRich")
+  
+  dataKuFunny1 <- dataKuFunny %>%
+    no_group(gro = "酷玩FunnyFree")
+  
+  dataKuClassic1 <- dataKuClassic %>%
+    no_group(gro = "酷玩ClassicTP")
 
-  bind_rows(dataKuChall1, dataKuHappy1, dataKuFairgame1) %>%
+  bind_rows(dataKuChall1, dataKuHappy1, dataKuFairgame1, dataKuLuckyRich1, dataKuFunny1, dataKuClassic1) %>%
     save_csv(name = "酷玩")
 }
 
