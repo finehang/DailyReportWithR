@@ -4,6 +4,8 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 数据导入 --------------------------------------------------------------------
 
 {
+  dataTouZi <- readxl::read_xls("新骰子.xls")
+  dataJingLiang <- readxl::read_xls("新上海鲸量.xls")
   dataLinkWorld <- readxl::read_xls("新LinkWorld.xls")
   dataJinxiang <- readxl::read_xls("新小金象_Cash.xls")
   dataCaiShen <- readxl::read_xls("新财神卡.xls")
@@ -14,6 +16,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataFeiYuPortable <- readxl::read_xls("新飞羽_Portable.xls")
   dataJinMiHappy <- readxl::read_xls("新金米_Happy.xls")
   dataJinMiGolden <- readxl::read_xls("新金米_GoldenWallet.xls")
+  dataFei7 <- readr::read_csv("飞7.csv")
   dataFei6 <- readr::read_csv("飞6.csv")
   dataFei5 <- readr::read_csv("飞5.csv")
   dataFei4 <- readr::read_csv("飞4.csv")
@@ -26,7 +29,8 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataGouQiGaga <- readxl::read_xls("新枸杞_Gaga.xls")
   dataGouQiLili <- readxl::read_xls("新枸杞_Lili.xls")
   dataHuaCe <- readxl::read_xls("新华策天城.xls")
-  dataYouLiang <- readxl::read_xls("新杭州优量.xls")
+  dataYouLiangPoker <- readxl::read_xls("新杭州优量_PokerEmperor.xls")
+  dataYouLiangRummy <- readxl::read_xls("新杭州优量_Rummy.xls")
   dataYouQing <- readxl::read_xls("新杭州优擎.xls")
   dataKuFairgame <- readxl::read_xls("新酷玩_Fairgame.xls")
   dataKuChall <- readxl::read_xls("新酷玩_Chall77.xls")
@@ -57,7 +61,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataRummyANDJ <- readxl::read_xls("新博客来_Rummy_AND_J.xls")
   dataRummyANDM <- readxl::read_xls("新博客来_Rummy_AND_M.xls")
   dataMerlingenSpinToWorld <- readxl::read_xls("新Merlingen_SpinToWorld.xls")
-  dataMerlingenLuxury <- readxl::read_xls("新LuxuryRummy.xls")
+  dataMerlingenLuxury <- readxl::read_xls("新Merlingen_LuxuryRummy.xls")
   dataZhiQiLuckyDay <- readxl::read_xls("新智启辰远_LuckyDay.xls")
   dataZhiQiLuckyDice <- readxl::read_xls("新智启辰远_LuckyDice.xls")
   dataZhangYun <- readxl::read_xls("新掌中云.xls")
@@ -629,7 +633,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 飞乐乐 ----------------------------------------------------------------------
 
 {
-  dataFeiFBALL <- bind_rows(dataFei1, dataFei2, dataFei3, dataFei4, dataFei5, dataFei6) %>% 
+  dataFeiFBALL <- bind_rows(dataFei1, dataFei2, dataFei3, dataFei4, dataFei5, dataFei6, dataFei7) %>%
     select(-c(报告开始日期, 报告结束日期))
 
   bb <- dataFeiFBALL %>%
@@ -639,15 +643,17 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
           if_else(str_detect(帐户名称, "OneBet"), "OneBet",
             if_else(str_detect(帐户名称, "onebet tips"), "onebet tips",
               if_else(str_detect(帐户名称, "Bet365"), "Bet365",
-                "暂无"
+                if_else(str_detect(帐户名称, "Betway"), "Betway tips",
+                  "暂无"
+                )
               )
             )
           )
         )
       )
-    )) %>% 
-    sum_split(产品) %>% 
-    select(产品, everything()) %>% 
+    )) %>%
+    sum_split(产品) %>%
+    select(产品, everything()) %>%
     save_csv(name = "飞乐乐FB")
 
   dataFeiFB %>%
@@ -667,10 +673,15 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 杭州优量 --------------------------------------------------------------------
 
 {
-  dataYouLiang %>%
-    no_group(gro = "优量") %>%
+  dataYouLiangRummy %>%
+    no_group(gro = "优量Rummy") %>%
     select(-c(注册)) %>%
-    save_csv(name = "杭州优量")
+    save_csv(name = "杭州优量Rummy")
+  
+  dataYouLiangPoker %>%
+    no_group(gro = "优量Poker") %>%
+    select(-c(注册)) %>%
+    save_csv(name = "杭州优量Poker")
 }
 
 # 杭州优擎 --------------------------------------------------------------------
@@ -805,6 +816,15 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   bind_rows(dataRongDoan1, dataRongFacevay1, dataRongVinvay1) %>%
     save_csv(name = "融创")
 }
+
+# 上海鲸量 --------------------------------------------------------------------
+
+{
+  dataJingLiang %>% 
+    no_group(gro = "上海鲸量") %>% 
+    select(-c(购买, 注册)) %>% 
+    save_csv(name = "上海鲸量")
+}
 # 深圳理奥 --------------------------------------------------------------------
 
 {
@@ -915,11 +935,11 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     select(-回收)
   
   dataHuanLe1 <- dataHuanLe %>%
-    no_group(gro = "欢乐语音") %>%
-    select_default() %>%
-    select(-回收)
+    with_os() %>%
+    select(日期, 版本, 安装, 点击, 展示次数, 花费)
 
   bind_rows(dataAce1, dataSan1, dataBaCay1, dataFortune1, dataBauCuaKing1, dataHuanLe1) %>%
+    select(group, 日期, 版本, everything()) %>% 
     save_csv(name = "领麦Sancamap")
 }
 
@@ -929,6 +949,14 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataGuai %>%
     mao() %>%
     save_csv(name = "怪猫")
+}
+
+# 游戏群骰子 ----------------------------------------------------------------------
+
+{
+  dataTouZi %>% 
+    no_group(gro = "游戏群骰子") %>% 
+    save_csv(name = "游戏群骰子")
 }
 
 # 二手车 ---------------------------------------------------------------------

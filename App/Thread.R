@@ -1,90 +1,79 @@
-library(multidplyr)
-cluster <- new_cluster(6)
-cluster_library(cluster, c("dplyr", "tidyverse"))
+pacman::p_load("tidyverse", "multidplyr", "DBI", "lubridate", "httr")
 
+cluster <- new_cluster(10) # 建立10核心的集群
+cluster_library(cluster, c("dplyr", "tidyverse", "httr")) # 向集群加载包
+
+# 导入口令
 DBPWD <- Sys.getenv("MYSQL_PWD")
 TOKEN <- Sys.getenv("FB_TOKEN")
 BMID <- "1087814654714815"
 
-connf <- dbConnect(odbc::odbc(), .connection_string = str_c("Driver={MySQL ODBC 8.0 Unicode Driver};Driver={MySQL ODBC 8.0 Unicode Driver};Server={127.0.0.1};Database={facebookaccount};UID={root};PWD=", DBPWD, ";Port=3306"), timeout = 10)
-since <- today() - 183
-until <- today()
+# 使用本地ODBC建立数据库连接
+connfb <- dbConnect(odbc::odbc(), "FacebookAccount")
 
-# todo 需要写成适合多线程调用的模式, 且线程内已有URL了, 函数内不需要重新组合
+since <- today() - 183 # 默认起始日期
+until <- today() # 默认结束日期
 
+# 账户状态探测函数, 使用向量化编程, 使用map_*
 statusDetect <- function(id, since, until) {
-  print(nrow(id))
-  range <- str_c("{'since':'", as.character(since), "','until':'", as.character(until), "'}")
-  spendurl <- str_c("https://graph.facebook.com/v10.0/act_", id, "/insights")
-  data <- id %>%
-    mutate(url = spendurl) %>%
-    group_split(account_id) %>%
-    map_dfr(~ tibble(status_code = GET(url = .$url, query = list(fields = "spend", time_range = range, access_token = TOKEN)) %>%
-      content() %>%
+  range <- str_c("{'since':'", as.character(since), "','until':'", as.character(until), "'}") # 组合时间范围
+  str_c("https://graph.facebook.com/v10.0/act_", as_vector(id), "/insights") %>% # 组合向量化URL头部
+    map_dbl(~ GET(url = .x, query = list(fields = "spend", time_range = range, access_token = TOKEN)) %>% # 向量化GET消耗数据
+      content() %>% # 获取结果内容
       `$`(data) %>%
-      length()))
-  return(data)
+      length()) %>% # 获取spend长度, 无消耗为0, 有消耗为1
+    return() # 并返回
 }
 
-# "498023791194376" %>% statusDetect(since, until)
-
-
-# account_data[1:10,]["account_id"] %>% statusDetect(since = since, until = until)
-
+# 开始获取所有账户
+# 设定初始链接
 nexturl <- str_c("https://graph.facebook.com/v10.0/", BMID, "/owned_ad_accounts")
 
-account_data <- tibble()
-
+# 初始化账户变量
+all_account <- tibble()
+# 循环标志
 flag <- T
 
+# 获取所有账户
 while (flag) {
-    content <- GET(nexturl, query = list(fields = "account_id,created_time", access_token = TOKEN, limit = 5000)) %>%
-        content()
-    datatemp <- content$data %>%
-        map_dfr(~ as_tibble(.))
-    account_data <- bind_rows(account_data, datatemp)
+  content <- GET(nexturl, query = list(fields = "account_id,created_time", access_token = TOKEN, limit = 5000)) %>%
+    content() # 获取URL的内容
+
+  all_account <- content$data %>% # 将URL内容的data部分转为tibble与all_account合并, 再赋给all_account
+    map_dfr(~ as_tibble(.)) %>%
+    bind_rows(all_account)
+
+  if (!is_null(content$paging$`next`)) { # next有值则有下页, 更新URL, 否则没有下页, 将标志置否
     nexturl <- content$paging$`next`
-    flag <- flag + 1
-    if (!is_null(content$paging$`next`)) {
-        nexturl <- content$paging$`next`
-    } else {
-        flag <- F
-    }
-    print(str_c("Get ", nrow(account_data), " Accounts"))
+  } else {
+    flag <- F
+  }
+  print(str_c("Get ", nrow(all_account), " Accounts"))
 }
 
-db_data <- account_data["account_id"][1:1200,] %>% 
-    partition(cluster)
+# 测试
+all_account["account_id"][1:10, ] %>%
+  statusDetect(since = since, until = until) %>%
+  bind_cols(all_account["account_id"][1:10, ])
 
-# 将自定义函数复制进各个线程内
-cluster_copy(cluster, "statusDetect")
+# 将所有账户ID分给集群
+cluster_data <- all_account["account_id"] %>%
+  partition(cluster)
+
+# 将自定义函数及数据复制进各个线程内
+cluster_copy(cluster, c("statusDetect", "TOKEN"))
+
+# 集群开始工作, 使用自定义函数操作cluster_data集群数据, 并保存为result数据
+result_data <- cluster_data %>% mutate(code = statusDetect(account_id, Sys.Date() - 183, Sys.Date()))
+
+db_data <- result_data %>%
+  collect() %>% # 从result数据中收集所需并与all_account连接组合, 准备写入数据库
+  mutate(detect_time = now()) %>%
+  left_join(all_account, by = "account_id")
+
 # cluster_call(cluster, search())
-
-range <- str_c("{'since':'", as.character(since), "','until':'", as.character(until), "'}")
-
-# 组合url
 # cluster_call(cluster, ls())
-data_url <- db_data %>% 
-    mutate(url = str_c("https://graph.facebook.com/v10.0/act_", account_id, "/insights"))
 
-alldata <- data_url %>% mutate(code = statusDetect(account_id, Sys.Date() - 183, Sys.Date()))
-
-db_data %>% mutate(code = statusDetect(account_id, Sys.Date() - 183, Sys.Date()))
-
-account_data["account_id"][1:1200,] %>% statusDetect(Sys.Date() - 183, Sys.Date())
-
-dbWriteTable(connf, "account_1", db_data, append = T)
+dbWriteTable(connf, "account_status", db_data, append = T) # 向account_status表中追加数据
 
 message("Complete")
-
-nn <- account_data[1:10,]["account_id"]
-
-nn %>%
-  mutate(url = spendurl) %>%
-  group_split(account_id) %>%
-  map_dfr(~ tibble(status_code = GET(url = .$url, query = list(fields = "spend", time_range = range, access_token = TOKEN)) %>%
-    content() %>%
-    `$`(data) %>%
-    length()))
-
-
