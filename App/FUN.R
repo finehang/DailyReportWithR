@@ -61,23 +61,23 @@ get_spend <- function(id, since, until) {
   }
 }
 
-make_url <- function(id){
+make_url <- function(id) {
   since <- "2021-3-17"
   until <- "2021-3-17"
   range <- str_c("{'since':'", since, "','until':'", until, "'}")
-  data <- map_dfr(id, ~tibble(url = str_c("https://graph.facebook.com/v10.0/act_", ., "/insights?level=account&fields=spend,account_id,account_name&time_range=", range, "&access_token=", TOKEN)))
+  data <- map_dfr(id, ~ tibble(url = str_c("https://graph.facebook.com/v10.0/act_", ., "/insights?level=account&fields=spend,account_id,account_name&time_range=", range, "&access_token=", TOKEN)))
   return(data)
 }
 
-urlset <- data %>% 
-  select(account_id) %>% 
-  group_by(account_id) %>% 
-  group_split() %>% 
+urlset <- data %>%
+  select(account_id) %>%
+  group_by(account_id) %>%
+  group_split() %>%
   make_url()
 
-a <- GET(url = as.character(urlset[1,]))
+a <- GET(url = as.character(urlset[1, ]))
 
-urlset[1,] %>% GET()
+urlset[1, ] %>% GET()
 
 map(url_set, GET())
 

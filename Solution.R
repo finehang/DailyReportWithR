@@ -167,7 +167,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     版本 = "IOS14",
     安装 = 0
   )
-  
+
   dataBaiPlayerIOS14 <- tibble(
     日期 = as.character(Sys.Date() - 1),
     产品 = "白鲸video player",
@@ -225,7 +225,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     luxury() %>%
     select(日期, 产品, 花费) %>%
     save_csv(name = "Luxury")
-  
+
   dataMerlingenSpinToWorld %>%
     no_group(gro = "SpinToWorld") %>%
     select(日期, 花费) %>%
@@ -253,15 +253,18 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 玩德游戏 --------------------------------------------------------------------
 
 {
-  dataWanDeGG1 <- dataWanDeGG %>% 
-    na.omit() %>% 
-    mutate(版本 = if_else(str_detect(广告系列, "AND"), "AND", "IOS"),
-           地区 = if_else(str_detect(广告系列, "ID"), "ID",
-                        str_sub(广告系列, 23,24)),
-           安装量 = 安装次数,
-           点击量 = 点击次数, 
-           金额 = 费用) %>% 
-    group_by(版本, 地区) %>% 
+  dataWanDeGG1 <- dataWanDeGG %>%
+    na.omit() %>%
+    mutate(
+      版本 = if_else(str_detect(广告系列, "AND"), "AND", "IOS"),
+      地区 = if_else(str_detect(广告系列, "ID"), "ID",
+        str_sub(广告系列, 23, 24)
+      ),
+      安装量 = 安装次数,
+      点击量 = 点击次数,
+      金额 = 费用
+    ) %>%
+    group_by(版本, 地区) %>%
     summarise(
       日期 = as.character(Sys.Date() - 1),
       安装 = sum(as.numeric(安装量)),
@@ -273,7 +276,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
       CVR = 安装 / 点击
     ) %>%
     select(日期, 版本, 地区, 安装, 花费, CPI, 点击, 展示次数, CTR, CVR)
-  
+
   dataWanDeGG2 <- tibble(
     日期 = "　", 版本 = "　", 地区 = "总计",
     安装 = sum(dataWanDeGG1$安装),
@@ -286,8 +289,8 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
       CTR = 点击 / 展示次数,
       CVR = 安装 / 点击
     )
-  
-  
+
+
   dataWanDe1 <- dataWanDe %>%
     with_go() %>%
     mutate(
@@ -331,14 +334,14 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 {
   dataReadictJ1 <- dataReadictJ %>%
     with_go() %>%
-    mutate(gg = "Jane") 
+    mutate(gg = "Jane")
 
   dataReadictM1 <- dataReadictM %>%
     with_go() %>%
     mutate(gg = "Monika")
 
   bind_rows(dataReadictJ1, dataReadictM1) %>%
-    select(日期, gg, 版本, 地区, 安装, 点击, 展示次数) %>% 
+    select(日期, gg, 版本, 地区, 安装, 点击, 展示次数) %>%
     save_csv(name = "readict ")
 }
 
@@ -420,16 +423,16 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 {
   dataZhangYun %>%
     with_geo() %>%
-    select(-c(购买, 注册)) %>% 
-    sum_split(Group) %>% 
-    select(-Group) %>% 
+    select(-c(购买, 注册)) %>%
+    sum_split(Group) %>%
+    select(-Group) %>%
     save_csv(name = "掌云")
 }
 
 # LinkWorld ---------------------------------------------------------------
 
 {
-  dataLinkWorld %>% 
+  dataLinkWorld %>%
     no_group(gro = "LinkWorld") %>%
     save_csv(name = "LinkWorld")
 }
@@ -520,7 +523,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataKaiWinnie1 <- dataKaiWinnie %>%
     no_group(gro = "Winnie") %>%
     select_default(selection = "注册")
-  
+
   dataKaiTakTak1 <- dataKaiTakTak %>%
     no_group(gro = "TakTak") %>%
     select_default(selection = "注册")
@@ -541,7 +544,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   #   no_group(gro = "福韵Rummy") %>%
   #   select(花费, 安装) %>%
   #   save_csv(name = "福韵Rummy")
-  # 
+  #
   # dataFuYunPattPlus %>%
   #   no_group(gro = "福韵PattPlus") %>%
   #   select(花费, 安装) %>%
@@ -551,48 +554,48 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 枸杞 ----------------------------------------------------------------------
 
 {
-  dataGouQiGaga %>% 
-    with_geo(gro = "枸杞Gaga") %>% 
-    mutate(CPI = 花费 / 注册) %>% 
-    select(Group, 日期, 地区, 花费, 注册, CPI) %>% 
+  dataGouQiGaga %>%
+    with_geo(gro = "枸杞Gaga") %>%
+    mutate(CPI = 花费 / 注册) %>%
+    select(Group, 日期, 地区, 花费, 注册, CPI) %>%
     save_csv(name = "枸杞Gaga")
-  
-  dataGouQiLili %>% 
-    with_geo(gro = "枸杞Lili") %>% 
-    mutate(CPI = 花费 / 注册) %>% 
-    select(Group, 日期, 地区, 花费, 注册, CPI) %>% 
+
+  dataGouQiLili %>%
+    with_geo(gro = "枸杞Lili") %>%
+    mutate(CPI = 花费 / 注册) %>%
+    select(Group, 日期, 地区, 花费, 注册, CPI) %>%
     save_csv(name = "枸杞Lili")
 }
 
 # 阿吉比 ---------------------------------------------------------------------
 
 {
-  dataAJiBi %>% 
-    no_group(gro = "阿吉比") %>% 
-    select(-c(注册)) %>% 
+  dataAJiBi %>%
+    no_group(gro = "阿吉比") %>%
+    select(-c(注册)) %>%
     save_csv(name = "阿吉比")
 }
 
 # 财神卡 ---------------------------------------------------------------------
 
 {
-  dataCaiShen %>% 
-    no_group(gro = "财神卡") %>% 
-    select(-c(购买, 注册)) %>% 
+  dataCaiShen %>%
+    no_group(gro = "财神卡") %>%
+    select(-c(购买, 注册)) %>%
     save_csv(name = "财神卡")
 }
 
 # 叨叨 ----------------------------------------------------------------------
 
 {
-  # dataDaoSuperb %>% 
-  #   no_group(gro = "叨叨Superb") %>% 
-  #   select(日期, 花费, 安装, 购买) %>% 
+  # dataDaoSuperb %>%
+  #   no_group(gro = "叨叨Superb") %>%
+  #   select(日期, 花费, 安装, 购买) %>%
   #   save_csv(name = "叨叨Superb")
-  # 
-  # dataDaoSpendCash %>% 
-  #   no_group(gro = "叨叨SpendCash") %>% 
-  #   select(日期, 花费, 安装, 购买) %>% 
+  #
+  # dataDaoSpendCash %>%
+  #   no_group(gro = "叨叨SpendCash") %>%
+  #   select(日期, 花费, 安装, 购买) %>%
   #   save_csv(name = "叨叨SpendCash")
 }
 
@@ -631,9 +634,9 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 飞羽 ----------------------------------------------------------------------
 
 {
-  # dataFeiYuPortable %>% 
-  #   no_group(gro = "飞羽Portable") %>% 
-  #   select(日期, 花费, 安装, 购买) %>% 
+  # dataFeiYuPortable %>%
+  #   no_group(gro = "飞羽Portable") %>%
+  #   select(日期, 花费, 安装, 购买) %>%
   #   save_csv(name = "飞羽Portable")
 }
 
@@ -644,7 +647,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     no_group(gro = "优量Rummy") %>%
     select(-c(注册)) %>%
     save_csv(name = "杭州优量Rummy")
-  
+
   dataYouLiangPoker %>%
     no_group(gro = "优量Poker") %>%
     select(-c(注册)) %>%
@@ -675,7 +678,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     with_geo() %>%
     select(花费, 注册) %>%
     save_csv(name = "洪禄CashMap")
-  
+
   dataPPcash %>%
     with_geo() %>%
     select(花费, 注册) %>%
@@ -685,9 +688,9 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 华策天城 --------------------------------------------------------------------
 
 {
-  dataHuaCe %>% 
-    no_group(gro = "华策天城") %>% 
-    select(-c(回收, 注册)) %>% 
+  dataHuaCe %>%
+    no_group(gro = "华策天城") %>%
+    select(-c(回收, 注册)) %>%
     save_csv(name = "华策天城")
 }
 
@@ -699,7 +702,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     mutate(安装成本 = 花费 / 安装, ROI = 回收 / 花费) %>%
     select(Group, 日期, 地区, 安装, 花费, 回收, 安装成本, ROI) %>%
     save_csv(name = "看看台湾")
-  
+
   dataKanKuki %>%
     with_geo(gro = "Kuki") %>%
     mutate(安装成本 = 花费 / 安装, ROI = 回收 / 花费) %>%
@@ -714,7 +717,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   #   no_group(gro = "金米Golden") %>%
   #   select(日期, 花费, 安装, 购买) %>%
   #   save_csv(name = "金米Golden")
-  # 
+  #
   # dataJinMiHappy %>%
   #   no_group(gro = "金米Happy") %>%
   #   select(日期, 花费, 安装, 购买) %>%
@@ -729,16 +732,16 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 
   dataKuHappy1 <- dataKuHappy %>%
     no_group(gro = "酷玩Happy")
-  
+
   dataKuFairgame1 <- dataKuFairgame %>%
     no_group(gro = "酷玩Fairgame")
-  
+
   dataKuLuckyRich1 <- dataKuLuckyRich %>%
     no_group(gro = "酷玩LuckyRich")
-  
+
   dataKuFunny1 <- dataKuFunny %>%
     no_group(gro = "酷玩FunnyFree")
-  
+
   dataKuClassic1 <- dataKuClassic %>%
     no_group(gro = "酷玩ClassicTP")
 
@@ -791,11 +794,11 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   # dataRongFacevay1 <- dataRongFacevay %>%
   #   with_geo(gro = "RongFacevay") %>%
   #   select(-c(地区, 安装, 回收, 购买))
-  # 
+  #
   # dataRongVinvay1 <- dataRongVinvay %>%
   #   with_geo(gro = "RongVinvay") %>%
   #   select(-c(地区, 安装, 回收, 购买))
-  # 
+  #
   # bind_rows(dataRongDoan1, dataRongFacevay1, dataRongVinvay1) %>%
   #   save_csv(name = "融创")
 }
@@ -803,9 +806,9 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 上海鲸量 --------------------------------------------------------------------
 
 {
-  dataJingLiang %>% 
-    no_group(gro = "上海鲸量") %>% 
-    select(-c(购买, 注册)) %>% 
+  dataJingLiang %>%
+    no_group(gro = "上海鲸量") %>%
+    select(-c(购买, 注册)) %>%
     save_csv(name = "上海鲸量")
 }
 
@@ -836,7 +839,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   #   with_go() %>%
   #   mutate(代理 = "GatherOne", 国家 = 地区) %>%
   #   select(版本, 日期, 代理, 地区, 国家, 安装, 展示次数, 点击, 花费)
-  # 
+  #
   # dataDouShi2 <- tibble(
   #   版本 = " ",
   #   日期 = " ",
@@ -848,7 +851,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   #   点击 = sum(dataDouShi1$点击),
   #   花费 = sum(dataDouShi1$花费)
   # )
-  # 
+  #
   # bind_rows(dataDouShi1, dataDouShi2) %>%
   #   save_csv(name = "圣斗士汇总")
 }
@@ -856,9 +859,9 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 泰坤 ----------------------------------------------------------------------
 
 {
-  # dataTai %>% 
-  #   no_group(gro = "泰坤") %>% 
-  #   select(-c(回收, 购买, 注册)) %>% 
+  # dataTai %>%
+  #   no_group(gro = "泰坤") %>%
+  #   select(-c(回收, 购买, 注册)) %>%
   #   save_csv(name = "泰坤")
 }
 
@@ -886,9 +889,9 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 小金象 ---------------------------------------------------------------------
 
 {
-  dataJinxiang %>% 
-    with_geo(gro = "小金象") %>% 
-    select(日期, 地区, 点击, 展示次数, 花费, 安装) %>% 
+  dataJinxiang %>%
+    with_geo(gro = "小金象") %>%
+    select(日期, 地区, 点击, 展示次数, 花费, 安装) %>%
     save_csv(name = "小金象")
 }
 
@@ -919,13 +922,13 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     no_group(gro = "BauCuaKing") %>%
     select_default() %>%
     select(-回收)
-  
+
   dataHuanLe1 <- dataHuanLe %>%
     with_os() %>%
     select(日期, 版本, 安装, 点击, 展示次数, 花费)
 
   bind_rows(dataSan1, dataBaCay1, dataFortune1, dataBauCuaKing1, dataHuanLe1) %>%
-    select(group, 日期, 版本, everything()) %>% 
+    select(group, 日期, 版本, everything()) %>%
     save_csv(name = "领麦Sancamap")
 }
 
@@ -940,8 +943,8 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 游戏群骰子 ----------------------------------------------------------------------
 
 {
-  dataTouZi %>% 
-    no_group(gro = "游戏群骰子") %>% 
+  dataTouZi %>%
+    no_group(gro = "游戏群骰子") %>%
     save_csv(name = "游戏群骰子")
 }
 
@@ -978,19 +981,19 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 }
 
 # 赤子城 ---------------------------------------------------------------------
-# 
+#
 # {
 #   if ((wday(now()) >= 2 & wday(now()) <= 6 & hour(now()) > 15) | ((wday(now()) <= 1 | wday(now()) >= 7) & hour(now()) > 17)) {
 #     dataBela <- readxl::read_xls("赤子城-bela.xls")
 #     dataMimi <- readxl::read_xls("赤子城-mimi.xls")
 #     dataPeach <- readxl::read_xls("赤子城-peach.xls")
 #     # dataYumy <- readxl::read_xls("赤子城-yumy.xls")
-# 
+#
 #     dataPeach1 <- dataPeach %>%
 #       with_geo() %>%
-#       mutate(地区 = "IN") %>% 
+#       mutate(地区 = "IN") %>%
 #       select(日期, 地区, 花费, 安装, 点击, 展示次数)
-# 
+#
 #     dataPeach2 <- tibble(
 #       日期 = "　", 地区 = "总计",
 #       花费 = sum(dataPeach1$花费),
@@ -998,11 +1001,11 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 #       点击 = sum(dataPeach1$点击),
 #       展示次数 = sum(dataPeach1$展示次数)
 #     )
-# 
+#
 #     dataBela1 <- dataBela %>%
 #       with_geo() %>%
 #       select(日期, 地区, 花费, 安装, 点击, 展示次数)
-# 
+#
 #     dataBela2 <- tibble(
 #       日期 = "总计",
 #       花费 = sum(dataBela1$花费),
@@ -1010,18 +1013,18 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 #       点击 = sum(dataBela1$点击),
 #       展示次数 = sum(dataBela1$展示次数)
 #     )
-# 
+#
 #     bind_rows(dataBela1, dataBela2) %>%
 #       save_csv(name = "赤子城Bela", filename = "0赤子城", append = F)
-# 
+#
 #     bind_rows(dataPeach1, dataPeach2) %>%
 #       save_csv(name = "赤子城Peach", filename = "0赤子城")
-# 
+#
 #     dataMimi1 <- dataMimi %>%
 #       no_group("Mimi") %>%
 #       select(日期, group, 花费, 安装, 点击, 展示次数) %>%
 #       save_csv(name = "赤子城Mimi", filename = "0赤子城")
-# 
+#
 #     # dataYumy %>%
 #     #   no_group("Yumy") %>%
 #     #   select(日期, group, 花费, 安装, 点击, 展示次数) %>%
@@ -1030,5 +1033,6 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 #     message("NotNow!")
 #   }
 # }
+
 gc()
 message("任務終了")
