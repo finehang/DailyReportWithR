@@ -36,29 +36,13 @@ statusDetect <- function(id) {
   return(length(spendcontent))
 }
 
-data1 <- data[1:1000,] %>%
-  group_by(account_id) %>%
-  group_split() %>%
-  map_dfr(~ mutate(., status_code = if_else(statusDetect(.$account_id) == 0, 0, 1)))
-data2 <- data[1001:2000,] %>%
-  group_by(account_id) %>%
-  group_split() %>%
-  map_dfr(~ mutate(., status_code = if_else(statusDetect(.$account_id) == 0, 0, 1)))
-data3 <- data[2001:3000,] %>%
-  group_by(account_id) %>%
-  group_split() %>%
-  map_dfr(~ mutate(., status_code = if_else(statusDetect(.$account_id) == 0, 0, 1)))
-
-
-data[20000:nrow(data),]
-  
-  
-  
-since <- "2021-3-17"
+since <- "2021-2-17"
 until <- "2021-3-17"
 
 id <- "629058350841744"
 get_spend(id, since = "2021-3-17", until = "2021-3-17")
+
+get_spend(id, since, until)
 
 get_spend <- function(id, since, until) {
   range <- str_c("{'since':'", since, "','until':'", until, "'}")
