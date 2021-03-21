@@ -306,8 +306,10 @@ li_ao <- function(data) {
 you <- function(data) {
   data <- data %>%
     mutate_all(replace_na, replace = 0) %>%
-    mutate(产品 = if_else(str_detect(广告账户名称, "Teen"), "Teen Patti",
-      if_else(str_detect(广告账户名称, "Pop"), "Pop Solitaire", "None")
+    mutate(产品 = if_else(str_detect(系列名称, "teen"), "Teen Patti",
+      if_else(str_detect(系列名称, "Pop"), "Pop Solitaire",
+        if_else(str_detect(系列名称, "Crazy"), "Crazy", "None")
+      ),
     )) %>%
     group_by(产品) %>%
     summarise(

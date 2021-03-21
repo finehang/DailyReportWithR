@@ -72,7 +72,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataShen <- readxl::read_xls("新神兽传奇.xls")
   dataKaiTakTak <- readxl::read_xls("新凯丽金_TakTak.xls")
   dataKaiStich <- readxl::read_xls("新凯丽金_Stich.xls")
-  dataKaiJoyo <- readxl::read_xls("新凯丽金_Joyo.xls")
+  # dataKaiJoyo <- readxl::read_xls("新凯丽金_Joyo.xls")
   dataKaiVideo <- readxl::read_xls("新凯丽金_VideoChat.xls")
   dataKaiHaya <- readxl::read_xls("新凯丽金_Haya.xls")
   dataKaiHallo <- readxl::read_xls("新凯丽金_Hallo.xls")
@@ -504,9 +504,9 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   #   no_group(gro = "FaU") %>%
   #   select_default(selection = "注册")
 
-  dataKaiJoyo1 <- dataKaiJoyo %>%
-    no_group(gro = "Joyo") %>%
-    select_default(selection = "注册")
+  # dataKaiJoyo1 <- dataKaiJoyo %>%
+  #   no_group(gro = "Joyo") %>%
+  #   select_default(selection = "注册")
 
   dataKaiHaya1 <- dataKaiHaya %>%
     no_group(gro = "Haya") %>%
@@ -528,7 +528,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     no_group(gro = "TakTak") %>%
     select_default(selection = "注册")
 
-  bind_rows(dataKaiJoyo1, dataKaiHaya1, dataKaiStich1, dataKaiVideo1, dataKaiWinnie1, dataKaiTakTak1) %>%
+  bind_rows(dataKaiHaya1, dataKaiStich1, dataKaiVideo1, dataKaiWinnie1, dataKaiTakTak1) %>%
     save_csv(name = "Videochat")
 
   dataKaiHallo %>%
@@ -602,10 +602,10 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 飞乐乐 ----------------------------------------------------------------------
 
 {
-  dataFeiFBALL <- bind_rows(dataFei1, dataFei2, dataFei3, dataFei4, dataFei5, dataFei6, dataFei7) %>%
+  dataFeiFBALL <- bind_rows(dataFei1, dataFei2, dataFei3, dataFei4) %>%
     select(-c(报告开始日期, 报告结束日期))
 
-  bb <- dataFeiFBALL %>%
+  dataFei1 %>%
     mutate(产品 = if_else(str_detect(帐户名称, "Pro"), "Pro Betting tips",
       if_else(str_detect(帐户名称, "BetPawa"), "BetPawa",
         if_else(str_detect(帐户名称, "Beton"), "Beton",
