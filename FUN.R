@@ -363,6 +363,21 @@ ling <- function(data, name) {
   return(data)
 }
 
+ji_dao <- function(data){
+  data <- data %>%
+    filter(!is.na(广告系列)) %>% 
+    mutate_all(replace_na, replace = 0) %>% 
+    mutate(地区 = str_sub(广告系列, 25, 26)) %>% 
+    group_by(地区) %>% 
+    summarize(日期 = as.character(Sys.Date() - 1),
+                安装 = sum(as.numeric(安装次数)),
+                点击 = sum(as.numeric(点击次数)),
+                展示次数 = sum(as.numeric(展示次数)),
+                花费 = sum(as.numeric(费用)),
+                回收 = sum(as.numeric(转化价值)))
+  return(data)
+}
+
 col_sum <- function(data) {
   sum <- data %>%
     ungroup() %>%
