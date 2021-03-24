@@ -5,6 +5,11 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 
 {
   dataJiDao <- readxl::read_xlsx("吉道.xlsx", skip = 2)
+  dataDaYu <- readxl::read_xls("新大鱼_BingoWild.xls")
+  dataTaiKun <- readxl::read_xls("新泰坤.xls")
+  dataAnChengOne <- readxl::read_xls("新安橙_OneLive.xls")
+  dataLiangZiDop <- readxl::read_xls("新量子_Dop.xls")
+  dataFuYunFunrummy <- readxl::read_xls("新福韵_funrummy.xls")
   dataKuLuckyRich <- readxl::read_xls("新酷玩_LuckyRich.xls")
   dataMiYi <- readxl::read_xls("新米易.xls")
   dataKuFunny <- readxl::read_xls("新酷玩_FunnyFree.xls")
@@ -30,6 +35,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataGouQiGaga <- readxl::read_xls("新枸杞_Gaga.xls")
   dataGouQiLili <- readxl::read_xls("新枸杞_Lili.xls")
   dataHuaCe <- readxl::read_xls("新华策天城.xls")
+  dataYouLiangCastle <- readxl::read_xls("新杭州优量_Castle.xls")
   dataYouLiangPoker <- readxl::read_xls("新杭州优量_PokerEmperor.xls")
   dataYouLiangRummy <- readxl::read_xls("新杭州优量_Rummy.xls")
   dataYouQing <- readxl::read_xls("新杭州优擎.xls")
@@ -46,9 +52,12 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataRongDoan <- readxl::read_xls("新融创汇通_Doan.xls")
   dataFortune <- readxl::read_xls("新海南翎麦_FortuneClub.xls")
   dataBaCay <- readxl::read_xls("新海南翎麦_BaCayPoker.xls")
-  dataRummyIOS14 <- readxl::read_xls("新博客来_IOS14.xls")
+  # dataRummyIOS14 <- readxl::read_xls("新博客来_IOS14.xls")
+  dataTPGO <- readxl::read_xls("新博客来_TPGO.xls")
+  dataTPWin <- readxl::read_xls("新博客来_TPWin.xls")
   dataTPGOJ <- readxl::read_xls("新博客来_TPGO_J.xls")
   dataTPGOM <- readxl::read_xls("新博客来_TPGO_M.xls")
+  dataRummy <- readxl::read_xls("新博客来_Rummy.xls")
   dataRummyIOSJ <- readxl::read_xls("新博客来_Rummy_IOS_J.xls")
   dataRummyIOSM <- readxl::read_xls("新博客来_Rummy_IOS_M.xls")
   dataRummyANDJ <- readxl::read_xls("新博客来_Rummy_AND_J.xls")
@@ -56,6 +65,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataLingPay <- readxl::read_xls("新灵分_Pay.xls")
   dataLingKey <- readxl::read_xls("新灵分_Key.xls")
   dataLingSo <- readxl::read_xls("新灵分_So.xls")
+  dataLingCube <- readxl::read_xls("新灵分_Cube.xls")
   # dataLingSoab <- readxl::read_xls("新灵分_So_ab.xls")
   dataMerlingenSpinToWorld <- readxl::read_xls("新Merlingen_SpinToWorld.xls")
   dataMerlingenLuxury <- readxl::read_xls("新Merlingen_LuxuryRummy.xls")
@@ -118,7 +128,6 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   # dataReJ <- readxl::read_xls("新reminiJane.xls")
   # dataDouShi <- readxl::read_xls("新圣斗士.xls")
   # dataZuoTou <- readxl::read_xls("新座头鲸.xls")
-  # dataTai <- readxl::read_xls("新泰坤.xls")
   # dataZxCash <- readxl::read_xls("新邦振_ZxCash.xls")
 }
 
@@ -257,7 +266,8 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 
 {
   dataWanDeGG1 <- dataWanDeGG %>%
-    na.omit() %>%
+    filter(!is.na(广告系列)) %>%
+    mutate_all(replace_na, replace = 0) %>%
     mutate(
       版本 = if_else(str_detect(广告系列, "AND"), "AND", "IOS"),
       地区 = if_else(str_detect(广告系列, "ID"), "ID",
@@ -351,9 +361,9 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 吉道 ----------------------------------------------------------------------
 
 {
-  dataJiDao %>% 
-    ji_dao() %>% 
-    select(日期, everything()) %>% 
+  dataJiDao %>%
+    ji_dao() %>%
+    select(日期, everything()) %>%
     save_csv(name = "吉道")
 }
 
@@ -449,12 +459,30 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   #   save_csv(name = "LinkWorld")
 }
 
-# microcard J+M -----------------------------------------------------------
+# 博客来 J+M -----------------------------------------------------------
 
 {
-  dataRummyIOS141 <- dataRummyIOS14 %>%
-    no_group(gro = "RummyIOS14") %>%
-    select(日期, group, 展示次数, 点击, 花费)
+  # dataRummyIOS141 <- dataRummyIOS14 %>%
+  #   no_group(gro = "RummyIOS14") %>%
+  #   select(日期, group, 展示次数, 点击, 花费)
+
+  dataTPWin %>%
+    mutate(优化 = if_else(str_detect(广告账户名称, "耐斯A"), "叶子", "Monika")) %>%
+    group_split(优化) %>%
+    map_dfr(., ~ no_group(., gro = .$优化)) %>%
+    select(日期, group, 展示次数, 点击, 花费) %>%
+    save_csv(name = "TPWin")
+
+  dataRummy %>%
+    mutate(优化 = if_else(str_detect(广告账户名称, "斯A"), "叶子",
+      (if_else(str_detect(广告账户名称, "j代投"), "叶子",
+        (if_else(str_detect(广告账户名称, "jane代投"), "叶子", "Monika"))
+      ))
+    )) %>%
+    group_split(优化) %>%
+    map_dfr(., ~ with_os(.)) %>%
+    select(日期, 优化, 版本, 展示次数, 点击, 花费) %>%
+    save_csv(name = "RummyGet")
 
   dataTPGOJ1 <- dataTPGOJ %>%
     no_group(gro = "TP_GO_FB_J") %>%
@@ -464,26 +492,26 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     no_group(gro = "TP_GO_FB_M") %>%
     select(日期, group, 展示次数, 点击, 花费)
 
-  dataRummyIOSJ1 <- dataRummyIOSJ %>%
-    no_group(gro = "Rummy_IOS_J") %>%
-    select(日期, group, 展示次数, 点击, 花费)
-
-  dataRummyIOSM1 <- dataRummyIOSM %>%
-    no_group(gro = "Rummy_IOS_M") %>%
-    select(日期, group, 展示次数, 点击, 花费)
-
-  dataRummyANDJ1 <- dataRummyANDJ %>%
-    no_group(gro = "Rummy_AND_J") %>%
-    select(日期, group, 展示次数, 点击, 花费)
-
-  dataRummyANDM1 <- dataRummyANDM %>%
-    no_group(gro = "Rummy_AND_M") %>%
-    select(日期, group, 展示次数, 点击, 花费)
+  # dataRummyIOSJ1 <- dataRummyIOSJ %>%
+  #   no_group(gro = "Rummy_IOS_J") %>%
+  #   select(日期, group, 展示次数, 点击, 花费)
+  #
+  # dataRummyIOSM1 <- dataRummyIOSM %>%
+  #   no_group(gro = "Rummy_IOS_M") %>%
+  #   select(日期, group, 展示次数, 点击, 花费)
+  #
+  # dataRummyANDJ1 <- dataRummyANDJ %>%
+  #   no_group(gro = "Rummy_AND_J") %>%
+  #   select(日期, group, 展示次数, 点击, 花费)
+  #
+  # dataRummyANDM1 <- dataRummyANDM %>%
+  #   no_group(gro = "Rummy_AND_M") %>%
+  #   select(日期, group, 展示次数, 点击, 花费)
 
   bind_rows(dataTPGOJ1, dataTPGOM1) %>% save_csv(name = "博客来TPGO")
-  bind_rows(dataRummyIOSJ1, dataRummyIOSM1) %>% save_csv(name = "博客来Rummy_IOS")
-  bind_rows(dataRummyANDJ1, dataRummyANDM1) %>% save_csv(name = "博客来Rummy_AND")
-  dataRummyIOS141 %>% save_csv(name = "博客来RummyIOS141")
+  # bind_rows(dataRummyIOSJ1, dataRummyIOSM1) %>% save_csv(name = "博客来Rummy_IOS")
+  # bind_rows(dataRummyANDJ1, dataRummyANDM1) %>% save_csv(name = "博客来Rummy_AND")
+  # dataRummyIOS141 %>% save_csv(name = "博客来RummyIOS141")
 }
 
 # 使用walk保存数据 --------------------------------------------------------------
@@ -588,6 +616,15 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     save_csv(name = "阿吉比")
 }
 
+# 安橙 ----------------------------------------------------------------------
+
+{
+  dataAnChengOne %>%
+    with_geo(gro = "安橙OneLive") %>%
+    mutate(安装成本 = 花费 / 安装, ROI = 回收 / 花费) %>%
+    select(Group, 日期, 地区, 安装, 花费, 回收, 安装成本, ROI) %>%
+    save_csv(name = "安橙OneLive")
+}
 # 财神卡 ---------------------------------------------------------------------
 
 {
@@ -611,6 +648,16 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   #   save_csv(name = "叨叨SpendCash")
 }
 
+# 大鱼 ----------------------------------------------------------------------
+
+{
+  dataDaYu %>%
+    mutate(优化 = if_else(str_detect(系列名称, "AEO"), "AEO", "VO")) %>%
+    group_split(优化) %>%
+    map_dfr(~ with_os(.)) %>%
+    select(日期, 优化, 版本, 花费) %>%
+    save_csv(name = "大鱼")
+}
 # 飞乐乐 ----------------------------------------------------------------------
 
 {
@@ -643,6 +690,13 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     save_csv(name = "飞乐乐")
 }
 
+# 福韵 ----------------------------------------------------------------------
+
+{
+  dataFuYunFunrummy %>%
+    no_group(gro = "福韵") %>%
+    save_csv(name = "福韵Funrummy")
+}
 # 飞羽 ----------------------------------------------------------------------
 
 {
@@ -664,6 +718,11 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     no_group(gro = "优量Poker") %>%
     select(-c(注册)) %>%
     save_csv(name = "杭州优量Poker")
+
+  dataYouLiangCastle %>%
+    no_group(gro = "优量Castle") %>%
+    select(-c(注册)) %>%
+    save_csv(name = "杭州优量Castle")
 }
 
 # 杭州优擎 --------------------------------------------------------------------
@@ -761,6 +820,14 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     save_csv(name = "酷玩")
 }
 
+# 量子Dop -------------------------------------------------------------------
+
+{
+  dataLiangZiDop %>%
+    no_group(gro = "量子Dop") %>%
+    select(-c("回收", "购买", "注册")) %>%
+    save_csv(name = "量子Dop")
+}
 # 灵分 ----------------------------------------------------------------------
 
 {
@@ -772,11 +839,15 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     ling(name = "灵分Pay") %>%
     save_csv(name = "灵分Pay")
 
+  dataLingCube %>%
+    ling(name = "灵分Cube") %>%
+    save_csv(name = "灵分Cube")
+
   dataLingSo %>%
     mutate(产品 = if_else(str_detect(广告账户名称, "AB"), "AB", "SoCredit")) %>%
     group_split(产品) %>%
     map_dfr(~ ling(., name = .$产品)) %>%
-    save_csv(name = "灵分So")
+    save_csv(name = "灵分So & AB")
 }
 
 # 米易 ----------------------------------------------------------------------
@@ -873,10 +944,10 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 泰坤 ----------------------------------------------------------------------
 
 {
-  # dataTai %>%
-  #   no_group(gro = "泰坤") %>%
-  #   select(-c(回收, 购买, 注册)) %>%
-  #   save_csv(name = "泰坤")
+  dataTaiKun %>%
+    no_group(gro = "泰坤") %>%
+    select(-c(回收, 购买, 注册)) %>%
+    save_csv(name = "泰坤")
 }
 
 # 首推 ----------------------------------------------------------------------
@@ -1003,7 +1074,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
       filter(!is.na(日期)) %>%
       mutate_all(replace_na, replace = 0) %>%
       mutate(
-        方式 = if_else(str_detect(广告系列名称, "AEO"), "AEO", "Install"),
+        方式 = if_else(str_detect(广告系列名称, "Install"), "Install", "AEO"),
         花费 = `花费金额 (USD)`,
         安装 = `应用安装 [查看后 1 天]` + `应用安装 [点击后 28 天]`,
         注册 = `完成注册 [查看后 1 天]` + `完成注册 [点击后 28 天]`,
@@ -1016,7 +1087,8 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
         安装 = sum(as.numeric(安装)),
         注册 = sum(as.numeric(注册)),
         申请 = sum(as.numeric(申请))
-      )
+      ) %>%
+      arrange(desc(方式))
 
     dataCashBox2 <- tibble(
       方式 = "",
@@ -1026,7 +1098,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
       注册 = sum(dataCashBox1$注册),
       申请 = sum(dataCashBox1$申请)
     )
-    bind_rows(dataCashBox1, dataCashBox2) %>%
+    bind_rows(dataCashBox2, dataCashBox1) %>%
       save_csv(name = "爆发户", filename = "00暴发户", append = F)
   } else {
     message("NotNow!")

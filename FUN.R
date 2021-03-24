@@ -41,6 +41,7 @@ with_geo <- function(data, gro = "Gro") {
 }
 
 with_os <- function(data) {
+  flag <- isTRUE("优化" %in% names(data))
   data <- data %>%
     mutate_all(replace_na, replace = 0) %>%
     dplyr::filter(地区 != "unknown") %>%
@@ -53,19 +54,36 @@ with_os <- function(data) {
           )
         )
       )
-    ) %>%
-    group_by(版本) %>%
-    summarise(
-      日期 = as.character(Sys.Date() - 1),
-      安装 = sum(as.numeric(安装量)),
-      点击 = sum(as.numeric(点击量)),
-      展示次数 = sum(as.numeric(展示次数)),
-      花费 = sum(as.numeric(金额)),
-      回收 = sum(as.numeric(购物转化值)),
-      购买 = sum(as.numeric(购买次数)),
-      注册 = sum(as.numeric(完成注册))
-    ) %>%
-    select(日期, everything())
+    )
+  if (flag) {
+    data <- data %>%
+      group_by(优化, 版本) %>%
+      summarise(
+        日期 = as.character(Sys.Date() - 1),
+        安装 = sum(as.numeric(安装量)),
+        点击 = sum(as.numeric(点击量)),
+        展示次数 = sum(as.numeric(展示次数)),
+        花费 = sum(as.numeric(金额)),
+        回收 = sum(as.numeric(购物转化值)),
+        购买 = sum(as.numeric(购买次数)),
+        注册 = sum(as.numeric(完成注册))
+      ) %>%
+      select(日期, everything())
+  } else {
+    data <- data %>%
+      group_by(版本) %>%
+      summarise(
+        日期 = as.character(Sys.Date() - 1),
+        安装 = sum(as.numeric(安装量)),
+        点击 = sum(as.numeric(点击量)),
+        展示次数 = sum(as.numeric(展示次数)),
+        花费 = sum(as.numeric(金额)),
+        回收 = sum(as.numeric(购物转化值)),
+        购买 = sum(as.numeric(购买次数)),
+        注册 = sum(as.numeric(完成注册))
+      ) %>%
+      select(日期, everything())
+  }
   return(data)
 }
 
@@ -107,7 +125,7 @@ tap <- function(data) {
   data <- data %>%
     mutate_all(replace_na, replace = 0) %>%
     dplyr::filter(地区 != "unknown") %>%
-    mutate(产品 = if_else(str_detect(广告账户名称, "SEA"), "SEA", "NA")) %>% 
+    mutate(产品 = if_else(str_detect(广告账户名称, "SEA"), "SEA", "NA")) %>%
     mutate(
       系列名称 = toupper(系列名称),
       版本 = if_else(str_detect(系列名称, "AND"), "AND",
@@ -124,7 +142,7 @@ tap <- function(data) {
       花费 = sum(as.numeric(金额))
       # ,安装 = sum(as.numeric(安装量)),
       # 回收 = sum(as.numeric(购物转化值))
-    )  %>% 
+    ) %>%
     select(产品, 日期, everything())
   return(data)
 }
@@ -216,9 +234,9 @@ novel_cat <- function(data) {
 car_fix_fb <- function(data) {
   if ("花费金额 (USD)" %in% names(data)) {
     data <- data %>% mutate(花费金额 = `花费金额 (USD)`)
-    return(data[-1,])
+    return(data[-1, ])
   } else {
-    return(data[-1,])
+    return(data[-1, ])
   }
 }
 
@@ -260,7 +278,6 @@ car_gg <- function(data) {
         )
       )
     ) %>%
-    
     group_by(日期, 平台, 国家) %>%
     summarise(
       代投渠道 = "Gath",
@@ -363,18 +380,20 @@ ling <- function(data, name) {
   return(data)
 }
 
-ji_dao <- function(data){
+ji_dao <- function(data) {
   data <- data %>%
-    filter(!is.na(广告系列)) %>% 
-    mutate_all(replace_na, replace = 0) %>% 
-    mutate(地区 = str_sub(广告系列, 25, 26)) %>% 
-    group_by(地区) %>% 
-    summarize(日期 = as.character(Sys.Date() - 1),
-                安装 = sum(as.numeric(安装次数)),
-                点击 = sum(as.numeric(点击次数)),
-                展示次数 = sum(as.numeric(展示次数)),
-                花费 = sum(as.numeric(费用)),
-                回收 = sum(as.numeric(转化价值)))
+    filter(!is.na(广告系列)) %>%
+    mutate_all(replace_na, replace = 0) %>%
+    mutate(地区 = str_sub(广告系列, 25, 26)) %>%
+    group_by(地区) %>%
+    summarize(
+      日期 = as.character(Sys.Date() - 1),
+      安装 = sum(as.numeric(安装次数)),
+      点击 = sum(as.numeric(点击次数)),
+      展示次数 = sum(as.numeric(展示次数)),
+      花费 = sum(as.numeric(费用)),
+      回收 = sum(as.numeric(转化价值))
+    )
   return(data)
 }
 
@@ -383,14 +402,14 @@ col_sum <- function(data) {
     ungroup() %>%
     select(where(~ is.numeric(.))) %>%
     colSums()
-  data <- bind_rows(data, sum) %>% 
+  data <- bind_rows(data, sum) %>%
     mutate_all(replace_na, replace = "")
   return(data)
 }
 
 sum_split <- function(data, split) {
   data <- data %>%
-    group_by({{split}}) %>% 
+    group_by({{ split }}) %>%
     group_split() %>%
     map_dfr(~ col_sum(.))
   return(data)
