@@ -295,8 +295,7 @@ car_gg <- function(data) {
 li_ao <- function(data) {
   data <- data %>%
     mutate_all(replace_na, replace = 0) %>%
-    mutate(产品 = if_else(str_detect(广告账户名称, "Vungo"), "Vungo",
-      if_else(str_detect(广告账户名称, "44"), "Vungo",
+    mutate(产品 = if_else(str_detect(广告账户名称, "44"), "Vungo48",
         if_else(str_detect(广告账户名称, "FunRummy"), "FunRummy",
           if_else(str_detect(广告账户名称, "48"), "3Patti_48",
             if_else(str_detect(广告账户名称, "GinRummy"), "GinRummy",
@@ -305,7 +304,7 @@ li_ao <- function(data) {
           )
         )
       )
-    )) %>%
+    ) %>%
     group_by(产品) %>%
     summarise(
       日期 = as.character(Sys.Date() - 1),
