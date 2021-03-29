@@ -295,7 +295,7 @@ car_gg <- function(data) {
 li_ao <- function(data) {
   data <- data %>%
     mutate_all(replace_na, replace = 0) %>%
-    mutate(产品 = if_else(str_detect(广告账户名称, "44"), "Vungo48",
+    mutate(产品 = if_else(str_detect(广告账户名称, "44"), "Vungo44",
         if_else(str_detect(广告账户名称, "FunRummy"), "FunRummy",
           if_else(str_detect(广告账户名称, "48"), "3Patti_48",
             if_else(str_detect(广告账户名称, "GinRummy"), "GinRummy",
@@ -408,7 +408,7 @@ col_sum <- function(data) {
 
 sum_split <- function(data, split) {
   data <- data %>%
-    group_by({{ split }}) %>%
+    group_by({{split}}) %>%
     group_split() %>%
     map_dfr(~ col_sum(.))
   return(data)
