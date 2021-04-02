@@ -27,7 +27,6 @@ with_geo <- function(data, gro = "Gro") {
     group_by(地区) %>%
     summarise(
       日期 = as.character(Sys.Date() - 1),
-      Group = gro,
       安装 = sum(as.numeric(安装量)),
       点击 = sum(as.numeric(点击量)),
       展示次数 = sum(as.numeric(展示次数)),
@@ -36,6 +35,7 @@ with_geo <- function(data, gro = "Gro") {
       购买 = sum(as.numeric(购买次数)),
       注册 = sum(as.numeric(完成注册))
     ) %>%
+    mutate(Group = gro, ) %>%
     select(Group, 日期, everything())
   return(data)
 }
@@ -231,12 +231,12 @@ novel_cat <- function(data) {
     )))
 }
 
-car_fix_fb <- function(data) {
+fix_fb_name <- function(data) {
   if ("花费金额 (USD)" %in% names(data)) {
     data <- data %>% mutate(花费金额 = `花费金额 (USD)`)
-    return(data[-1, ])
+    return(data)
   } else {
-    return(data[-1, ])
+    return(data)
   }
 }
 
@@ -296,15 +296,14 @@ li_ao <- function(data) {
   data <- data %>%
     mutate_all(replace_na, replace = 0) %>%
     mutate(产品 = if_else(str_detect(广告账户名称, "44"), "Vungo44",
-        if_else(str_detect(广告账户名称, "FunRummy"), "FunRummy",
-          if_else(str_detect(广告账户名称, "48"), "3Patti_48",
-            if_else(str_detect(广告账户名称, "GinRummy"), "GinRummy",
-              "None"
-            )
+      if_else(str_detect(广告账户名称, "FunRummy"), "FunRummy",
+        if_else(str_detect(广告账户名称, "48"), "3Patti_48",
+          if_else(str_detect(广告账户名称, "GinRummy"), "GinRummy",
+            "None"
           )
         )
       )
-    ) %>%
+    )) %>%
     group_by(产品) %>%
     summarise(
       日期 = as.character(Sys.Date() - 1),
@@ -408,7 +407,7 @@ col_sum <- function(data) {
 
 sum_split <- function(data, split) {
   data <- data %>%
-    group_by({{split}}) %>%
+    group_by({{ split }}) %>%
     group_split() %>%
     map_dfr(~ col_sum(.))
   return(data)
