@@ -4,6 +4,10 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 数据导入 --------------------------------------------------------------------
 
 {
+  dataXueZhan <- readxl::read_xls("新血战八荒.xls")
+  dataHuiXian <- readxl::read_xls("新辉仙.xls")
+  dataZhuoYue <- readxl::read_xls("新卓越世界.xls")
+  dataRuiDao <- readxl::read_xls("新瑞道_Rummy.xls")
   dataMengTu <- readxl::read_xls("新萌兔.xls")
   dataHuaEn <- readxl::read_xls("新华恩.xls")
   dataHuanTeng <- readxl::read_xls("新世纪欢腾.xls")
@@ -12,7 +16,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataMoJia <- readxl::read_xls("新福州墨家.xls")
   dataCoinLnn <- readxl::read_xls("新CoinLnn.xls")
   dataWeiNa <- readxl::read_xls("新微纳.xls")
-  dataTianMing <- readxl::read_xls("新天命传奇.xls")
+  # dataTianMing <- readxl::read_xls("新天命传奇.xls")
   dataTongLe <- readxl::read_xls("新同乐.xls")
   dataChuYin <- readxl::read_xls("新刍音.xls")
   dataHuaShu <- readxl::read_xls("新华述_TPRaajy.xls")
@@ -25,12 +29,12 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataKuHappy <- readxl::read_xls("新酷玩_Happy.xls")
   dataKuFantasy <- readxl::read_xls("新酷玩_Fantasy.xls")
   dataJingLiang <- readxl::read_xls("新上海鲸量.xls")
-  dataJinxiang <- readxl::read_xls("新小金象_Cash.xls")
+  # dataJinxiang <- readxl::read_xls("新小金象_Cash.xls")
   dataCaiShen <- readxl::read_xls("新财神卡.xls")
   # dataFei7 <- readr::read_csv("飞7.csv")
   # dataFei6 <- readr::read_csv("飞6.csv")
   # dataFei5 <- readr::read_csv("飞5.csv")
-  dataFei4 <- readr::read_csv("飞4.csv")
+  # dataFei4 <- readr::read_csv("飞4.csv")
   dataFei3 <- readr::read_csv("飞3.csv")
   dataFei2 <- readr::read_csv("飞2.csv")
   dataFei1 <- readr::read_csv("飞1.csv")
@@ -47,7 +51,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataXiangGang <- readxl::read_xls("新香港瑞兆.xls")
   dataKaiXin <- readxl::read_xls("新开心_BakBak.xls")
   dataHotSpot <- readxl::read_xls("新HotSpot.xls")
-  dataDreamTP <- readxl::read_xls("新DreamTP.xls")
+  # dataDreamTP <- readxl::read_xls("新DreamTP.xls")
   dataRongDoan <- readxl::read_xls("新融创汇通_Doan.xls")
   dataHaiNan <- readxl::read_xls("新海南翎唛.xls")
   dataBauCuaKing <- readxl::read_xls("新海南翎麦_BauCuaKing.xls")
@@ -74,8 +78,8 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataJeruk <- readxl::read_xls("新JerukLive.xls")
   dataNovelSky <- readxl::read_xls("新NovelSky.xls")
   dataMiao <- readxl::read_xls("新喵石.xls")
-  dataSan <- readxl::read_xls("新Sancamap.xls")
-  dataShen <- readxl::read_xls("新神兽传奇.xls")
+  dataSan <- readxl::read_xls("新海南翎麦Sancamap.xls")
+  # dataShen <- readxl::read_xls("新神兽传奇.xls")
   dataKaiTakTak <- readxl::read_xls("新凯丽金_TakTak.xls")
   dataKaiStich <- readxl::read_xls("新凯丽金_Stich.xls")
   dataKaiVideo <- readxl::read_xls("新凯丽金_VideoChat.xls")
@@ -250,11 +254,13 @@ dataAZuLa %>%
     mutate(
       广告账户名称 = toupper(广告账户名称),
       产品 = if_else(str_detect(广告账户名称, "INDIAN"), "IndianTP",
-        if_else(str_detect(广告账户名称, "CELLBREAK"), "Cellbreak", "None")
+        if_else(str_detect(广告账户名称, "CELLBREAK"), "Cellbreak",
+          if_else(str_detect(广告账户名称, "RUMMY WIN"), "Rummy Win", "None")
+        )
       )
     ) %>%
     group_split(产品) %>%
-    map_dfr(~ with_geo(., gro = .$产品)) %>%
+    map_dfr(~ with_geo(., gro = .$产品[1])) %>%
     select(-c(回收, 购买, 注册)) %>%
     save_csv(name = "领麦")
 }
@@ -465,23 +471,23 @@ dataAZuLa %>%
 # 神兽传奇 --------------------------------------------------------------------
 
 {
-  dataShen1 <- dataShen %>%
-    with_go() %>%
-    select(-安装, -购买) %>%
-    mutate(CPI = 花费 / 注册, ROI = 回收 / 花费)
-
-  dataShen2 <- tibble(
-    日期 = "　", 版本 = " ", 地区 = "总计",
-    点击 = sum(dataShen1$点击),
-    展示次数 = sum(dataShen1$展示次数),
-    花费 = sum(dataShen1$花费),
-    回收 = sum(dataShen1$回收),
-    注册 = sum(dataShen1$注册),
-    CPI = 花费 / 注册,
-    ROI = 回收 / 花费
-  )
-
-  bind_rows(dataShen1, dataShen2) %>% save_csv(name = "神兽传奇")
+  # dataShen1 <- dataShen %>%
+  #   with_go() %>%
+  #   select(-安装, -购买) %>%
+  #   mutate(CPI = 花费 / 注册, ROI = 回收 / 花费)
+  #
+  # dataShen2 <- tibble(
+  #   日期 = "　", 版本 = " ", 地区 = "总计",
+  #   点击 = sum(dataShen1$点击),
+  #   展示次数 = sum(dataShen1$展示次数),
+  #   花费 = sum(dataShen1$花费),
+  #   回收 = sum(dataShen1$回收),
+  #   注册 = sum(dataShen1$注册),
+  #   CPI = 花费 / 注册,
+  #   ROI = 回收 / 花费
+  # )
+  #
+  # bind_rows(dataShen1, dataShen2) %>% save_csv(name = "神兽传奇")
 }
 
 # dreame -----------------------------------------------------------------
@@ -518,10 +524,10 @@ dataAZuLa %>%
 
 {
   dataZhangYun %>%
-    with_geo() %>%
+    no_group(gro = "掌云") %>%
+    mutate(地区 = "ALL") %>%
     select(-c(购买, 注册)) %>%
-    sum_split(Group) %>%
-    select(-Group) %>%
+    select(group, 日期, 地区, everything()) %>%
     save_csv(name = "掌云")
 }
 
@@ -697,7 +703,7 @@ dataAZuLa %>%
     save_csv(name = "Videochat")
 
   dataKaiHallo %>%
-    with_geo() %>%
+    with_geo(gro = "Hallo") %>%
     select(-购买) %>%
     save_csv(name = "Videochat_Hallo")
 }
@@ -803,7 +809,7 @@ dataAZuLa %>%
 # 飞乐乐 ----------------------------------------------------------------------
 
 {
-  dataFeiFBALL <- bind_rows(dataFei1, dataFei2, dataFei3, dataFei4) %>%
+  dataFeiFBALL <- bind_rows(dataFei1, dataFei2, dataFei3) %>%
     select(-c(报告开始日期, 报告结束日期))
 
   dataFeiFBALL %>%
@@ -941,7 +947,13 @@ dataAZuLa %>%
       产品 = if_else(str_detect(广告账户名称, "PAYCREDIT"), "PayCredit",
         if_else(str_detect(广告账户名称, "FLY"), "FlyCash",
           if_else(str_detect(广告账户名称, "NAIRA"), "Naira",
-            if_else(str_detect(广告账户名称, "EASYCREDIT"), "EasyCredit", "None")
+            if_else(str_detect(广告账户名称, "EASYCREDIT"), "EasyCredit",
+              if_else(str_detect(广告账户名称, "GOCASH"), "Gocash",
+                if_else(str_detect(广告账户名称, "LUCKCASH"), "luckycash",
+                  "None"
+                )
+              )
+            )
           )
         )
       )
@@ -1011,6 +1023,14 @@ dataAZuLa %>%
   #   save_csv(name = "酷玩")
 }
 
+# 辉仙 ----------------------------------------------------------------------
+
+{
+  dataHuiXian %>%
+    no_group(gro = "辉仙") %>%
+    save_csv(name = "辉仙")
+}
+
 # 量子Dop -------------------------------------------------------------------
 
 {
@@ -1051,10 +1071,9 @@ dataAZuLa %>%
 # 萌兔 ----------------------------------------------------------------------
 
 {
-  dataMengTu %>% 
-    no_group(gro = "萌兔") %>% 
+  dataMengTu %>%
+    no_group(gro = "萌兔") %>%
     save_csv(name = "萌兔")
-    
 }
 
 # 米易 ----------------------------------------------------------------------
@@ -1093,6 +1112,14 @@ dataAZuLa %>%
   #
   # bind_rows(dataRongDoan1, dataRongFacevay1, dataRongVinvay1) %>%
   #   save_csv(name = "融创")
+}
+
+# 瑞道 ----------------------------------------------------------------------
+
+{
+  dataRuiDao %>%
+    no_group(gro = "瑞道") %>%
+    save_csv(name = "瑞道")
 }
 
 # 上海鲸量 --------------------------------------------------------------------
@@ -1169,12 +1196,12 @@ dataAZuLa %>%
 # 天命传奇 --------------------------------------------------------------------
 
 {
-  dataTianMing %>%
-    with_go() %>%
-    select(日期, 版本, 地区, 点击, 展示次数, 花费, 回收, 注册) %>%
-    sum_split(split = 日期) %>%
-    mutate(CPI = as.double(花费) / as.double(注册), ROI = as.double(回收) / as.double(花费)) %>%
-    save_csv(name = "天命传奇")
+  # dataTianMing %>%
+  #   with_go() %>%
+  #   select(日期, 版本, 地区, 点击, 展示次数, 花费, 回收, 注册) %>%
+  #   sum_split(split = 日期) %>%
+  #   mutate(CPI = as.double(花费) / as.double(注册), ROI = as.double(回收) / as.double(花费)) %>%
+  #   save_csv(name = "天命传奇")
 }
 
 # 同乐 ----------------------------------------------------------------------
@@ -1224,10 +1251,38 @@ dataAZuLa %>%
 # 小金象 ---------------------------------------------------------------------
 
 {
-  dataJinxiang %>%
-    with_geo(gro = "小金象") %>%
-    select(日期, 地区, 点击, 展示次数, 花费, 安装) %>%
-    save_csv(name = "小金象")
+  # dataJinxiang %>%
+  #   with_geo(gro = "小金象") %>%
+  #   select(日期, 地区, 点击, 展示次数, 花费, 安装) %>%
+  #   save_csv(name = "小金象")
+}
+
+# 血战八荒 --------------------------------------------------------------------
+
+{
+  dataXueZhan %>%
+    mutate(地区 = as.character(fct_other(地区,
+      keep = c("TW", "MY"),
+      other_level = "HK/MO/SG"
+    ))) %>%
+    with_geo(gro = "血战八荒") %>%
+    arrange(desc(地区)) %>%
+    select(Group, 日期, 地区, 安装, 花费, 展示次数, 点击) %>%
+    save_csv(name = "血战八荒")
+}
+
+# 卓越世界 --------------------------------------------------------------------
+
+{
+  dataZhuoYue %>%
+    mutate(地区 = as.character(fct_other(地区,
+      keep = c("TW", "MY"),
+      other_level = "HK/MO/SG"
+    ))) %>%
+    with_geo(gro = "卓越世界") %>%
+    arrange(desc(地区)) %>%
+    select(Group, 日期, 地区, 安装, 花费, 展示次数, 点击) %>%
+    save_csv(name = "卓越世界")
 }
 
 # Sancamap ----------------------------------------------------------------
@@ -1305,7 +1360,8 @@ dataAZuLa %>%
     # dataCarGG1 <- dataCarGG %>% car_gg()
 
     dataFixFB1 <- dataFixFB %>%
-      car_fix_fb() %>%
+      filter(!is.na(日期)) %>%
+      fix_fb_name() %>%
       car_fb()
 
     dataFixGG1 <- dataFixGG %>% car_gg()
@@ -1328,6 +1384,7 @@ dataAZuLa %>%
     dataCashBox <- readxl::read_xlsx("cashbox.xlsx", col_names = T)
     dataCashBox1 <- dataCashBox %>%
       filter(!is.na(日期)) %>%
+      fix_fb_name() %>%
       mutate_all(replace_na, replace = 0) %>%
       mutate(
         方式 = if_else(str_detect(广告系列名称, "注册"), "注册", "AEO"),
