@@ -10,8 +10,8 @@ DBPWD <- Sys.getenv("MYSQL_PWD")
 TOKEN <- Sys.getenv("FB_TOKEN")
 BMID <- "1087814654714815"
 
-# 使用本地ODBC建立数据库连接
-# connfb <- dbConnect(odbc::odbc(), "FacebookAccount")
+# 使用本地ODBC建立数据库连接, 使用SQLite
+confb <- dbConnect(odbc::odbc(), "account", timeout = 10)
 
 # 账户状态探测函数, 使用向量化编程, 使用map_*
 statusDetect <- function(id, since, until) {
@@ -97,16 +97,16 @@ while (T) {
         result_data_183 <- cluster_data_all %>% mutate(status_code = statusDetect(account_id, Sys.Date() - 183, Sys.Date()))
         db_data_183 <- result_data_183 %>%
           collect() %>% # 从result数据中收集所需并与all_account连接组合, 准备写入数据库
-          # mutate(detect_time = now()) %>%
-          left_join(all_account, by = "account_id")
-        # dbWriteTable(connfb, "account_183_status", db_data_183, overwrite = T) # 向account_status表中追加数据
+          left_join(all_account, by = "account_id") %>% 
+          mutate(detect_time = now())
+        
+        dbWriteTable(connfb, "account_183_status", db_data_183, append = T) # 向account_status表中追加数据
         readr::write_excel_csv(db_data_183, file = "./account_183_status.csv")
         rm(cluster_data_all)
         rm(result_data_183)
         gc()
         message("183IDs Complete! Time Spent: ")
         toc()
-
 
         # last 100 days need 133s -------------------------------------------------
 
@@ -116,6 +116,8 @@ while (T) {
           filter(status_code == 1) %>%
           select(account_id)
 
+        true_ID_183 <- dbGetQuery(connfb, "select account_id from account_183_status where status_code == 1 and detect_time == ")
+        
         cluster_data_183 <- true_ID_183 %>%
           partition(cluster)
 
