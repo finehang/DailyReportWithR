@@ -51,11 +51,7 @@ while (T) {
       beepr::beep(sound = sample(c(1:11), 1))
     },
     while (T) {
-      Sys.sleep(60)
-      message(str_c("Now is ", now()))
-      message("Standing By......")
-      message(praise::praise())
-      while (hour(now()) >= 9 & hour(now()) <= 18 & hour(now()) %% 1 == 0 & minute(now()) >= 45) {
+      while (hour(now()) >= 9 & hour(now()) <= 18) {
         message("Mession Start!")
         # 开始获取所有账户
         # 设定初始链接
@@ -327,6 +323,13 @@ while (T) {
         gc()
         message("Get today Spend Complete! Time Spent: ")
         toc()
+        
+        for (i in c(1:700)) {
+          Sys.sleep(2)
+          message(str_c("Now is ", now()))
+          message("Standing By......")
+          message(praise::praise())
+        }
       }
     }
   )
