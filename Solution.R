@@ -14,7 +14,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataAZuLa <- readxl::read_xls("新阿祖拉.xls")
   dataQuLi <- readxl::read_xls("新趣犁.xls")
   dataMoJia <- readxl::read_xls("新福州墨家.xls")
-  dataCoinLnn <- readxl::read_xls("新CoinLnn.xls")
+  # dataCoinLnn <- readxl::read_xls("新CoinLnn.xls")
   dataWeiNa <- readxl::read_xls("新微纳.xls")
   # dataTianMing <- readxl::read_xls("新天命传奇.xls")
   dataTongLe <- readxl::read_xls("新同乐.xls")
@@ -212,7 +212,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     安装 = 0
   )
 
-  bind_rows(dataBaiMovzyIOS14, dataBaiPlayerIOS14, dataBaiMovzy1, dataBaiPlayer1) %>%
+  bind_rows(dataBaiMovzyIOS14, dataBaiPlayerIOS14, dataBaiPlayer1) %>%
     save_csv(name = "白鲸")
   dataBaiYolk1 %>% save_csv(name = "白鲸Yolk")
 }
@@ -292,10 +292,12 @@ dataAZuLa %>%
       广告账户名称 = toupper(广告账户名称),
       产品 = if_else(str_detect(广告账户名称, "LUXURY"), "Luxury",
         if_else(str_detect(广告账户名称, "JEETOBADA"), "Jeetobada",
-          if_else(str_detect(广告账户名称, "SPIN"), "SpinToWorld", "None")
+          if_else(str_detect(广告账户名称, "SPIN"), "SpinToWorld", 
+                  if_else(str_detect(广告账户名称, "COOL"), "Rummy Cool Card", 
+                          "None")
         )
       )
-    )
+    ))
 
   dataMerlingen1 %>%
     filter(产品 == "Luxury") %>%
@@ -314,6 +316,12 @@ dataAZuLa %>%
     no_group(gro = "SpinToWorld") %>%
     select(group, 日期, 花费) %>%
     save_csv(name = "SpinToWorld")
+  
+  dataMerlingen1 %>%
+    filter(产品 == "Rummy Cool Card") %>%
+    no_group(gro = "Rummy Cool Card") %>%
+    select(group, 日期, 花费) %>%
+    save_csv(name = "Rummy Cool Card")
 }
 
 # Jeruk --------------------------------------------------------------------
@@ -534,9 +542,9 @@ dataAZuLa %>%
 # CoinLnn -----------------------------------------------------------------
 
 {
-  dataCoinLnn %>%
-    no_group(gro = "CoinLnn") %>%
-    save_csv(name = "CoinLnn")
+  # dataCoinLnn %>%
+  #   no_group(gro = "CoinLnn") %>%
+  #   save_csv(name = "CoinLnn")
 }
 # LinkWorld ---------------------------------------------------------------
 
@@ -949,7 +957,7 @@ dataAZuLa %>%
           if_else(str_detect(广告账户名称, "NAIRA"), "Naira",
             if_else(str_detect(广告账户名称, "EASYCREDIT"), "EasyCredit",
               if_else(str_detect(广告账户名称, "GOCASH"), "Gocash",
-                if_else(str_detect(广告账户名称, "LUCKCASH"), "luckycash",
+                if_else(str_detect(广告账户名称, "LUCKYCASH"), "luckycash",
                   "None"
                 )
               )
