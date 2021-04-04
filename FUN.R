@@ -407,7 +407,7 @@ col_sum <- function(data) {
 
 sum_split <- function(data, split) {
   data <- data %>%
-    group_by({{ split }}) %>%
+    group_by({{split}}) %>%
     group_split() %>%
     map_dfr(~ col_sum(.))
   return(data)

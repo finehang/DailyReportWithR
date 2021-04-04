@@ -207,7 +207,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataBaiPlayerIOS14 <- tibble(
     日期 = as.character(Sys.Date() - 1),
     产品 = "白鲸video player",
-    地区 = c("CA", "GB", "PH", "US"),
+    地区 = c("AU", "CA", "GB", "PH", "US"),
     版本 = "IOS14",
     安装 = 0
   )
@@ -836,7 +836,8 @@ dataAZuLa %>%
         )
       )
     )) %>%
-    sum_split(产品) %>%
+    group_split(产品) %>%
+    map_dfr(~adorn_totals(., name = "总计")) %>% 
     select(产品, everything()) %>%
     save_csv(name = "飞乐乐FB")
 
