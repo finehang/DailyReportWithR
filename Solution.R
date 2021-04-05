@@ -21,10 +21,10 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataChuYin <- readxl::read_xls("新刍音.xls")
   dataHuaShu <- readxl::read_xls("新华述_TPRaajy.xls")
   dataDaYu <- readxl::read_xls("新大鱼_BingoWild.xls")
-  dataTaiKun <- readxl::read_xls("新泰坤.xls")
+  # dataTaiKun <- readxl::read_xls("新泰坤.xls")
   dataAnChengOne <- readxl::read_xls("新安橙_OneLive.xls")
   dataLiangZiDop <- readxl::read_xls("新量子_Dop.xls")
-  dataFuYunFunrummy <- readxl::read_xls("新福韵_funrummy.xls")
+  # dataFuYunFunrummy <- readxl::read_xls("新福韵_funrummy.xls")
   dataMiYi <- readxl::read_xls("新米易.xls")
   dataKuHappy <- readxl::read_xls("新酷玩_Happy.xls")
   dataKuFantasy <- readxl::read_xls("新酷玩_Fantasy.xls")
@@ -48,7 +48,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataYouLiang <- readxl::read_xls("新杭州优量.xls")
   dataYouQing <- readxl::read_xls("新杭州优擎.xls")
   dataPrometheus <- readxl::read_xls("新Prometheus.xls")
-  dataXiangGang <- readxl::read_xls("新香港瑞兆.xls")
+  # dataXiangGang <- readxl::read_xls("新香港瑞兆.xls")
   dataKaiXin <- readxl::read_xls("新开心_BakBak.xls")
   dataHotSpot <- readxl::read_xls("新HotSpot.xls")
   # dataDreamTP <- readxl::read_xls("新DreamTP.xls")
@@ -199,7 +199,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataBaiMovzyIOS14 <- tibble(
     日期 = as.character(Sys.Date() - 1),
     产品 = "白鲸Movzy",
-    地区 = c("AU", "CA", "GB", "PH", "US"),
+    地区 = c("AU", "CA", "NL", "GB", "PH", "US"),
     版本 = "IOS14",
     安装 = 0
   )
@@ -850,9 +850,9 @@ dataAZuLa %>%
 # 福韵 ----------------------------------------------------------------------
 
 {
-  dataFuYunFunrummy %>%
-    no_group(gro = "福韵") %>%
-    save_csv(name = "福韵Funrummy")
+  # dataFuYunFunrummy %>%
+  #   no_group(gro = "福韵") %>%
+  #   save_csv(name = "福韵Funrummy")
 }
 
 # 福州墨家 --------------------------------------------------------------------
@@ -1196,10 +1196,10 @@ dataAZuLa %>%
 # 泰坤 ----------------------------------------------------------------------
 
 {
-  dataTaiKun %>%
-    no_group(gro = "泰坤") %>%
-    select(-c(回收, 注册)) %>%
-    save_csv(name = "泰坤")
+  # dataTaiKun %>%
+  #   no_group(gro = "泰坤") %>%
+  #   select(-c(回收, 注册)) %>%
+  #   save_csv(name = "泰坤")
 }
 
 # 天命传奇 --------------------------------------------------------------------
@@ -1252,9 +1252,9 @@ dataAZuLa %>%
 # 香港瑞兆 --------------------------------------------------------------------
 
 {
-  dataXiangGang %>%
-    no_group(gro = "香港瑞兆") %>%
-    save_csv(name = "香港瑞兆")
+  # dataXiangGang %>%
+  #   no_group(gro = "香港瑞兆") %>%
+  #   save_csv(name = "香港瑞兆")
 }
 
 # 小金象 ---------------------------------------------------------------------
