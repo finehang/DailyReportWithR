@@ -1,4 +1,4 @@
-pacman::p_load(tidyverse, readxl, lubridate)
+pacman::p_load("tidyverse", "lubridate", "devtools", "httr", "DBI", "multidplyr", "janitor")
 
 no_group <- function(data, gro = "group") {
   data <- data %>%
@@ -407,13 +407,16 @@ col_sum <- function(data) {
 
 sum_split <- function(data, split) {
   data <- data %>%
-    group_by({{split}}) %>%
+    group_by({{ split }}) %>%
     group_split() %>%
     map_dfr(~ col_sum(.))
   return(data)
 }
 
 save_csv <- function(data, name = "name", filename = "result", append = T) {
+  if (!missing(filename)) {
+    append <- F
+  }
   readr::write_excel_csv(tibble(blankLine = c(" ")), file = paste0("./", filename, ".csv"), col_names = F, append = append)
   readr::write_excel_csv(tibble(name), file = paste0("./", filename, ".csv"), col_names = F, append = T)
   readr::write_excel_csv(data, file = paste0("./", filename, ".csv"), col_names = T, append = T)
