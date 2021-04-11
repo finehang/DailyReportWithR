@@ -11,7 +11,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataRuiDao <- readxl::read_xls("新瑞道_Rummy.xls")
   dataMengTu <- readxl::read_xls("新萌兔.xls")
   dataHuaEn <- readxl::read_xls("新华恩.xls")
-  dataHuanTeng <- readxl::read_xls("新世纪欢腾.xls")
+  # dataHuanTeng <- readxl::read_xls("新世纪欢腾.xls")
   dataWeiNa <- readxl::read_xls("新微纳.xls")
   dataChuYin <- readxl::read_xls("新刍音.xls")
   dataHuaShu <- readxl::read_xls("新华述_TPRaajy.xls")
@@ -23,13 +23,13 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
   dataKuFantasy <- readxl::read_xls("新酷玩_Fantasy.xls")
   dataJingLiang <- readxl::read_xls("新上海鲸量.xls")
   dataJinxiang <- readxl::read_xls("新小金象_Cash.xls")
-  dataCaiShen <- readxl::read_xls("新财神卡.xls")
+  # dataCaiShen <- readxl::read_xls("新财神卡.xls")
   # dataFei7 <- readr::read_csv("飞7.csv")
   # dataFei6 <- readr::read_csv("飞6.csv")
   # dataFei5 <- readr::read_csv("飞5.csv")
   # dataFei4 <- readr::read_csv("飞4.csv")
-  dataFei3 <- readr::read_csv("飞3.csv")
-  dataFei2 <- readr::read_csv("飞2.csv")
+  # dataFei3 <- readr::read_csv("飞3.csv")
+  # dataFei2 <- readr::read_csv("飞2.csv")
   dataFei1 <- readr::read_csv("飞1.csv")
   dataFeiFB <- readxl::read_xls("新飞乐乐_FB.xls")
   dataAJiBi <- readxl::read_xls("新阿吉比.xls")
@@ -792,10 +792,10 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 财神卡 ---------------------------------------------------------------------
 
 {
-  dataCaiShen %>%
-    no_group(gro = "财神卡") %>%
-    select(-c(注册)) %>%
-    save_csv(name = "财神卡")
+  # dataCaiShen %>%
+  #   no_group(gro = "财神卡") %>%
+  #   select(-c(注册)) %>%
+  #   save_csv(name = "财神卡")
 }
 
 # 刍音 ----------------------------------------------------------------------
@@ -839,7 +839,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 飞乐乐 ----------------------------------------------------------------------
 
 {
-  dataFeiFBALL <- bind_rows(dataFei1, dataFei2, dataFei3) %>%
+  dataFeiFBALL <- bind_rows(dataFei1) %>%
     select(-c(报告开始日期, 报告结束日期))
 
   dataFeiFBALL %>%
@@ -1192,10 +1192,10 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
 # 世纪欢腾 --------------------------------------------------------------------
 
 {
-  dataHuanTeng %>%
-    no_group(gro = "世纪欢腾") %>%
-    select(-注册) %>%
-    save_csv(name = "世纪欢腾")
+  # dataHuanTeng %>%
+  #   no_group(gro = "世纪欢腾") %>%
+  #   select(-注册) %>%
+  #   save_csv(name = "世纪欢腾")
 }
 
 # 圣斗士 ---------------------------------------------------------------------
@@ -1407,7 +1407,7 @@ source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "ut
     # bind_rows(dataCarFB1, dataCarGG1) %>%
     #   arrange(日期) %>%
     #   save_csv(name = "Car", filename = "0二手车", append = F)
-    bind_rows(dataFixFB1, dataFixGG1) %>%
+    bind_rows( dataFixGG1) %>%
       arrange(日期) %>%
       save_csv(name = "Fix", filename = "00二手车")
   } else {
