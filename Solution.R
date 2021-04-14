@@ -26,7 +26,7 @@
   dataKuFantasy <- readxl::read_xls("新酷玩_Fantasy.xls")
   dataJingLiang <- readxl::read_xls("新上海鲸量.xls")
   dataJinxiang <- readxl::read_xls("新小金象_Cash.xls")
-  # dataCaiShen <- readxl::read_xls("新财神卡.xls")
+  dataCaiShen <- readxl::read_xls("新财神卡.xls")
   # dataFei7 <- readr::read_csv("飞7.csv")
   # dataFei6 <- readr::read_csv("飞6.csv")
   # dataFei5 <- readr::read_csv("飞5.csv")
@@ -814,10 +814,10 @@
 # 财神卡 ---------------------------------------------------------------------
 
 {
-  # dataCaiShen %>%
-  #   no_group(gro = "财神卡") %>%
-  #   select(-c(注册)) %>%
-  #   save_csv(name = "财神卡")
+  dataCaiShen %>%
+    no_group(gro = "财神卡") %>%
+    select(-c(注册)) %>%
+    save_csv(name = "财神卡")
 }
 
 # 刍音 ----------------------------------------------------------------------
