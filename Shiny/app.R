@@ -1,8 +1,17 @@
-library(shinydashboard)
-library(pastecs)
-library(shiny)
-library(tidyverse)
+pacman::p_load("tidyverse", "shinydashboard", "shiny", "DBI", "lubridate", "pastecs")
 setwd("C:/Share")
+connfb_local <- dbConnect(odbc::odbc(), "spend_local", timeout = 10)
+
+# Yesterday <- readr::read_csv("./spend_yesterday.csv", col_types = "dccccc") %>%
+#   arrange(-spend)
+# Quarter <- readr::read_csv("./spend_quarter.csv", col_types = "dccccc") %>%
+#   arrange(-spend)
+# Month <- readr::read_csv("./spend_month.csv", col_types = "dccccc") %>%
+#   arrange(-spend)
+# Today <- readr::read_csv("./spend_today.csv", col_types = "dccccc") %>%
+#   arrange(-spend)
+
+
 ui <- fluidPage(
   titlePanel("Welcome to GatherOne"),
   sidebarLayout(
@@ -20,6 +29,7 @@ ui <- fluidPage(
       )
     ),
     mainPanel(
+      plotOutput("p1"), 
       tableOutput("t0"),
       tableOutput("t1")
     )
@@ -27,14 +37,15 @@ ui <- fluidPage(
 )
 
 server <- function(input, output) {
-  Quarter <- readr::read_csv("./spend_quarter.csv", col_types = "dccccc") %>%
-    arrange(-spend)
-  Month <- readr::read_csv("./spend_month.csv", col_types = "dccccc") %>%
-    arrange(-spend)
-  Yesterday <- readr::read_csv("./spend_yesterday.csv", col_types = "dccccc") %>%
-    arrange(-spend)
-  Today <- readr::read_csv("./spend_today.csv", col_types = "dccccc") %>%
-    arrange(-spend)
+  Quarter <- dbGetQuery(connfb_local, "select * from spend_quarter order by spend DESC")
+
+  Month <- dbGetQuery(connfb_local, "select * from spend_month order by spend DESC")
+
+  Yesterday <- dbGetQuery(connfb_local, "select * from spend_yesterday order by spend DESC")
+
+  Today <- dbGetQuery(connfb_local, "select * from spend.spend_today where update_time = (select distinct(update_time) as date_time from spend.spend_today order by date_time desc limit 1)")
+
+  History <- dbGetQuery(connfb_local, "select max(`sum`) as `sum`, `hour` from (SELECT sum(spend) as `sum`, hour(update_time) as `hour`  FROM spend.spend_today where DATE(update_time) = CURDATE() group by update_time) as `all` group by hour")
 
 
   Quarter_s <- Quarter$spend %>%
@@ -66,6 +77,12 @@ server <- function(input, output) {
     "Yesterday" = Yesterday,
     "Today" = Today
   ))
+  
+  output$p1 <- renderPlot(
+    History %>% 
+      ggplot(mapping = aes(x = hour, y = sum)) +
+      geom_line()
+  )
 }
 
 app <- shinyApp(ui, server)
