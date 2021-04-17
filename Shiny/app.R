@@ -52,12 +52,10 @@ server <- function(input, output) {
 
   Yesterday <- dbGetQuery(connfb_local, "select * from spend_yesterday order by spend DESC")
 
-  Today <- dbGetQuery(connfb_local, "select * from spend.spend_today where update_time = (select distinct(update_time) as date_time from spend.spend_today order by date_time desc limit 1) order by spend DESC")
+  Today <- dbGetQuery(connfb_local, "select * from spend.spend_today where update_time = (select distinct(update_time) as date_time from spend.spend_today order by date_time desc limit 1)")
 
-  History <- dbGetQuery(connfb_local, "SELECT sum(spend) AS `sum`, update_time FROM spend.spend_today WHERE DATE(update_time) = CURDATE() GROUP BY update_time") %>% 
-    mutate(sum = round(sum, 2), 
-           time = hour(update_time) + minute(update_time) / 60)
-  
+  History <- dbGetQuery(connfb_local, "select max(`sum`) as `sum`, `hour` from (SELECT sum(spend) as `sum`, hour(update_time) as `hour`  FROM spend.spend_today where DATE(update_time) = CURDATE() group by update_time) as `all` group by hour")
+
   data_all <- list(Quarter = Quarter$spend, Month = Month$spend, Yesterday = Yesterday$spend, Today = Today$spend) %>% 
     map_df(~get_summary(.))
 
@@ -76,7 +74,7 @@ server <- function(input, output) {
   
   output$p1 <- renderPlot(
     History %>% 
-      ggplot(mapping = aes(x = time, y = sum)) +
+      ggplot(mapping = aes(x = hour, y = sum)) +
       geom_line() +
       geom_point() + 
       xlab("Time") +
