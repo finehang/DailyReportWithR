@@ -2,8 +2,9 @@ pacman::p_load("tidyverse", "multidplyr", "DBI", "lubridate", "httr", "tictoc")
 setwd("C:/Share")
 message("Initializing......")
 tic()
-cluster <- new_cluster(40) # 建立50核心的集群
+cluster <- new_cluster(30) # 建立50核心的集群
 cluster_library(cluster, c("tidyverse", "httr", "lubridate")) # 向集群加载包
+
 # 导入口令
 DBPWD <- Sys.getenv("MYSQL_PWD")
 TOKEN <- Sys.getenv("FB_TOKEN")
@@ -49,7 +50,7 @@ while (T) {
       paste0("--", cndMessage, "--")
       beepr::beep(sound = sample(c(1:11), 1))
     },
-    if (hour(now()) >= 6 & hour(now()) <= 20) {
+    if (T) {
       message("Mession Start!")
       # 开始获取所有账户
       # 设定初始链接
@@ -61,7 +62,7 @@ while (T) {
       n <- 1
 
       # 开始获取所有账户
-      message("Start Getting All Accounts, 40s are required! ")
+      message("Start to Get All Accounts, 40s are required! ")
       tic()
       while (flag & n <= 10) {
         n <- n + 1
@@ -85,7 +86,7 @@ while (T) {
         cluster_data_all <- all_account["account_id"] %>%
           partition(cluster)
         # 集群开始工作, 使用自定义函数操作cluster_data集群数据, 并保存为result数据
-        message("Start Dealing With 120IDs, 480s are required!")
+        message("Start to Deal With 120IDs, 480s are required!")
         tic()
         message(str_c("Now is ", now()))
         db_data_120 <- cluster_data_all %>%
@@ -131,7 +132,7 @@ while (T) {
 
       # last 100 days need 133s -------------------------------------------------
 
-      message("Start Dealing With 100IDs,  120s are required!")
+      message("Start to Deal With 100IDs,  120s are required!")
       message(str_c("Now is ", now()))
       # true_ID_120 <- readr::read_csv("./account_120_status.csv", col_types = "cdTc") %>%
       #   filter(status_code == 1) %>%
@@ -157,7 +158,7 @@ while (T) {
 
       # last 35 days need 80s  --------------------------------------------------
 
-      message("Start Dealing With 30IDs, 80s are required!")
+      message("Start to Deal With 30IDs, 80s are required!")
       message(str_c("Now is ", now()))
       # true_ID_100 <- readr::read_csv("./account_100_status.csv", col_types = "cdTc") %>%
       #   filter(status_code == 1) %>%
@@ -182,7 +183,7 @@ while (T) {
       toc()
 
       # last 3 days need 32s -------------------------------------------------------------
-      message("Start Dealing With 3IDs, 40s are required!")
+      message("Start to Deal With 3IDs, 40s are required!")
       message(str_c("Now is ", now()))
       # true_ID_10 <- readr::read_csv("./account_35_status.csv", col_types = "cdTc") %>%
       #   filter(status_code == 1) %>%
@@ -209,7 +210,7 @@ while (T) {
       toc()
 
       # 获取季度消耗 need 154s ------------------------------------------------------------------
-      message("Start Getting Quarter Spend, 80s are required!")
+      message("Start to Get Quarter Spend, 80s are required!")
       message(str_c("Now is ", now()))
       tic()
       # spendID_90 <- readr::read_csv("./account_100_status.csv", col_types = "cdTc") %>%
@@ -250,7 +251,7 @@ while (T) {
         message("First Month of Quarter, Don't need to Refresh")
         df_30 <- df_90
       } else {
-        message("Start Getting Month Spend, 60s are required!")
+        message("Start to Get Month Spend, 60s are required!")
         message(str_c("Now is ", now()))
         tic()
         # spendID_30 <- readr::read_csv("./account_35_status.csv", col_types = "cdTc") %>%
@@ -282,7 +283,7 @@ while (T) {
       toc()
 
       # 获取昨日消耗 need 36s -----------------------------------------------------------------
-      message("Start Getting Yesterday Spend, 40s are required!")
+      message("Start to Get Yesterday Spend, 40s are required!")
       message(str_c("Now is ", now()))
       tic()
       # spendID_3 <- readr::read_csv("./account_3_status.csv", col_types = "cdTc") %>%
@@ -315,7 +316,7 @@ while (T) {
       toc()
 
       # 获取今日消耗 need 36s -----------------------------------------------------------------
-      message("Start Getting Today Spend, 30s are required!")
+      message("Start to Get Today Spend, 30s are required!")
       message(str_c("Now is ", now()))
       tic()
       # spendID_0 <- readr::read_csv("./account_3_status.csv", col_types = "cdTc") %>%
@@ -342,22 +343,12 @@ while (T) {
 
       dbWriteTable(connfb_local, "spend_today", df_0, append = T)
       readr::write_excel_csv(df_0, file = "./spend_today.csv")
-      
-      # message("Start Writing to Database")
-      # tic()
-      # dbWriteTable(connfb_remote, "spend_quarter", df_90, overwrite = T)
-      # dbWriteTable(connfb_remote, "spend_month", df_30, overwrite = T)
-      # dbWriteTable(connfb_remote, "spend_yesterday", df_1, overwrite = T)
-      # dbWriteTable(connfb_remote, "spend_histiry", df_1, overwrite = T)
-      # dbWriteTable(connfb_remote, "spend_today", df_0, overwrite = T)
-      # message("Writing Data Spend:")
-      # toc()
-      
       rm(cluster_spend_0)
       gc()
       message("Get today Spend Complete! Time Spent: ")
       toc()
-      message("Now Waiting 60s")
+      message("Now Waiting 600s")
+      Sys.sleep(600)
     } else {
       message(str_c("Now is ", now()))
       message("Standing by....")
