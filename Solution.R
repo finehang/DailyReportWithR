@@ -964,7 +964,11 @@
     mutate(
       广告账户名称 = toupper(广告账户名称),
       产品 = if_else(str_detect(广告账户名称, "CASTLE"), "Castle",
-        if_else(str_detect(广告账户名称, "GROUP"), "Rummy", "None")
+        if_else(str_detect(广告账户名称, "GROUP"), "Rummy",
+          if_else(str_detect(广告账户名称, "DOMAIN"), "Rummy Domain",
+            "None"
+          )
+        )
       )
     ) %>%
     group_split(产品) %>%
