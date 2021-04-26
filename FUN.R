@@ -299,7 +299,9 @@ li_ao <- function(data) {
       if_else(str_detect(广告账户名称, "FunRummy"), "FunRummy",
         if_else(str_detect(广告账户名称, "48"), "3Patti_48",
           if_else(str_detect(广告账户名称, "GinRummy"), "GinRummy",
-            "None"
+            if_else(str_detect(广告账户名称, "3patti-40"), "3patti-40",
+              "None"
+            )
           )
         )
       )
@@ -407,7 +409,7 @@ col_sum <- function(data) {
 
 sum_split <- function(data, split) {
   data <- data %>%
-    group_by({{ split }}) %>%
+    group_by({{split}}) %>%
     group_split() %>%
     map_dfr(~ col_sum(.))
   return(data)
