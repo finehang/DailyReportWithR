@@ -54,14 +54,15 @@ server <- function(input, output) {
 
   Today <- dbGetQuery(connfb_local, "select * from spend.spend_today where update_time = (select distinct(update_time) as date_time from spend.spend_today order by date_time desc limit 1) order by spend DESC")
 
-  TodayTrend <- dbGetQuery(connfb_local, "select max(`sum`) as `sum`, update_time from (SELECT sum(spend) as `sum`, update_time FROM spend.spend_today where DATE(update_time) = CURDATE() group by update_time) as `all` group by update_time") %>%
+  TodayTrend <- dbGetQuery(connfb_local, "select max(`sum`) as `sum`, update_time from (SELECT sum(spend) as `sum`, update_time FROM spend.spend_today where DATE(update_time) = CURDATE() and DATE(date_start) = CURDATE() group by update_time) as `all` group by update_time") %>%
     mutate(
       sum = round(sum, 2),
       update_time = hour(update_time) + minute(update_time) / 60
     )
 
-  HistoryTrend <- dbGetQuery(connfb_local, "SELECT max(a) as spend, DAY(`update_time`) - 1 as date FROM ( SELECT sum(`spend`) AS a, `update_time` FROM spend.spend_history GROUP BY `update_time`) AS b GROUP BY DAY(`update_time`)") %>%
-    mutate(spend = round(spend, 2))
+  HistoryTrend <- dbGetQuery(connfb_local, "SELECT max(a) as spend, update_time as date FROM ( SELECT sum(`spend`) AS a, `update_time` FROM spend.spend_history GROUP BY `update_time`) AS b GROUP BY DAY(`update_time`)") %>%
+    mutate(date = date(date), 
+      spend = round(spend, 2))
 
   data_all <- list(Quarter = Quarter$spend, Month = Month$spend, Yesterday = Yesterday$spend, Today = Today$spend) %>%
     map_df(~ get_summary(.))
@@ -88,8 +89,9 @@ server <- function(input, output) {
       xlab("Date") +
       ylab("Spend") +
       scale_y_continuous(limits = c(min(HistoryTrend$spend) - 30000, max(HistoryTrend$spend)), breaks = seq(0, max(HistoryTrend$spend), 30000)) +
-      # scale_x_continuous(limits = c(0, 24), breaks = seq(0, 24, 2)) +
+      scale_x_date(date_breaks = "1 day") +
       geom_label_repel(aes(label = spend)) +
+      theme(axis.text.x  = element_text(angle = -45)) +
       ggtitle("历史消耗趋势")
   )
 
