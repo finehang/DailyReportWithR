@@ -12,9 +12,7 @@ no_group <- function(data, gro = "group") {
       点击 = sum(as.numeric(点击量)),
       展示次数 = sum(as.numeric(展示次数)),
       花费 = sum(as.numeric(金额)),
-      回收 = sum(as.numeric(购物转化值)),
-      购买 = sum(as.numeric(购买次数)),
-      注册 = sum(as.numeric(完成注册))
+      回收 = sum(as.numeric(购物转化值))
     ) %>%
     select(group, 日期, everything())
   return(data)
@@ -31,9 +29,7 @@ with_geo <- function(data, gro = "Gro") {
       点击 = sum(as.numeric(点击量)),
       展示次数 = sum(as.numeric(展示次数)),
       花费 = sum(as.numeric(金额)),
-      回收 = sum(as.numeric(购物转化值)),
-      购买 = sum(as.numeric(购买次数)),
-      注册 = sum(as.numeric(完成注册))
+      回收 = sum(as.numeric(购物转化值))
     ) %>%
     mutate(Group = gro, ) %>%
     select(Group, 日期, everything())
@@ -64,9 +60,7 @@ with_os <- function(data) {
         点击 = sum(as.numeric(点击量)),
         展示次数 = sum(as.numeric(展示次数)),
         花费 = sum(as.numeric(金额)),
-        回收 = sum(as.numeric(购物转化值)),
-        购买 = sum(as.numeric(购买次数)),
-        注册 = sum(as.numeric(完成注册))
+        回收 = sum(as.numeric(购物转化值))
       ) %>%
       select(日期, everything())
   } else {
@@ -78,9 +72,7 @@ with_os <- function(data) {
         点击 = sum(as.numeric(点击量)),
         展示次数 = sum(as.numeric(展示次数)),
         花费 = sum(as.numeric(金额)),
-        回收 = sum(as.numeric(购物转化值)),
-        购买 = sum(as.numeric(购买次数)),
-        注册 = sum(as.numeric(完成注册))
+        回收 = sum(as.numeric(购物转化值))
       ) %>%
       select(日期, everything())
   }
@@ -108,42 +100,9 @@ with_go <- function(data) {
       点击 = sum(as.numeric(点击量)),
       展示次数 = sum(as.numeric(展示次数)),
       花费 = sum(as.numeric(金额)),
-      回收 = sum(as.numeric(购物转化值)),
-      购买 = sum(as.numeric(购买次数)),
-      注册 = sum(as.numeric(完成注册))
+      回收 = sum(as.numeric(购物转化值))
     ) %>%
     select(日期, everything())
-  return(data)
-}
-
-select_default <- function(data, selection = NULL) {
-  data <- data %>% select(c(日期, group, 安装, 点击, 展示次数, 花费, 回收, all_of(selection)))
-  return(data)
-}
-
-tap <- function(data) {
-  data <- data %>%
-    mutate_all(replace_na, replace = 0) %>%
-    dplyr::filter(地区 != "unknown") %>%
-    mutate(产品 = if_else(str_detect(广告账户名称, "SEA"), "SEA", "NA")) %>%
-    mutate(
-      系列名称 = toupper(系列名称),
-      版本 = if_else(str_detect(系列名称, "AND"), "AND",
-        if_else(str_detect(系列名称, "安卓"), "AND",
-          if_else(str_detect(系列名称, "IOS"), "IOS",
-            "PC"
-          )
-        )
-      )
-    ) %>%
-    group_by(产品, 版本, 地区) %>%
-    summarise(
-      日期 = as.character(Sys.Date() - 1),
-      花费 = sum(as.numeric(金额))
-      # ,安装 = sum(as.numeric(安装量)),
-      # 回收 = sum(as.numeric(购物转化值))
-    ) %>%
-    select(产品, 日期, everything())
   return(data)
 }
 
@@ -161,8 +120,7 @@ zhang_yue <- function(data) {
       点击率 = 点击 / 展示次数,
       ROI = 回收 / 花费,
       CPI = 花费 / 安装
-    ) %>%
-    select(-注册)
+    )
   return(data)
 }
 
@@ -170,65 +128,6 @@ dream <- function(data) {
   data <- data %>%
     mutate(地区 = as.character(fct_other(as_factor(地区), keep = c("ID", "US"), other_level = "全球")))
   return(data)
-}
-
-zx <- function(data) {
-  data <- data %>%
-    mutate_all(replace_na, replace = 0) %>%
-    mutate(类别 = if_else(str_detect(系列名称, "_AEO_"), "AEO", "NOAEO")) %>%
-    group_by(类别) %>%
-    summarise(
-      日期 = as.character(Sys.Date() - 1),
-      金额 = sum(as.numeric(金额)),
-      安装量 = sum(as.numeric(安装量)),
-      购买次数 = sum(as.numeric(购买次数)),
-    )
-  return(data)
-}
-
-zx_aeo <- function(data) {
-  data <- data %>%
-    filter(类别 == "AEO") %>%
-    select(日期, 类别, 金额, 购买次数)
-}
-
-zx_no_aeo <- function(data) {
-  data <- data %>%
-    dplyr::filter(类别 == "NOAEO") %>%
-    select(日期, 类别, 金额, 安装量)
-}
-
-mao <- function(data) {
-  data <- data %>%
-    mutate_all(replace_na, replace = 0) %>%
-    mutate(产品 = if_else(str_detect(广告账户名称, "避难所"), "避难所", "Immortal")) %>%
-    mutate(
-      系列名称 = toupper(系列名称),
-      平台 = if_else(str_detect(系列名称, "_AND"), "AND",
-        if_else(str_detect(系列名称, "_IOS_"), "IOS",
-          "PC"
-        )
-      )
-    ) %>%
-    group_by(产品, 平台) %>%
-    summarise(
-      日期 = as.character(Sys.Date() - 1),
-      金额 = sum(as.numeric(金额)),
-      展示 = sum(as.numeric(展示次数)),
-      点击 = sum(as.numeric(点击量)),
-      安装 = sum(as.numeric(安装量)),
-      购物转化值 = sum(as.numeric(购物转化值))
-    ) %>%
-    select(日期, everything())
-  return(data)
-}
-
-novel_cat <- function(data) {
-  data <- data %>%
-    mutate(地区 = as.character(fct_other(as_factor(地区),
-      keep = c("MY", "PH", "SG", "US"),
-      other_level = "Global"
-    )))
 }
 
 fix_fb_name <- function(data) {
@@ -265,6 +164,7 @@ car_fb <- function(data) {
 
   return(data)
 }
+
 car_gg <- function(data) {
   data <- data %>%
     na.omit() %>%
@@ -299,7 +199,7 @@ li_ao <- function(data) {
       if_else(str_detect(广告账户名称, "FunRummy"), "FunRummy",
         if_else(str_detect(广告账户名称, "48"), "3Patti_48",
           if_else(str_detect(广告账户名称, "GinRummy"), "GinRummy",
-            if_else(str_detect(广告账户名称, "3patti-40"), "3patti-40",
+            if_else(str_detect(广告账户名称, "40"), "3patti-40",
               "None"
             )
           )
@@ -376,7 +276,7 @@ fei <- function(data) {
 ling <- function(data, name) {
   data <- data %>%
     no_group(gro = name) %>%
-    select(group, 日期, 安装, 点击, 展示次数, 花费, 注册, 回收, 购买)
+    select(group, 日期, 安装, 点击, 展示次数, 花费, 回收)
   return(data)
 }
 
@@ -394,24 +294,6 @@ ji_dao <- function(data) {
       花费 = sum(as.numeric(费用)),
       回收 = sum(as.numeric(转化价值))
     )
-  return(data)
-}
-
-col_sum <- function(data) {
-  sum <- data %>%
-    ungroup() %>%
-    select(where(~ is.numeric(.))) %>%
-    colSums()
-  data <- bind_rows(data, sum) %>%
-    mutate_all(replace_na, replace = "")
-  return(data)
-}
-
-sum_split <- function(data, split) {
-  data <- data %>%
-    group_by({{split}}) %>%
-    group_split() %>%
-    map_dfr(~ col_sum(.))
   return(data)
 }
 
