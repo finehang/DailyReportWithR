@@ -3,6 +3,9 @@
   setwd("C:/Users/fanhang/Desktop/Datadownload")
   source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "utf-8")
 
+  xin_mo <- readxl::read_xlsx("./新陌_CatFox.xlsx") %>% filter(!is.na(帐户名称))
+  dataMiYi <- readxl::read_xls("新米易.xls")
+  dataLiRan <- readxl::read_xls("新李冉.xls")
   dataNanTong <- readxl::read_xls("新南通小塘.xls")
   dataWanBei <- readxl::read_xls("新海南玩呗.xls")
   dataZhiNuo2 <- readxl::read_xlsx("致诺2.xlsx")
@@ -145,10 +148,34 @@
 # 掌阅 ----------------------------------------------------------------------
 
 {
-  dataZhang %>%
-    with_os() %>%
-    zhang_yue() %>%
-    save_csv(name = "掌阅")
+  # dataZhang %>%
+  #   with_os() %>%
+  #   zhang_yue() %>%
+  #   save_csv(name = "掌阅")
+}
+# 新陌 ----------------------------------------------------------------------
+
+
+{
+  xin_mo_1 <- xin_mo %>%
+    mutate(
+      帐户名称 = toupper(帐户名称),
+      产品 = if_else(str_detect(帐户名称, "NOVELCAT"), "NovelCat", "FoxNovel")
+    )
+
+  xin_mo_1 %>%
+    filter(产品 == "NovelCat") %>%
+    fix_xinmo() %>%
+    with_go_xinmo() %>%
+    mutate(CPI = 花费 / 安装, ROI = 回收 / 花费) %>%
+    save_csv(name = "NovelCat")
+
+  xin_mo_1 %>%
+    filter(产品 == "FoxNovel") %>%
+    fix_xinmo() %>%
+    with_go_xinmo() %>%
+    mutate(CPI = 花费 / 安装, ROI = 回收 / 花费) %>%
+    save_csv(name = "FoxNovel")
 }
 
 # 领麦TopRummy -----------------------------------------------------------------
@@ -169,7 +196,7 @@
     ) %>%
     group_split(产品) %>%
     map_dfr(~ no_group(., gro = .$产品)) %>%
-    select(-c(回收, 购买, 注册)) %>%
+    select(-c(回收)) %>%
     save_csv(name = "领麦")
 }
 
@@ -284,11 +311,29 @@
 }
 
 
+# 米易 ----------------------------------------------------------------------
+
+{
+  dataMiYi %>%
+    mutate(
+      广告账户名称 = toupper(广告账户名称),
+      产品 = if_else(str_detect(广告账户名称, "ONLINE"), "Fast",
+        if_else(str_detect(广告账户名称, "PONDO"), "Pondo Cash",
+          "None"
+        )
+      )
+    ) %>%
+    group_split(产品) %>%
+    map_dfr(~ no_group(., gro = .$产品)) %>%
+    save_csv(name = "米易")
+}
+
 # XinYa -------------------------------------------------------------------
 
 {
   dataXinYa %>%
     no_group(gro = "XinYa") %>%
+    select(-回收) %>%
     save_csv(name = "XinYa")
 }
 
@@ -300,6 +345,7 @@
     select(日期, everything()) %>%
     save_csv(name = "吉道")
 }
+
 # 华策天城 --------------------------------------------------------------------
 
 {
@@ -312,8 +358,17 @@
     ) %>%
     group_split(产品) %>%
     map_dfr(~ no_group(., gro = .$产品)) %>%
-    select(-c(购买, 回收, 注册)) %>%
+    select(-c(回收)) %>%
     save_csv(name = "华策天城")
+}
+
+# 温州李冉 --------------------------------------------------------------------
+
+{
+  dataLiRan %>%
+    no_group(gro = "李冉") %>%
+    select(日期, 安装, 花费) %>%
+    save_csv(name = "温州李冉")
 }
 
 # 江苏明通新墨香 -------------------------------------------------------------
@@ -321,9 +376,7 @@
 {
   dataJiang1 <- dataJiang %>%
     with_go() %>%
-    select(-回收, -注册) %>%
-    mutate(CPI = 花费 / 安装) %>%
-    select(-购买)
+    mutate(CPI = 花费 / 安装)
 
   dataJiang2 <- tibble(
     日期 = "　", 版本 = " ", 地区 = "总计",
@@ -343,7 +396,6 @@
   dataDreame %>%
     dream() %>%
     with_go() %>%
-    select(-c(购买, 注册)) %>%
     save_csv(name = "Dreame")
 }
 
@@ -357,7 +409,6 @@
     ) %>%
     group_split(产品) %>%
     map_dfr(~ no_group(., gro = .$产品)) %>%
-    select(-c(购买, 注册)) %>%
     select(group, 日期, everything()) %>%
     save_csv(name = "掌云")
 }
@@ -417,7 +468,6 @@
     ) %>%
     group_split(产品) %>%
     map_dfr(~ no_group(., gro = .$产品)) %>%
-    select(-c(注册)) %>%
     save_csv(name = "Prometheus")
 }
 
@@ -425,31 +475,25 @@
 
 {
   dataKaiHaya1 <- dataKaiHaya %>%
-    no_group(gro = "Haya") %>%
-    select_default(selection = "注册")
+    no_group(gro = "Haya")
 
   dataKaiStich1 <- dataKaiStich %>%
-    no_group(gro = "Stich") %>%
-    select_default(selection = "注册")
+    no_group(gro = "Stich")
 
   dataKaiVideo1 <- dataKaiVideo %>%
-    no_group(gro = "Video") %>%
-    select_default(selection = "注册")
+    no_group(gro = "Video")
 
   dataKaiWinnie1 <- dataKaiWinnie %>%
-    no_group(gro = "Winnie") %>%
-    select_default(selection = "注册")
+    no_group(gro = "Winnie")
 
   dataKaiTakTak1 <- dataKaiTakTak %>%
-    no_group(gro = "TakTak") %>%
-    select_default(selection = "注册")
+    no_group(gro = "TakTak")
 
   bind_rows(dataKaiHaya1, dataKaiStich1, dataKaiVideo1, dataKaiWinnie1, dataKaiTakTak1) %>%
     save_csv(name = "Videochat")
 
   dataKaiHallo %>%
     with_geo(gro = "Hallo") %>%
-    select(-购买) %>%
     save_csv(name = "Videochat_Hallo")
 }
 
@@ -465,7 +509,6 @@
     ) %>%
     group_split(产品) %>%
     map_dfr(~ no_group(., .$产品)) %>%
-    select(-c(注册)) %>%
     save_csv(name = "阿吉比")
 }
 
@@ -492,7 +535,6 @@
 {
   dataCaiShen %>%
     no_group(gro = "财神卡") %>%
-    select(-c(注册)) %>%
     save_csv(name = "财神卡")
 }
 
@@ -557,7 +599,6 @@
     ) %>%
     group_split(产品) %>%
     map_dfr(~ no_group(., .$产品)) %>%
-    select(-c(注册)) %>%
     save_csv(name = "杭州优量")
 }
 
@@ -593,7 +634,9 @@
                     if_else(str_detect(广告账户名称, "NCN"), "NCN",
                       if_else(str_detect(广告账户名称, "51CREDIT"), "51 Credit",
                         if_else(str_detect(广告账户名称, "QUICK"), "quick cash",
-                          "None"
+                          if_else(str_detect(广告账户名称, "CREDIT"), "CreditCash",
+                            "None"
+                          )
                         )
                       )
                     )
@@ -625,7 +668,7 @@
 {
   dataLiangZiDop %>%
     no_group(gro = "量子Dop") %>%
-    select(-c("回收", "购买", "注册")) %>%
+    select(-c(回收)) %>%
     save_csv(name = "量子Dop")
 }
 
@@ -636,19 +679,16 @@
     mutate(
       广告账户名称 = toupper(广告账户名称),
       产品 = if_else(str_detect(广告账户名称, "KEY"), "Key",
-        (if_else(str_detect(广告账户名称, "PAY"), "Pay",
-          (if_else(str_detect(广告账户名称, "CUBE"), "Cube",
-            (if_else(str_detect(广告账户名称, "GOOD"), "Good Loaning",
-              (if_else(str_detect(广告账户名称, "BOSS"), "Credit Boss",
-                (if_else(str_detect(广告账户名称, "MOMO"), "MoMoCash", "None")
+        if_else(str_detect(广告账户名称, "PAY"), "Pay",
+          if_else(str_detect(广告账户名称, "CUBE"), "Cube",
+            if_else(str_detect(广告账户名称, "GOOD"), "Good Loaning",
+              if_else(str_detect(广告账户名称, "BOSS"), "Credit Boss",
+                if_else(str_detect(广告账户名称, "MOMO"), "MoMoCash",
+                  "None"
                 )
               )
-              )
-            )
             )
           )
-          )
-        )
         )
       )
     ) %>%
@@ -680,8 +720,8 @@
 # 南通小塘 --------------------------------------------------------------------
 
 {
-  dataNanTong %>% 
-    no_group(gro = "南通小塘") %>% 
+  dataNanTong %>%
+    no_group(gro = "南通小塘") %>%
     save_csv(name = "南通小塘")
 }
 
@@ -734,29 +774,19 @@
 
 {
   dataSan1 <- dataSan %>%
-    no_group(gro = "Sancamap") %>%
-    select_default() %>%
-    select(-回收)
+    no_group(gro = "Sancamap")
 
   dataBaCay1 <- dataBaCay %>%
-    no_group(gro = "BaCay") %>%
-    select_default() %>%
-    select(-回收)
+    no_group(gro = "BaCay")
 
   dataFortune1 <- dataFortune %>%
-    no_group(gro = "Fortune") %>%
-    select_default() %>%
-    select(-回收)
+    no_group(gro = "Fortune")
 
   dataBauCuaKing1 <- dataBauCuaKing %>%
-    no_group(gro = "BauCuaKing") %>%
-    select_default() %>%
-    select(-回收)
+    no_group(gro = "BauCuaKing")
 
   dataSlotsMaster1 <- dataSlotsMaster %>%
-    no_group(gro = "SlotsMaster") %>%
-    select_default() %>%
-    select(-回收)
+    no_group(gro = "SlotsMaster")
 
   dataHuanLe1 <- dataHuanLe %>%
     with_os() %>%
