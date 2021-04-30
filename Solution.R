@@ -4,6 +4,7 @@
   source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "utf-8")
 
   xin_mo <- readxl::read_xlsx("./新陌_CatFox.xlsx") %>% filter(!is.na(帐户名称))
+  dataChuanYe <- readxl::read_xls("新川野.xls")
   dataMiYi <- readxl::read_xls("新米易.xls")
   dataLiRan <- readxl::read_xls("新李冉.xls")
   dataNanTong <- readxl::read_xls("新南通小塘.xls")
@@ -544,6 +545,14 @@
   dataChuYin %>%
     no_group(gro = "刍音") %>%
     save_csv(name = "刍音")
+}
+
+# 川野 ----------------------------------------------------------------------
+
+{
+  dataChuanYe %>% 
+    no_group(gro = "川野") %>% 
+    save_csv(name = "川野")
 }
 
 # 大鱼 ----------------------------------------------------------------------
