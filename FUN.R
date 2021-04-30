@@ -124,6 +124,31 @@ zhang_yue <- function(data) {
   return(data)
 }
 
+with_go_xinmo <- function(data) {
+  data <- data %>%
+    mutate_all(replace_na, replace = 0) %>%
+    dplyr::filter(`国家/地区` != "unknown") %>%
+    group_by(系统, `国家/地区`) %>%
+    summarise(
+      日期 = as.character(Sys.Date() - 1),
+      安装 = sum(应用安装),
+      点击 = sum(`点击量（全部）`),
+      展示 = sum(展示次数),
+      花费 = sum(`花费金额 (USD)`),
+      回收 = sum(移动应用购物转化价值),
+    ) %>%
+    select(日期, everything())
+  return(data)
+}
+
+fix_xinmo <- function(data) {
+  data <- data %>%
+    mutate(`国家/地区` = as.character(fct_other(as_factor(`国家/地区`),
+                                            keep = c("MY", "PH", "SG", "US"),
+                                            other_level = "Global"
+    )))
+}
+
 dream <- function(data) {
   data <- data %>%
     mutate(地区 = as.character(fct_other(as_factor(地区), keep = c("ID", "US"), other_level = "全球")))
