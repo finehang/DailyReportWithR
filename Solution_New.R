@@ -1,4 +1,4 @@
-with_go <- function(data) {
+with_go_xinmo <- function(data) {
     data <- data %>%
         mutate_all(replace_na, replace = 0) %>%
         dplyr::filter(`国家/地区` != "unknown") %>%
@@ -15,7 +15,7 @@ with_go <- function(data) {
     return(data)
 }
 
-fix_geo <- function(data) {
+fix_xinmo <- function(data) {
     data <- data %>%
         mutate(`国家/地区` = as.character(fct_other(as_factor(`国家/地区`),
                                                 keep = c("MY", "PH", "SG", "US"),
@@ -32,6 +32,10 @@ fix_geo <- function(data) {
     
 }
 
+
+# 新陌 ----------------------------------------------------------------------
+
+
 {
     xin_mo_1 <- xin_mo %>%
         mutate(
@@ -41,15 +45,15 @@ fix_geo <- function(data) {
     
     xin_mo_1 %>%
         filter(产品 == "NovelCat") %>%
-        fix_geo() %>%
-        with_go() %>%
+        fix_xinmo() %>%
+        with_go_xinmo() %>%
         mutate(CPI = 花费 / 安装, ROI = 回收 / 花费) %>%
         save_csv(name = "NovelCat")
     
     xin_mo_1 %>%
         filter(产品 == "FoxNovel") %>%
-        fix_geo() %>%
-        with_go() %>%
+        fix_xinmo() %>%
+        with_go_xinmo() %>%
         mutate(CPI = 花费 / 安装, ROI = 回收 / 花费) %>%
         save_csv(name = "FoxNovel")
 }
