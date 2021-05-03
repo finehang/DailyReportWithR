@@ -225,12 +225,13 @@ li_ao <- function(data) {
         if_else(str_detect(广告账户名称, "48"), "3Patti_48",
           if_else(str_detect(广告账户名称, "GinRummy"), "GinRummy",
             if_else(str_detect(广告账户名称, "40"), "3patti-40",
+                    if_else(str_detect(广告账户名称, "30"), "3patti-30",
               "None"
             )
           )
         )
       )
-    )) %>%
+    ))) %>%
     group_by(产品) %>%
     summarise(
       日期 = as.character(Sys.Date() - 1),
