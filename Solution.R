@@ -4,6 +4,7 @@
   source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "utf-8")
 
   xin_mo <- readxl::read_xlsx("./新陌_CatFox.xlsx") %>% filter(!is.na(帐户名称))
+  dataRuiDao <- readxl::read_xls("新瑞道.xls")
   dataChuanYe <- readxl::read_xls("新川野.xls")
   dataMiYi <- readxl::read_xls("新米易.xls")
   dataLiRan <- readxl::read_xls("新李冉.xls")
@@ -141,8 +142,13 @@
 
 {
   dataXingQi %>%
-    no_group(gro = "星奇畅想") %>%
-    select(日期, 花费, 安装) %>%
+    mutate(
+      广告账户名称 = toupper(广告账户名称),
+      产品 = if_else(str_detect(广告账户名称, "POOL"), "Pool Master", "ZumbaClassic")
+    ) %>%
+    group_split(产品) %>%
+    map_dfr(~ no_group(., gro = .$产品)) %>%
+    select(日期, group, 花费, 安装) %>%
     save_csv(name = "星奇畅想")
 }
 
@@ -377,6 +383,7 @@
 {
   dataJiang1 <- dataJiang %>%
     with_go() %>%
+    select(-回收) %>%
     mutate(CPI = 花费 / 安装)
 
   dataJiang2 <- tibble(
@@ -550,8 +557,8 @@
 # 川野 ----------------------------------------------------------------------
 
 {
-  dataChuanYe %>% 
-    no_group(gro = "川野") %>% 
+  dataChuanYe %>%
+    no_group(gro = "川野") %>%
     save_csv(name = "川野")
 }
 
@@ -644,7 +651,9 @@
                       if_else(str_detect(广告账户名称, "51CREDIT"), "51 Credit",
                         if_else(str_detect(广告账户名称, "QUICK"), "quick cash",
                           if_else(str_detect(广告账户名称, "CREDIT"), "CreditCash",
-                            "None"
+                            if_else(str_detect(广告账户名称, "OGON"), "ZW",
+                              "None"
+                            )
                           )
                         )
                       )
@@ -724,6 +733,14 @@
     with_os() %>%
     select(日期, 版本, 安装, 花费) %>%
     save_csv(name = "喵石")
+}
+
+# 瑞道 ----------------------------------------------------------------------
+
+{
+  dataRuiDao %>%
+    no_group(gro = "瑞道") %>%
+    save_csv(name = "瑞道")
 }
 
 # 南通小塘 --------------------------------------------------------------------
