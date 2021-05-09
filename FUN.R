@@ -116,11 +116,13 @@ bai_jing <- function(data) {
 zhang_yue <- function(data) {
   data <- data %>%
     mutate(
-      千次展示费用 = 花费 / 展示次数 * 1000,
-      点击率 = 点击 / 展示次数,
-      ROI = 回收 / 花费,
-      CPI = 花费 / 安装
-    )
+      日期 = as.character(Sys.Date() - 1),
+      千次展示费用 = 花费金额 / 展示次数 * 1000,
+      点击率 = `点击量（全部）` / 展示次数,
+      ROI = 移动应用购物转化价值 / 花费金额,
+      CPI = 花费金额 / 应用安装
+    ) %>%
+    arrange(系统)
   return(data)
 }
 
@@ -144,8 +146,8 @@ with_go_xinmo <- function(data) {
 fix_xinmo <- function(data) {
   data <- data %>%
     mutate(`国家/地区` = as.character(fct_other(as_factor(`国家/地区`),
-                                            keep = c("MY", "PH", "SG", "US"),
-                                            other_level = "Global"
+      keep = c("MY", "PH", "SG", "US"),
+      other_level = "Global"
     )))
 }
 
@@ -225,13 +227,16 @@ li_ao <- function(data) {
         if_else(str_detect(广告账户名称, "48"), "3Patti_48",
           if_else(str_detect(广告账户名称, "GinRummy"), "GinRummy",
             if_else(str_detect(广告账户名称, "40"), "3patti-40",
-                    if_else(str_detect(广告账户名称, "30"), "3patti-30",
-              "None"
+              if_else(str_detect(广告账户名称, "30"), "3patti-30",
+                if_else(str_detect(广告账户名称, "47"), "3patti-47",
+                  "None"
+                )
+              )
             )
           )
         )
       )
-    ))) %>%
+    )) %>%
     group_by(产品) %>%
     summarise(
       日期 = as.character(Sys.Date() - 1),
@@ -257,9 +262,15 @@ you <- function(data) {
     group_by(产品) %>%
     summarise(
       日期 = as.character(Sys.Date() - 1),
-      花费 = sum(as.numeric(金额))
+      地区 = "IN",
+      安装 = sum(as.numeric(安装量)),
+      点击 = sum(as.numeric(点击量)),
+      展示次数 = sum(as.numeric(展示次数)),
+      花费 = sum(as.numeric(金额)),
+      购物转化值 = sum(as.numeric(购物转化值)),
+      CPI = 花费 / 安装
     ) %>%
-    select(日期, 产品, 花费)
+    select(日期, 产品, 安装, 点击, 展示次数, 花费, 购物转化值)
   return(data)
 }
 
