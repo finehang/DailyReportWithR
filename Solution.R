@@ -7,8 +7,8 @@
   dataChongYu <- readxl::read_xls("新崇雨商贸.xls")
   dataMiCoLive <- readxl::read_xls("新MiCoLive.xls")
   dataBit <- readxl::read_xls("新比特币.xls")
-  dataHuiXian <- readxl::read_xls("新辉仙.xls")
-  dataZhangYue <- readxl::read_xlsx("掌阅.xlsx")
+  dataHuiXian <- readxl::read_xlsx("辉仙.xlsx") %>% filter(!is.na(帐户名称))
+  dataZhangYue <- readxl::read_xlsx("掌阅.xlsx") %>% filter(!is.na(帐户名称))
   dataZhuLi <- readxl::read_xls("新朱礼.xls")
   dataRuiDao <- readxl::read_xls("新瑞道.xls")
   dataChuanYe <- readxl::read_xls("新川野.xls")
@@ -38,6 +38,7 @@
   dataYouQing <- readxl::read_xls("新杭州优擎.xls")
   # dataPrometheus <- readxl::read_xls("新Prometheus.xls")
   dataHaiNan <- readxl::read_xls("新海南翎唛.xls")
+  dataSan <- readxl::read_xls("新海南翎麦Sancamap.xls")
   dataBauCuaKing <- readxl::read_xls("新海南翎麦_BauCuaKing.xls")
   dataHuanLe <- readxl::read_xls("新海南翎麦_欢乐语音.xls")
   dataFortune <- readxl::read_xls("新海南翎麦_FortuneClub.xls")
@@ -53,7 +54,6 @@
   dataLiAo <- readxl::read_xls("新深圳理奥.xls")
   dataJiDao <- readxl::read_xlsx("吉道.xlsx", skip = 2, col_names = T)
   dataMiao <- readxl::read_xls("新喵石.xls")
-  dataSan <- readxl::read_xls("新海南翎麦Sancamap.xls")
   dataKaiTakTak <- readxl::read_xls("新凯丽金_TakTak.xls")
   dataKaiStich <- readxl::read_xls("新凯丽金_Stich.xls")
   dataKaiVideo <- readxl::read_xls("新凯丽金_VideoChat.xls")
@@ -206,13 +206,14 @@
           if_else(str_detect(广告账户名称, "RUMMY WIN"), "Rummy Win Facebook",
             if_else(str_detect(广告账户名称, "REAL TEEN"), "Real Teen Patti",
               if_else(str_detect(广告账户名称, "0429-RUMMY"), "kingrummy",
+              if_else(str_detect(广告账户名称, "MARVEL"), "MarvelTeenPatti",
                 "None"
               )
             )
           )
         )
       )
-    ) %>%
+    )) %>%
     group_split(产品) %>%
     map_dfr(~ no_group(., gro = .$产品)) %>%
     select(-c(回收)) %>%
@@ -434,6 +435,16 @@
   #   map_dfr(~ no_group(., gro = .$产品)) %>%
   #   select(group, 日期, everything()) %>%
   #   save_csv(name = "掌云")
+}
+
+
+# MiCoLive ----------------------------------------------------------------
+
+{
+  dataMiCoLive %>% 
+    no_group(gro = "MiCoLive") %>% 
+    select(group, 日期, 安装, 花费, 回收) %>% 
+    save_csv(name = "MiCoLive")
 }
 
 # 博客来 J+M -----------------------------------------------------------
@@ -703,21 +714,22 @@
 # 辉仙 ----------------------------------------------------------------------
 
 {
-  dataHuiXian %>%
+  a <- dataHuiXian %>%
     mutate(
-      广告账户名称 = toupper(广告账户名称),
-      产品 = if_else(str_detect(广告账户名称, "PATTI KING"), "Patti KING",
-        if_else(str_detect(广告账户名称, "FUTURE"), "Future",
-          if_else(str_detect(广告账户名称, "WORLD"), "Patti World",
-            if_else(str_detect(广告账户名称, "LUCKY"), "Lucky 3 Patti ",
+      地区 = `国家/地区`,
+      帐户名称 = toupper(帐户名称),
+      产品 = if_else(str_detect(帐户名称, "PATTI KING"), "Patti KING",
+        if_else(str_detect(帐户名称, "FUTURE"), "Future",
+          if_else(str_detect(帐户名称, "WORLD"), "Patti World",
+            if_else(str_detect(帐户名称, "LUCKY"), "Lucky 3 Patti ",
               "NONE"
             )
           )
         )
       )
     ) %>%
-    group_split(产品) %>%
-    map_dfr(~ no_group(., gro = .$产品)) %>%
+    group_split(产品) %>% 
+    map_dfr(~ hui_xian(., gro = .$产品)) %>%
     save_csv(name = "辉仙")
 }
 
