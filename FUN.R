@@ -1,5 +1,24 @@
 pacman::p_load("tidyverse", "lubridate", "devtools", "httr", "DBI", "multidplyr", "janitor")
 
+hai_ke <- function(data, gro = "group") {
+  data <- data %>%
+    mutate_all(replace_na, replace = 0) %>%
+    mutate(group = gro) %>%
+    group_by(group) %>%
+    summarise(
+      日期 = as.character(Sys.Date() - 1),
+      安装 = sum(as.numeric(应用安装)),
+      点击 = sum(as.numeric(`点击量（全部）`)),
+      展示次数 = sum(as.numeric(展示次数)),
+      花费 = sum(as.numeric(`花费金额 (USD)`)),
+      回收 = sum(as.numeric(购物转化价值)),
+      购买 = sum(as.numeric(购买)),
+      注册 = sum(as.numeric(完成注册))
+    ) %>%
+    select(group, 日期, everything())
+  return(data)
+}
+
 hui_xian <- function(data, gro = "group") {
   data <- data %>%
     mutate_all(replace_na, replace = 0) %>%
@@ -26,7 +45,7 @@ no_group <- function(data, gro = "group") {
     filter(地区 != "unknown") %>%
     group_by(group) %>%
     summarise(
-      日期 = as.character(Sys.Date() - 1),
+      日期 = as.character(unique(开始时间)),
       安装 = sum(as.numeric(安装量)),
       点击 = sum(as.numeric(点击量)),
       展示次数 = sum(as.numeric(展示次数)),
@@ -43,7 +62,7 @@ with_geo <- function(data, gro = "Gro") {
     dplyr::filter(地区 != "unknown") %>%
     group_by(地区) %>%
     summarise(
-      日期 = as.character(Sys.Date() - 1),
+      日期 = as.character(unique(开始时间)),
       安装 = sum(as.numeric(安装量)),
       点击 = sum(as.numeric(点击量)),
       展示次数 = sum(as.numeric(展示次数)),
@@ -74,7 +93,7 @@ with_os <- function(data) {
     data <- data %>%
       group_by(优化, 版本) %>%
       summarise(
-        日期 = as.character(Sys.Date() - 1),
+        日期 = as.character(unique(开始时间)),
         安装 = sum(as.numeric(安装量)),
         点击 = sum(as.numeric(点击量)),
         展示次数 = sum(as.numeric(展示次数)),
@@ -86,7 +105,7 @@ with_os <- function(data) {
     data <- data %>%
       group_by(版本) %>%
       summarise(
-        日期 = as.character(Sys.Date() - 1),
+        日期 = as.character(unique(开始时间)),
         安装 = sum(as.numeric(安装量)),
         点击 = sum(as.numeric(点击量)),
         展示次数 = sum(as.numeric(展示次数)),
@@ -114,7 +133,7 @@ with_go <- function(data) {
     ) %>%
     group_by(版本, 地区) %>%
     summarise(
-      日期 = as.character(Sys.Date() - 1),
+      日期 = as.character(unique(开始时间)),
       安装 = sum(as.numeric(安装量)),
       点击 = sum(as.numeric(点击量)),
       展示次数 = sum(as.numeric(展示次数)),
@@ -258,7 +277,7 @@ li_ao <- function(data) {
     )) %>%
     group_by(产品) %>%
     summarise(
-      日期 = as.character(Sys.Date() - 1),
+      日期 = as.character(unique(开始时间)),
       地区 = "IN",
       安装 = sum(as.numeric(安装量)),
       点击 = sum(as.numeric(点击量)),
