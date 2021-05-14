@@ -19,6 +19,25 @@ hai_ke <- function(data, gro = "group") {
   return(data)
 }
 
+ge_zi <- function(data, gro = "group") {
+  data <- data %>%
+    mutate_all(replace_na, replace = 0) %>%
+    mutate(group = gro) %>%
+    group_by(group) %>%
+    summarise(
+      日期 = as.character(Sys.Date() - 1),
+      安装 = sum(as.numeric(应用安装)),
+      点击 = sum(as.numeric(`点击量（全部）`)),
+      展示次数 = sum(as.numeric(展示次数)),
+      花费 = sum(as.numeric(`花费金额 (USD)`)),
+      回收 = sum(as.numeric(购物转化价值)),
+      购买 = sum(as.numeric(购买))
+    ) %>%
+    select(group, 日期, everything())
+  return(data)
+}
+
+
 hui_xian <- function(data, gro = "group") {
   data <- data %>%
     mutate_all(replace_na, replace = 0) %>%

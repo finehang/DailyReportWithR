@@ -5,15 +5,19 @@
 
   
   dataTPReal_IOS <- readxl::read_xls("新博客来_TPReal_IOS.xls")
+  dataCaiRun <- readxl::read_xls("新洛阳采润.xls")
+  dataShiJi <- readxl::read_xls("新世纪欢腾.xls")
   dataRummyReal <- readxl::read_xls("新博客来RummyReal.xls")
   dataRummyAND <- readxl::read_xls("新博客来_Rummy_AND.xls")
-  xin_mo <- readxl::read_xlsx("./新陌.xlsx") %>% filter(!is.na(帐户名称))
-  dataHaiWan <- readxl::read_xls("新HaiWan.xls")
-  dataMiCoLive <- readxl::read_xls("新MiCoLive.xls")
-  dataBit <- readxl::read_xls("新比特币.xls")
   dataHaiKe <- readxl::read_xlsx("海科.xlsx") %>% filter(!is.na(帐户名称))
   dataHuiXian <- readxl::read_xlsx("辉仙.xlsx") %>% filter(!is.na(帐户名称))
   dataZhangYue <- readxl::read_xlsx("掌阅.xlsx") %>% filter(!is.na(帐户名称))
+  xin_mo <- readxl::read_xlsx("./新陌.xlsx") %>% filter(!is.na(帐户名称))
+  dataFench <- readxl::read_xlsx("./Fench.xlsx") %>% filter(!is.na(帐户名称))
+  dataGeZi <- readxl::read_xlsx("./格子.xlsx") %>% filter(!is.na(帐户名称))
+  dataHaiWan <- readxl::read_xls("新HaiWan.xls")
+  dataMiCoLive <- readxl::read_xls("新MiCoLive.xls")
+  dataBit <- readxl::read_xls("新比特币.xls")
   dataZhuLi <- readxl::read_xls("新朱礼.xls")
   # dataRuiDao <- readxl::read_xls("新瑞道.xls")
   dataChuanYe <- readxl::read_xls("新川野.xls")
@@ -40,7 +44,7 @@
   # dataAJiBi <- readxl::read_xls("新阿吉比.xls")
   dataHuaCe <- readxl::read_xls("新华策天城.xls")
   dataYouLiang <- readxl::read_xls("新杭州优量.xls")
-  # dataYouQing <- readxl::read_xls("新杭州优擎.xls")
+  dataYouQing <- readxl::read_xls("新杭州优擎.xls")
   # dataPrometheus <- readxl::read_xls("新Prometheus.xls")
   dataHaiNan <- readxl::read_xls("新海南翎唛.xls")
   dataSan <- readxl::read_xls("新海南翎麦Sancamap.xls")
@@ -398,6 +402,14 @@
     save_csv(name = "温州李冉")
 }
 
+# 世纪欢腾 --------------------------------------------------------------------
+
+{
+  dataShiJi %>% 
+    no_group(gro = "世纪欢腾") %>% 
+    save_csv(name = "世纪欢腾")
+}
+
 # 江苏明通新墨香 -------------------------------------------------------------
 
 {
@@ -448,6 +460,16 @@
   dataHaiWan %>% 
     no_group(gro = "HaiWan") %>% 
     save_csv(name = "HaiWan")
+}
+
+
+# Fench -------------------------------------------------------------------
+
+{
+  dataFench %>% 
+    mutate(group = "Fench", 日期 = Sys.Date() - 1) %>% 
+    select(group, 日期, 应用安装, `点击量（全部）`, 展示次数, `花费金额 (USD)`, 购买, 完成注册) %>% 
+    save_csv(name = "Fench")
 }
 
 # MiCoLive ----------------------------------------------------------------
@@ -631,6 +653,7 @@
     ) %>%
     group_split(产品) %>%
     map_dfr(~ no_group(., .$产品)) %>%
+    select(group, 日期, 花费, 安装) %>% 
     save_csv(name = "福韵")
 }
 
@@ -649,6 +672,25 @@
     group_split(产品) %>%
     map_dfr(~ hai_ke(., .$产品)) %>%
     save_csv(name = "海科")
+}
+
+# 格子 ----------------------------------------------------------------------
+
+{
+  dataGeZi %>% 
+    mutate(
+      广告帐户名称 = toupper(帐户名称),
+      产品 = if_else(str_detect(广告帐户名称, "RUPEE"), "Rupee",
+                   if_else(str_detect(广告帐户名称, "LOAN"), "Loan Wallet",
+                           "NONE"
+                   )
+      )
+    ) %>% 
+    group_split(产品) %>%
+    map_dfr(~ ge_zi(., .$产品)) %>%
+    mutate(CPI = 花费 / 安装, 购买单价 = 花费 / 购买) %>% 
+    select(group, 日期, 安装, CPI, 购买, 购买单价, 花费) %>% 
+    save_csv(name = "格子")
 }
 
 # 海南玩呗 --------------------------------------------------------------------
@@ -681,9 +723,10 @@
 # 杭州优擎 --------------------------------------------------------------------
 
 {
-  # dataYouQing %>%
-  #   you() %>%
-  #   save_csv(name = "杭州优擎")
+  dataYouQing %>%
+    you() %>%
+    select(-回收) %>% 
+    save_csv(name = "杭州优擎")
 }
 
 # 华述 ----------------------------------------------------------------------
@@ -817,6 +860,14 @@
     group_split(产品) %>%
     map_dfr(~ ling(., name = .$产品)) %>%
     save_csv(name = "灵分So_AB_ZX")
+}
+
+# 洛阳采润 --------------------------------------------------------------------
+
+{
+  dataCaiRun %>% 
+    no_group(gro = "洛阳采润") %>% 
+    save_csv(name = "洛阳采润")
 }
 
 # 喵石 ----------------------------------------------------------------------
