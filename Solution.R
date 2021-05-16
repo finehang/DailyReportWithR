@@ -1,7 +1,7 @@
 # 数据导入 --------------------------------------------------------------------
 {
   setwd("C:/Users/fanhang/Desktop/Datadownload")
-  source("C:/Users/fanhang/OneDrive/DailyReport/DailyReport/FUN.R", encoding = "utf-8")
+  source("C:/Users/fanhang/OneDrive/Code/DailyReport/FUN.R", encoding = "utf-8")
 
   
   dataTPReal_IOS <- readxl::read_xls("新博客来_TPReal_IOS.xls")
@@ -725,7 +725,6 @@
 {
   dataYouQing %>%
     you() %>%
-    select(-回收) %>% 
     save_csv(name = "杭州优擎")
 }
 

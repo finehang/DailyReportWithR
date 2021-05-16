@@ -281,12 +281,16 @@ li_ao <- function(data) {
     mutate_all(replace_na, replace = 0) %>%
     mutate(产品 = if_else(str_detect(广告账户名称, "44"), "Vungo44",
       if_else(str_detect(广告账户名称, "FunRummy"), "FunRummy",
-        if_else(str_detect(广告账户名称, "48"), "3Patti_48",
+        if_else(str_detect(广告账户名称, "48"), "3Patti-48",
           if_else(str_detect(广告账户名称, "GinRummy"), "GinRummy",
             if_else(str_detect(广告账户名称, "40"), "3patti-40",
               if_else(str_detect(广告账户名称, "30"), "3patti-30",
                 if_else(str_detect(广告账户名称, "47"), "3patti-47",
-                  "None"
+                  if_else(str_detect(广告账户名称, "63"), "3patti-63",
+                    if_else(str_detect(广告账户名称, "29"), "3patti-29",
+                      "None"
+                    )
+                  )
                 )
               )
             )
@@ -311,14 +315,17 @@ li_ao <- function(data) {
 you <- function(data) {
   data <- data %>%
     mutate_all(replace_na, replace = 0) %>%
-    mutate(产品 = if_else(str_detect(系列名称, "teen"), "Teen Patti",
+    mutate(产品 = 
       if_else(str_detect(系列名称, "Pop"), "Pop Solitaire",
-        if_else(str_detect(系列名称, "Crazy"), "Crazy", "None")
+        if_else(str_detect(系列名称, "Crazy"), "Crazy", 
+        if_else(str_detect(系列名称, "DT13"), "MAX", 
+        if_else(str_detect(系列名称, "DT5"), "胜利", 
+                "None")
       ),
-    )) %>%
+    ))) %>%
     group_by(产品) %>%
     summarise(
-      日期 = as.character(Sys.Date() - 1),
+      日期 = as.character(unique(开始时间)),
       地区 = "IN",
       安装 = sum(as.numeric(安装量)),
       点击 = sum(as.numeric(点击量)),
