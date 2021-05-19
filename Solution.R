@@ -1,51 +1,38 @@
 # 数据导入 --------------------------------------------------------------------
 {
+  rename_me()
   setwd("C:/Users/fanhang/Desktop/Datadownload")
   source("C:/Users/fanhang/OneDrive/Code/DailyReport/FUN.R", encoding = "utf-8")
 
-  
   dataTPReal_IOS <- readxl::read_xls("新博客来_TPReal_IOS.xls")
   dataCaiRun <- readxl::read_xls("新洛阳采润.xls")
   dataShiJi <- readxl::read_xls("新世纪欢腾.xls")
   dataRummyReal <- readxl::read_xls("新博客来RummyReal.xls")
   dataRummyAND <- readxl::read_xls("新博客来_Rummy_AND.xls")
+  dataGuangNian <- readxl::read_xlsx("./光年.xlsx") %>% filter(!is.na(帐户名称))
   dataHaiKe <- readxl::read_xlsx("海科.xlsx") %>% filter(!is.na(帐户名称))
+  # dataFench <- readxl::read_xlsx("./Fench.xlsx") %>% filter(!is.na(帐户名称))
   # dataHuiXian <- readxl::read_xlsx("辉仙.xlsx") %>% filter(!is.na(帐户名称))
   dataZhangYue <- readxl::read_xlsx("掌阅.xlsx") %>% filter(!is.na(帐户名称))
   xin_mo <- readxl::read_xlsx("./新陌.xlsx") %>% filter(!is.na(帐户名称))
-  # dataFench <- readxl::read_xlsx("./Fench.xlsx") %>% filter(!is.na(帐户名称))
   dataGeZi <- readxl::read_xlsx("./格子.xlsx") %>% filter(!is.na(帐户名称))
   dataHaiWan <- readxl::read_xls("新HaiWan.xls")
   dataMiCoLive <- readxl::read_xls("新MiCoLive.xls")
   dataBit <- readxl::read_xls("新比特币.xls")
   dataZhuLi <- readxl::read_xls("新朱礼.xls")
-  # dataRuiDao <- readxl::read_xls("新瑞道.xls")
-  # dataChuanYe <- readxl::read_xls("新川野.xls")
   dataMiYi <- readxl::read_xls("新米易.xls")
-  # dataLiRan <- readxl::read_xls("新李冉.xls")
-  # dataNanTong <- readxl::read_xls("新南通小塘.xls")
   dataWanBei <- readxl::read_xls("新海南玩呗.xls")
-  # dataZhiNuo2 <- readxl::read_xlsx("致诺2.xlsx")
   dataXingQi <- readxl::read_xls("新星奇畅想.xls")
-  # dataJunYi <- readxl::read_xls("新重庆君仪.xls")
   dataTengSheng <- readxl::read_xls("新北京腾升.xls")
   dataXinYa <- readxl::read_xls("新XinYa.xls")
   dataKuWan <- readxl::read_xls("新酷玩.xls")
-  # dataJuChao <- readxl::read_xls("新巨潮.xls")
-  # dataHuaEn <- readxl::read_xls("新华恩.xls")
-  # dataWeiNa <- readxl::read_xls("新微纳.xls")
-  # dataChuYin <- readxl::read_xls("新刍音.xls")
   dataHuaShu <- readxl::read_xls("新华述_TPRaajy.xls")
   dataDaYu <- readxl::read_xls("新大鱼_BingoWild.xls")
-  # dataAnChengOne <- readxl::read_xls("新安橙_OneLive.xls")
   dataLiangZiDop <- readxl::read_xls("新量子_Dop.xls")
-  # dataCaiShen <- readxl::read_xls("新财神卡.xls")
   dataFeiFB <- readxl::read_xls("新飞乐乐_FB.xls")
-  # dataAJiBi <- readxl::read_xls("新阿吉比.xls")
   dataHuaCe <- readxl::read_xls("新华策天城.xls")
   dataYouLiang <- readxl::read_xls("新杭州优量.xls")
   dataYouQing <- readxl::read_xls("新杭州优擎.xls")
-  # dataPrometheus <- readxl::read_xls("新Prometheus.xls")
   dataHaiNan <- readxl::read_xls("新海南翎唛.xls")
   dataSan <- readxl::read_xls("新海南翎麦Sancamap.xls")
   dataBauCuaKing <- readxl::read_xls("新海南翎麦_BauCuaKing.xls")
@@ -53,10 +40,10 @@
   dataFortune <- readxl::read_xls("新海南翎麦_FortuneClub.xls")
   dataBaCay <- readxl::read_xls("新海南翎麦_BaCayPoker.xls")
   dataSlotsMaster <- readxl::read_xls("新海南翎麦_SlotsMaster.xls")
+  dataMegaWin <- readxl::read_xls("新海南翎麦_MegaWin.xls")
   dataLingKPC <- readxl::read_xls("新灵分_Key_Pay_Cube.xls")
   dataLingSo <- readxl::read_xls("新灵分_So_AB_ZX.xls")
   dataMerlingen <- readxl::read_xls("新Merlingen.xls")
-  # dataZhangYun <- readxl::read_xls("新掌中云.xls")
   dataLiAo <- readxl::read_xls("新深圳理奥.xls")
   dataJiDao <- readxl::read_xlsx("吉道.xlsx", skip = 2, col_names = T)
   dataMiao <- readxl::read_xls("新喵石.xls")
@@ -75,6 +62,21 @@
   dataFuYun <- readxl::read_xls("新福韵.xls")
   dataStr <- tibble(blankLine = c(" ", " "))
   readr::write_excel_csv(tibble(数据汇总 = "数据汇总"), file = "./result.csv", col_names = F)
+  # dataPrometheus <- readxl::read_xls("新Prometheus.xls")
+  # dataLiRan <- readxl::read_xls("新李冉.xls")
+  # dataNanTong <- readxl::read_xls("新南通小塘.xls")
+  # dataRuiDao <- readxl::read_xls("新瑞道.xls")
+  # dataChuanYe <- readxl::read_xls("新川野.xls")
+  # dataJunYi <- readxl::read_xls("新重庆君仪.xls")
+  # dataZhiNuo2 <- readxl::read_xlsx("致诺2.xlsx")
+  # dataJuChao <- readxl::read_xls("新巨潮.xls")
+  # dataHuaEn <- readxl::read_xls("新华恩.xls")
+  # dataWeiNa <- readxl::read_xls("新微纳.xls")
+  # dataChuYin <- readxl::read_xls("新刍音.xls")
+  # dataAnChengOne <- readxl::read_xls("新安橙_OneLive.xls")
+  # dataAJiBi <- readxl::read_xls("新阿吉比.xls")
+  # dataCaiShen <- readxl::read_xls("新财神卡.xls")
+  # dataZhangYun <- readxl::read_xls("新掌中云.xls")
 }
 
 # 白鲸 ----------------------------------------------------------------------
@@ -94,7 +96,7 @@
     with_go() %>%
     mutate(产品 = "白鲸Vidman") %>%
     bai_jing()
-  
+
   dataBaiJogsy1 <- dataBaiJogsy %>%
     with_go() %>%
     mutate(产品 = "白鲸Jogsy") %>%
@@ -116,14 +118,14 @@
     安装 = 0
   )
 
- a <-  bind_rows(dataBaiPlayerIOS14, dataBaiVidman14, dataBaiJogsy1, dataBaiPlayer1, dataBaiVidman1) %>%
+  a <- bind_rows(dataBaiPlayerIOS14, dataBaiVidman14, dataBaiJogsy1, dataBaiPlayer1, dataBaiVidman1) %>%
     save_csv(name = "白鲸")
 }
 
 # 酷玩 ----------------------------------------------------------------------
 
 {
-  dataKuWan %>%
+  a <- dataKuWan %>%
     mutate(
       广告账户名称 = toupper(广告账户名称),
       产品 = if_else(str_detect(广告账户名称, "3101006"), "happy",
@@ -134,7 +136,11 @@
                 if_else(str_detect(广告账户名称, "1888973"), "fantasykargame",
                   if_else(str_detect(广告账户名称, "3140045"), "Rummy Vungo",
                     if_else(str_detect(广告账户名称, "3140032"), "IndiaCard",
-                      "None"
+                      if_else(str_detect(广告账户名称, "VEGAS"), "Vegas",
+                        if_else(str_detect(广告账户名称, "3140072"), "3140072",
+                          "None"
+                        )
+                      )
                     )
                   )
                 )
@@ -210,16 +216,17 @@
           if_else(str_detect(广告账户名称, "RUMMY WIN"), "Rummy Win Facebook",
             if_else(str_detect(广告账户名称, "REAL TEEN"), "Real Teen Patti",
               if_else(str_detect(广告账户名称, "0429-RUMMY"), "kingrummy",
-              if_else(str_detect(广告账户名称, "KING"), "kingrummy",
-                if_else(str_detect(广告账户名称, "MARVEL"), "MarvelTeenPatti",
-                  "None"
+                if_else(str_detect(广告账户名称, "KING"), "kingrummy",
+                  if_else(str_detect(广告账户名称, "MARVEL"), "MarvelTeenPatti",
+                    "None"
+                  )
                 )
               )
             )
           )
         )
       )
-    )) %>%
+    ) %>%
     group_split(产品) %>%
     map_dfr(~ no_group(., gro = .$产品)) %>%
     select(-c(回收)) %>%
@@ -403,8 +410,9 @@
 # 世纪欢腾 --------------------------------------------------------------------
 
 {
-  dataShiJi %>% 
-    no_group(gro = "世纪欢腾") %>% 
+  dataShiJi %>%
+    no_group(gro = "世纪欢腾") %>%
+    select(安装, 花费) %>%
     save_csv(name = "世纪欢腾")
 }
 
@@ -455,8 +463,8 @@
 # HaiWan ------------------------------------------------------------------
 
 {
-  dataHaiWan %>% 
-    no_group(gro = "HaiWan") %>% 
+  dataHaiWan %>%
+    no_group(gro = "HaiWan") %>%
     save_csv(name = "HaiWan")
 }
 
@@ -464,9 +472,9 @@
 # Fench -------------------------------------------------------------------
 
 {
-  # dataFench %>% 
-  #   mutate(group = "Fench", 日期 = Sys.Date() - 1) %>% 
-  #   select(group, 日期, 应用安装, `点击量（全部）`, 展示次数, `花费金额 (USD)`, 购买, 完成注册) %>% 
+  # dataFench %>%
+  #   mutate(group = "Fench", 日期 = Sys.Date() - 1) %>%
+  #   select(group, 日期, 应用安装, `点击量（全部）`, 展示次数, `花费金额 (USD)`, 购买, 完成注册) %>%
   #   save_csv(name = "Fench")
 }
 
@@ -647,13 +655,15 @@
   dataFuYun %>%
     mutate(
       广告账户名称 = toupper(广告账户名称),
-      产品 = if_else(str_detect(广告账户名称, "BETFAIR"), "Betfair", 
-                   if_else(str_detect(广告账户名称, "QUEEN"), "Queen", 
-                   "Parti")
-    )) %>%
+      产品 = if_else(str_detect(广告账户名称, "BETFAIR"), "Betfair",
+        if_else(str_detect(广告账户名称, "QUEEN"), "Queen",
+          "Parti"
+        )
+      )
+    ) %>%
     group_split(产品) %>%
     map_dfr(~ no_group(., .$产品)) %>%
-    select(group, 日期, 花费, 安装) %>% 
+    select(group, 日期, 花费, 安装) %>%
     save_csv(name = "福韵")
 }
 
@@ -677,20 +687,34 @@
 # 格子 ----------------------------------------------------------------------
 
 {
-  dataGeZi %>% 
+  dataGeZi %>%
     mutate(
       广告帐户名称 = toupper(帐户名称),
       产品 = if_else(str_detect(广告帐户名称, "RUPEE"), "Rupee",
-                   if_else(str_detect(广告帐户名称, "LOAN"), "Loan Wallet",
-                           "NONE"
-                   )
+        if_else(str_detect(广告帐户名称, "LOAN"), "Loan Wallet",
+          "NONE"
+        )
       )
-    ) %>% 
+    ) %>%
     group_split(产品) %>%
     map_dfr(~ ge_zi(., .$产品)) %>%
-    mutate(CPI = 花费 / 安装, 购买单价 = 花费 / 购买) %>% 
-    select(group, 日期, 安装, CPI, 购买, 购买单价, 花费) %>% 
+    mutate(CPI = 花费 / 安装, 购买单价 = 花费 / 购买) %>%
+    select(group, 日期, 安装, CPI, 购买, 购买单价, 花费) %>%
     save_csv(name = "格子")
+}
+
+# 光年 ----------------------------------------------------------------------
+
+{
+  dataGuangNian %>% 
+    transmute(产品 = "光年", 
+           日期 = 报告开始日期, 
+           安装 = sum(应用安装),
+           点击 = sum(`点击量（全部）`),
+           展示 = sum(展示次数),
+           花费 = sum(`花费金额 (USD)`)) %>% 
+    save_csv(name = "光年")
+    
 }
 
 # 海南玩呗 --------------------------------------------------------------------
@@ -732,14 +756,7 @@
 
 {
   dataHuaShu %>%
-    mutate(
-      广告账户名称 = toupper(广告账户名称),
-      产品 = if_else(str_detect(广告账户名称, "TEENPATTI"), "TeenPatti",
-        if_else(str_detect(广告账户名称, "RAAJY"), "Raajy", "NONE")
-      )
-    ) %>% 
-    group_split(产品) %>% 
-    map_dfr(~no_group(., gro = .$产品)) %>%
+    no_group(gro = "华述") %>%
     save_csv(name = "华述")
 }
 
@@ -864,8 +881,8 @@
 # 洛阳采润 --------------------------------------------------------------------
 
 {
-  dataCaiRun %>% 
-    no_group(gro = "洛阳采润") %>% 
+  dataCaiRun %>%
+    no_group(gro = "洛阳采润") %>%
     save_csv(name = "洛阳采润")
 }
 
@@ -957,14 +974,20 @@
   dataSlotsMaster1 <- dataSlotsMaster %>%
     no_group(gro = "SlotsMaster")
 
+  dataMegaWin1 <- dataMegaWin %>%
+    mutate(产品 = if_else(str_detect(广告账户名称, "Mega"), "Mega", "POP")) %>%
+    group_split(产品) %>%
+    map_dfr(~ no_group(., gro = .$产品))
+
+
   dataHuanLe1 <- dataHuanLe %>%
     with_os() %>%
     mutate(group = "欢乐语音") %>%
     select(日期, group, 版本, 安装, 点击, 展示次数, 花费)
 
-  bind_rows(dataSan1, dataBaCay1, dataFortune1, dataBauCuaKing1, dataSlotsMaster1, dataHuanLe1) %>%
+  bind_rows(dataSan1, dataBaCay1, dataFortune1, dataBauCuaKing1, dataMegaWin1, dataSlotsMaster1, dataHuanLe1) %>%
     select(group, 日期, 版本, everything()) %>%
-    select(-回收) %>% 
+    select(-回收) %>%
     save_csv(name = "领麦Sancamap")
 }
 

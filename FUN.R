@@ -1,5 +1,13 @@
 pacman::p_load("tidyverse", "lubridate", "devtools", "httr", "DBI", "multidplyr", "janitor")
 
+rename_me <- function(){
+  path <- "C:/Users/fanhang/Desktop/Report/0在用"
+  filenames <- list.files(path)
+  newnames <- paste0(str_sub(filenames, end = -11), str_sub(today() - 1, start = -5), ".xlsx")
+  file.rename(paste0(path, "/", filenames), paste0(path, "/", newnames))
+}
+
+
 hai_ke <- function(data, gro = "group") {
   data <- data %>%
     mutate_all(replace_na, replace = 0) %>%
@@ -315,14 +323,18 @@ li_ao <- function(data) {
 you <- function(data) {
   data <- data %>%
     mutate_all(replace_na, replace = 0) %>%
-    mutate(产品 = 
-      if_else(str_detect(系列名称, "Pop"), "Pop Solitaire",
-        if_else(str_detect(系列名称, "Crazy"), "Crazy", 
-        if_else(str_detect(系列名称, "DT13"), "MAX", 
-        if_else(str_detect(系列名称, "DT5"), "胜利", 
-                "None")
-      ),
-    ))) %>%
+    mutate(
+      产品 =
+        if_else(str_detect(系列名称, "Pop"), "Pop Solitaire",
+          if_else(str_detect(系列名称, "Crazy"), "Crazy",
+            if_else(str_detect(系列名称, "DT13"), "MAX",
+              if_else(str_detect(系列名称, "DT5"), "胜利",
+                "None"
+              )
+            ),
+          )
+        )
+    ) %>%
     group_by(产品) %>%
     summarise(
       日期 = as.character(unique(开始时间)),
