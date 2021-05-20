@@ -64,7 +64,7 @@ while (T) {
       # 开始获取所有账户
       message("Start to Get All Accounts, 40s are required! ")
       tic()
-      while (flag & n <= 10) {
+      while (flag & n <= 20) {
         n <- n + 1
         content <- GET(nexturl, query = list(fields = "account_id,created_time", access_token = TOKEN, limit = 5000)) %>%
           content() # 获取URL的内容

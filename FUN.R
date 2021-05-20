@@ -1,10 +1,19 @@
 pacman::p_load("tidyverse", "lubridate", "devtools", "httr", "DBI", "multidplyr", "janitor")
 
-rename_me <- function(){
+rename_me <- function() {
   path <- "C:/Users/fanhang/Desktop/Report/0在用"
   filenames <- list.files(path)
-  newnames <- paste0(str_sub(filenames, end = -11), str_sub(today() - 1, start = -5), ".xlsx")
-  file.rename(paste0(path, "/", filenames), paste0(path, "/", newnames))
+  if (unique(str_sub(filenames, start = -10, end = -6)) == str_sub(today() - 1, start = -5)) {
+    message("Pass!")
+  } else {
+    newnames <- paste0(str_sub(filenames, end = -11), str_sub(today() - 1, start = -5), ".xlsx")
+    file.rename(paste0(path, "/", filenames), paste0(path, "/", newnames))
+    if (unique(str_sub(filenames, start = -10, end = -6)) == str_sub(today() - 1, start = -5)) {
+      message("RenameDone!")
+    } else {
+      message("Error!")
+    }
+  }
 }
 
 
@@ -59,7 +68,28 @@ hui_xian <- function(data, gro = "group") {
       展示次数 = sum(as.numeric(展示次数)),
       花费 = sum(as.numeric(`花费金额 (USD)`)),
       回收 = sum(as.numeric(移动应用购物转化价值)),
-      注册 = sum(as.numeric(移动应用完成注册))
+      注册 = sum(as.numeric(移动应用完成注册)),
+      购物 = sum(as.numeric(移动应用购物))
+    ) %>%
+    select(group, 日期, everything())
+  return(data)
+}
+
+hua_sheng <- function(data, gro = "group") {
+  data <- data %>%
+    mutate_all(replace_na, replace = 0) %>%
+    mutate(group = gro) %>%
+    filter(地区 != "unknown") %>%
+    group_by(group) %>%
+    summarise(
+      日期 = as.character(Sys.Date() - 1),
+      安装 = sum(as.numeric(应用安装)),
+      点击 = sum(as.numeric(`点击量（全部）`)),
+      展示次数 = sum(as.numeric(展示次数)),
+      花费 = sum(as.numeric(`花费金额 (USD)`)),
+      回收 = sum(as.numeric(移动应用购物转化价值)),
+      注册 = sum(as.numeric(移动应用完成注册)),
+      购物 = sum(as.numeric(移动应用购物))
     ) %>%
     select(group, 日期, everything())
   return(data)
@@ -411,8 +441,12 @@ ji_dao <- function(data) {
 }
 
 save_csv <- function(data, name = "name", filename = "result", append = T) {
+  filenames <- list.files(getwd())
   if (!missing(filename)) {
     append <- F
+  }
+  if (paste0(filename, ".csv") %in% filenames) {
+    append <- T
   }
   readr::write_excel_csv(tibble(blankLine = c(" ")), file = paste0("./", filename, ".csv"), col_names = F, append = append)
   readr::write_excel_csv(tibble(name), file = paste0("./", filename, ".csv"), col_names = F, append = T)
