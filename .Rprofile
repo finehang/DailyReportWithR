@@ -1,0 +1,5 @@
+old <- getOption("defaultPackages")
+new <- c("tidyverse", "lubridate", "devtools", "httr", "DBI", "multidplyr", "janitor")
+options(defaultPackages = c(old, new))
+rm(old, new)
+cat(" Welcome To R at\n", date(), "\n", praise::praise(), "\n")
