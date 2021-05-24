@@ -4,7 +4,7 @@ rename_me <- function() {
   path <- "C:/Users/fanhang/Desktop/Report/0在用"
   filenames <- list.files(path)
   if (unique(str_sub(filenames, start = -10, end = -6)) == str_sub(today() - 1, start = -5)) {
-    message("Pass!")
+    message("RenamePass!")
   } else {
     newnames <- paste0(str_sub(filenames, end = -11), str_sub(today() - 1, start = -5), ".xlsx")
     file.rename(paste0(path, "/", filenames), paste0(path, "/", newnames))
@@ -378,6 +378,25 @@ you <- function(data) {
       CPI = 花费 / 安装
     ) |>
     select(日期, 产品, 安装, 点击, 展示次数, 花费, 购物转化值)
+  return(data)
+}
+
+hua_shu <- function(data, gro = "group"){
+  data <- data |>
+    mutate_all(replace_na, replace = 0) |>
+    mutate(group = gro) |>
+    group_by(group) |>
+    summarise(
+      日期 = as.character(Sys.Date() - 1),
+      安装 = sum(as.numeric(应用安装)),
+      点击 = sum(as.numeric(`点击量（全部）`)),
+      展示次数 = sum(as.numeric(展示次数)),
+      花费 = sum(as.numeric(`花费金额 (USD)`)),
+      回收 = sum(as.numeric(购物转化价值)),
+      购买 = sum(as.numeric(购买)),
+      注册 = sum(as.numeric(完成注册))
+    ) |>
+    select(日期, everything())
   return(data)
 }
 

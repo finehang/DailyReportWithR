@@ -9,8 +9,9 @@
   # dataFench <- readxl::read_xlsx("./Fench.xlsx") |> filter(!is.na(帐户名称))
   # dataHuiXian <- readxl::read_xlsx("辉仙.xlsx") |> filter(!is.na(帐户名称))
   dataZhangYue <- readxl::read_xlsx("掌阅.xlsx") |> filter(!is.na(帐户名称))
+  dataHuaShu <- readxl::read_xlsx("./华述.xlsx") |> filter(!is.na(帐户名称))
   xin_mo <- readxl::read_xlsx("./新陌.xlsx") |> filter(!is.na(帐户名称))
-  dataGeZi <- readxl::read_xlsx("./格子.xlsx") |> filter(!is.na(帐户名称))
+  # dataGeZi <- readxl::read_xlsx("./格子.xlsx") |> filter(!is.na(帐户名称))
   # dataZheng <- readxl::read_xls("./华生.xlsx")
   dataZheng <- readxl::read_xls("./新郑郑.xls")
   dataTPReal_IOS <- readxl::read_xls("新博客来_TPReal_IOS.xls")
@@ -28,7 +29,6 @@
   dataXinYa <- readxl::read_xls("新XinYa.xls")
   dataKuWanJane <- readxl::read_xls("新酷玩_Jane.xls")
   dataKuWanMonika <- readxl::read_xls("新酷玩_Monika.xls")
-  dataHuaShu <- readxl::read_xls("新华述_TPRaajy.xls")
   dataLiangZiDop <- readxl::read_xls("新量子_Dop.xls")
   dataFeiFB <- readxl::read_xls("新飞乐乐_FB.xls")
   dataHuaCe <- readxl::read_xls("新华策天城.xls")
@@ -529,7 +529,6 @@
   ) |>
   group_split(优化) |>
   map_dfr(~ no_group(., gro = .$优化)) |>
-  select(日期, group, 展示次数, 点击, 花费) |>
   save_csv(name = "RummyAND")
 
   dataRummyReal |>
@@ -680,7 +679,7 @@
   dataHaiKe |>
   mutate(
     广告帐户名称 = toupper(帐户名称),
-    产品 = if_else(str_detect(广告帐户名称, "MEET"), "BTeen Patti Meet",
+    产品 = if_else(str_detect(广告帐户名称, "MEET"), "BP Meet",
       if_else(str_detect(广告帐户名称, "DELICACY"), "Teen Patti Delicacy",
         "NONE"
       )
@@ -694,20 +693,20 @@
 # 格子 ----------------------------------------------------------------------
 
 {
-  dataGeZi |>
-  mutate(
-    广告帐户名称 = toupper(帐户名称),
-    产品 = if_else(str_detect(广告帐户名称, "RUPEE"), "Rupee",
-      if_else(str_detect(广告帐户名称, "LOAN"), "Loan Wallet",
-        "NONE"
-      )
-    )
-  ) |>
-  group_split(产品) |>
-  map_dfr(~ ge_zi(., .$产品)) |>
-  mutate(CPI = 花费 / 安装, 购买单价 = 花费 / 购买) |>
-  select(group, 日期, 安装, CPI, 购买, 购买单价, 花费) |>
-  save_csv(name = "格子")
+  # dataGeZi |>
+  # mutate(
+  #   广告帐户名称 = toupper(帐户名称),
+  #   产品 = if_else(str_detect(广告帐户名称, "RUPEE"), "Rupee",
+  #     if_else(str_detect(广告帐户名称, "LOAN"), "Loan Wallet",
+  #       "NONE"
+  #     )
+  #   )
+  # ) |>
+  # group_split(产品) |>
+  # map_dfr(~ ge_zi(., .$产品)) |>
+  # mutate(CPI = 花费 / 安装, 购买单价 = 花费 / 购买) |>
+  # select(group, 日期, 安装, CPI, 购买, 购买单价, 花费) |>
+  # save_csv(name = "格子")
 }
 
 # 光年 ----------------------------------------------------------------------
@@ -765,13 +764,13 @@
 {
   dataHuaShu |>
   mutate(
-    广告账户名称 = toupper(广告账户名称),
-    产品 = if_else(str_detect(广告账户名称, "TEENPATTI"), "TeenPatti",
-      if_else(str_detect(广告账户名称, "RAAJY"), "Raajy", "NONE")
+    帐户名称 = toupper(帐户名称),
+    产品 = if_else(str_detect(帐户名称, "TEENPATTI"), "TeenPatti",
+      if_else(str_detect(帐户名称, "RAAJY"), "Raajy", "NONE")
     )
   ) |>
   group_split(产品) |>
-  map_dfr(~ no_group(., gro = .$产品)) |>
+  map_dfr(~ hua_shu(., gro = .$产品)) |>
   save_csv(name = "华述")
 }
 
