@@ -6,14 +6,16 @@
 
   dataGuangNian <- readxl::read_xlsx("./光年.xlsx") |> filter(!is.na(帐户名称))
   dataHaiKe <- readxl::read_xlsx("海科.xlsx") |> filter(!is.na(帐户名称))
-  # dataFench <- readxl::read_xlsx("./Fench.xlsx") |> filter(!is.na(帐户名称))
-  # dataHuiXian <- readxl::read_xlsx("辉仙.xlsx") |> filter(!is.na(帐户名称))
   dataZhangYue <- readxl::read_xlsx("掌阅.xlsx") |> filter(!is.na(帐户名称))
   dataHuaShu <- readxl::read_xlsx("./华述.xlsx") |> filter(!is.na(帐户名称))
   xin_mo <- readxl::read_xlsx("./新陌.xlsx") |> filter(!is.na(帐户名称))
   # dataGeZi <- readxl::read_xlsx("./格子.xlsx") |> filter(!is.na(帐户名称))
+  # dataFench <- readxl::read_xlsx("./Fench.xlsx") |> filter(!is.na(帐户名称))
+  # dataHuiXian <- readxl::read_xlsx("辉仙.xlsx") |> filter(!is.na(帐户名称))
   # dataZheng <- readxl::read_xls("./华生.xlsx")
+  dataJieYi <- readxl::read_xls("./新捷奕.xls")
   dataZheng <- readxl::read_xls("./新郑郑.xls")
+  dataMoca <- readxl::read_xls("./新Moca.xls")
   dataTPReal_IOS <- readxl::read_xls("新博客来_TPReal_IOS.xls")
   dataCaiRun <- readxl::read_xls("新洛阳采润.xls")
   dataShiJi <- readxl::read_xls("新世纪欢腾.xls")
@@ -69,7 +71,7 @@
   # dataNanTong <- readxl::read_xls("新南通小塘.xls")
   # dataRuiDao <- readxl::read_xls("新瑞道.xls")
   # dataChuanYe <- readxl::read_xls("新川野.xls")
-  # dataJunYi <- readxl::read_xls("新重庆君仪.xls")
+  dataJunYi <- readxl::read_xls("新重庆君仪.xls")
   # dataZhiNuo2 <- readxl::read_xlsx("致诺2.xlsx")
   # dataJuChao <- readxl::read_xls("新巨潮.xls")
   # dataHuaEn <- readxl::read_xls("新华恩.xls")
@@ -282,75 +284,6 @@
   save_csv(name = "Rummy Cool Card")
 }
 
-# 玩德游戏 --------------------------------------------------------------------
-
-{
-  # dataWanDeGG1 <- dataWanDeGG |>
-  #   filter(!is.na(广告系列)) |>
-  #   mutate_all(replace_na, replace = 0) |>
-  #   mutate(
-  #     版本 = if_else(str_detect(广告系列, "AND"), "AND", "IOS"),
-  #     地区 = if_else(str_detect(广告系列, "ID"), "ID",
-  #       str_sub(广告系列, 23, 24)
-  #     ),
-  #     安装量 = 安装次数,
-  #     点击量 = 点击次数,
-  #     金额 = 费用
-  #   ) |>
-  #   group_by(版本, 地区) |>
-  #   summarise(
-  #     日期 = as.character(Sys.Date() - 1),
-  #     安装 = sum(as.numeric(安装量)),
-  #     点击 = sum(as.numeric(点击量)),
-  #     展示次数 = sum(as.numeric(展示次数)),
-  #     花费 = sum(as.numeric(金额)),
-  #     CPI = 花费 / 安装,
-  #     CTR = 点击 / 展示次数,
-  #     CVR = 安装 / 点击
-  #   ) |>
-  #   select(日期, 版本, 地区, 安装, 花费, CPI, 点击, 展示次数, CTR, CVR)
-
-  # dataWanDeGG2 <- tibble(
-  #   日期 = "　", 版本 = "　", 地区 = "总计",
-  #   安装 = sum(dataWanDeGG1$安装),
-  #   点击 = sum(dataWanDeGG1$点击),
-  #   展示次数 = sum(dataWanDeGG1$展示次数),
-  #   花费 = sum(dataWanDeGG1$花费)
-  # ) |>
-  #   mutate(
-  #     CPI = 花费 / 安装,
-  #     CTR = 点击 / 展示次数,
-  #     CVR = 安装 / 点击
-  #   )
-  #
-  #   dataWanDe1 <- dataWanDe |>
-  #     with_go() |>
-  #     mutate(
-  #       CPI = 花费 / 安装,
-  #       CTR = 点击 / 展示次数,
-  #       CVR = 安装 / 点击
-  #     ) |>
-  #     select(日期, 版本, 地区, 安装, 花费, CPI, 点击, 展示次数, CTR, CVR)
-  #
-  #   dataWanDe2 <- tibble(
-  #     日期 = "　", 版本 = "　", 地区 = "总计",
-  #     安装 = sum(dataWanDe1$安装),
-  #     点击 = sum(dataWanDe1$点击),
-  #     展示次数 = sum(dataWanDe1$展示次数),
-  #     花费 = sum(dataWanDe1$花费)
-  #   ) |>
-  #     mutate(
-  #       CPI = 花费 / 安装,
-  #       CTR = 点击 / 展示次数,
-  #       CVR = 安装 / 点击
-  #     ) |>
-  #     select(日期, 版本, 地区, 安装, 花费, CPI, 点击, 展示次数, CTR, CVR)
-  #
-  #   # bind_rows(dataWanDeGG1, dataWanDeGG2) |> save_csv(name = "玩德游戏GG")
-  #   bind_rows(dataWanDe1, dataWanDe2) |> save_csv(name = "玩德游戏")
-}
-
-
 # 米易 ----------------------------------------------------------------------
 
 {
@@ -500,7 +433,12 @@
 
 {
   dataMiCoLive |>
-  no_group(gro = "MiCoLive") |>
+    mutate(
+      广告账户名称 = toupper(广告账户名称),
+      优化 = if_else(str_detect(广告账户名称, "REALIVE"), "Realive", "None")
+    ) |>
+    group_split(优化) |>
+    map_dfr(~ no_group(., gro = .$优化)) |>
   select(group, 日期, 安装, 花费, 回收) |>
   save_csv(name = "MiCoLive")
 }
@@ -560,6 +498,15 @@
   #   group_split(产品) |>
   #   map_dfr(~ no_group(., gro = .$产品)) |>
   #   save_csv(name = "Prometheus")
+}
+
+# Moca --------------------------------------------------------------------
+
+{
+  dataMoca |> 
+    no_group(gro = "Moca") |> 
+    select(group, 日期, 花费, 展示次数, 点击, 安装) |> 
+    save_csv(name = "Moca")
 }
 
 # 凯丽金videochat -------------------------------------------------------------
@@ -765,8 +712,12 @@
   dataHuaShu |>
   mutate(
     帐户名称 = toupper(帐户名称),
-    产品 = if_else(str_detect(帐户名称, "TEENPATTI"), "TeenPatti",
-      if_else(str_detect(帐户名称, "RAAJY"), "Raajy", "NONE")
+    产品 = if_else(str_detect(帐户名称, "RUMMY"), "Rummy",
+      if_else(str_detect(帐户名称, "TP"), "TeenPatti",
+        if_else(str_detect(帐户名称, "TEEN"), "TeenPatti",
+          "NONE"
+        )
+      )
     )
   ) |>
   group_split(产品) |>
@@ -841,6 +792,14 @@
   # dataJuChao |>
   #   no_group(gro = "巨潮") |>
   #   save_csv(name = "巨潮")
+}
+
+# 捷奕 ----------------------------------------------------------------------
+
+{
+  dataJieYi |> 
+    no_group(gro = "捷奕") |>
+    save_csv(name = "捷奕")
 }
 
 # 量子Dop -------------------------------------------------------------------
@@ -945,9 +904,9 @@
 # 重庆君仪 --------------------------------------------------------------------
 
 {
-  # dataJunYi |>
-  #   no_group(gro = "重庆君仪") |>
-  #   save_csv(name = "重庆君仪")
+  dataJunYi |>
+    no_group(gro = "重庆君仪") |>
+    save_csv(name = "重庆君仪")
 }
 
 
@@ -1005,13 +964,6 @@
   save_csv(name = "领麦Sancamap")
 }
 
-
-# 朱礼 ----------------------------------------------------------------------
-
-{
-
-}
-
 # 郑郑 ----------------------------------------------------------------------
 
 {
@@ -1061,6 +1013,7 @@
     dataCashBox <- readxl::read_xlsx("cashbox.xlsx", col_names = T)
     dataZhuLi <- readxl::read_xls("新朱礼.xls")
     dataDaYu <- readxl::read_xls("新大鱼_BingoWild.xls")
+    dataJinGuo <- readxl::read_xls("新金果.xls")
 
     dataCashBox1 <- dataCashBox |>
     filter(!is.na(日期)) |>
@@ -1107,6 +1060,11 @@
   map_dfr(~ with_os(.)) |>
   select(日期, 优化, 版本, 花费) |>
   save_csv(name = "大鱼", filename = "00下午", append = T)
+  
+  dataJinGuo |> 
+    no_group(gro = "金果") |> 
+    select(日期, 安装, 花费) |> 
+    save_csv(name = "金果", filename = "00下午", append = T)
 }
 
 gc()
