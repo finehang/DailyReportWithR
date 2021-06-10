@@ -141,11 +141,12 @@ with_os <- function(data) {
     版本 = if_else(str_detect(系列名称, "IOS"), "IOS",
       if_else(str_detect(系列名称, "安卓"), "AND",
         if_else(str_detect(系列名称, "_AND"), "AND",
+        if_else(str_detect(系列名称, "-AND"), "AND",
           "PC"
         )
       )
     )
-  )
+  ))
   if (flag) {
     data <- data |>
     group_by(优化, 版本) |>
@@ -187,24 +188,41 @@ with_go <- function(data) {
         )
       )
     )
-  ) |>
-  group_by(版本, 地区) |>
-  summarise(
-    日期 = as.character(unique(开始时间)),
-    安装 = sum(as.numeric(安装量)),
-    点击 = sum(as.numeric(点击量)),
-    展示次数 = sum(as.numeric(展示次数)),
-    花费 = sum(as.numeric(金额)),
-    回收 = sum(as.numeric(购物转化值))
-  ) |>
-  select(日期, everything())
-  return(data)
+  )
+  if ("产品" %in% names(data)) {
+    data <- data |> group_by(产品, 版本, 地区) |>
+    summarise(
+      日期 = as.character(unique(开始时间)),
+      安装 = sum(as.numeric(安装量)),
+      点击 = sum(as.numeric(点击量)),
+      展示次数 = sum(as.numeric(展示次数)),
+      花费 = sum(as.numeric(金额)),
+      回收 = sum(as.numeric(购物转化值))
+    ) |>
+    select(日期, everything())
+    return(data)
+  } else {
+    data <- data |> group_by(版本, 地区) |>
+    summarise(
+      日期 = as.character(unique(开始时间)),
+      安装 = sum(as.numeric(安装量)),
+      点击 = sum(as.numeric(点击量)),
+      展示次数 = sum(as.numeric(展示次数)),
+      花费 = sum(as.numeric(金额)),
+      回收 = sum(as.numeric(购物转化值))
+    ) |>
+    select(日期, everything())
+    return(data)
+  }
 }
 
 bai_jing <- function(data) {
   data <- data |>
   select(日期, 产品, 地区, 版本, 安装) |>
   dplyr::filter(地区 != "unknown")
+  if (nrow(data) == 0) {
+    data <- tibble(地区 = "NNN")
+  }
   return(data)
 }
 
