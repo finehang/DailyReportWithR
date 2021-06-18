@@ -141,12 +141,13 @@ with_os <- function(data) {
     版本 = if_else(str_detect(系列名称, "IOS"), "IOS",
       if_else(str_detect(系列名称, "安卓"), "AND",
         if_else(str_detect(系列名称, "_AND"), "AND",
-        if_else(str_detect(系列名称, "-AND"), "AND",
-          "PC"
+          if_else(str_detect(系列名称, "-AND"), "AND",
+            "PC"
+          )
         )
       )
     )
-  ))
+  )
   if (flag) {
     data <- data |>
     group_by(优化, 版本) |>
@@ -329,6 +330,19 @@ car_gg <- function(data) {
   ) |>
   select(代投渠道, 日期, 媒体, 平台, 国家, everything())
 
+  return(data)
+}
+
+jie_yi <- function(data, name) {
+  data <- data |>
+  mutate(产品 = name) |>
+  group_by(产品) |>
+  summarise(
+    安装 = sum(应用安装),
+    点击 = sum(`点击量（全部）`),
+    展示 = sum(展示次数),
+    花费 = sum(`花费金额 (USD)`)
+  )
   return(data)
 }
 
