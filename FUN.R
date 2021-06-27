@@ -333,15 +333,18 @@ car_gg <- function(data) {
   return(data)
 }
 
-jie_yi <- function(data, name) {
+fb_with_gro <- function(data, name) {
   data <- data |>
   mutate(产品 = name) |>
   group_by(产品) |>
   summarise(
+    日期 = unique(报告开始日期),
     安装 = sum(应用安装),
     点击 = sum(`点击量（全部）`),
     展示 = sum(展示次数),
-    花费 = sum(`花费金额 (USD)`)
+    花费 = sum(`花费金额 (USD)`), 
+    购物转化值 = sum(购物转化价值), 
+    购买 = sum(购买)
   )
   return(data)
 }

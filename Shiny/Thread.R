@@ -2,7 +2,7 @@ pacman::p_load("tidyverse", "multidplyr", "DBI", "lubridate", "httr", "tictoc")
 setwd("C:/Share")
 message("Initializing......")
 tic()
-cluster <- new_cluster(30) # 建立50核心的集群
+cluster <- new_cluster(10) # 建立50核心的集群
 cluster_library(cluster, c("tidyverse", "httr", "lubridate")) # 向集群加载包
 
 # 导入口令
@@ -32,7 +32,7 @@ get_spend <- function(id, since, until) {
       content())
   spendcontent$data %>%
     map_dfr(~ as_tibble(.)) %>%
-    return(temp)
+    return()
 }
 
 # 将自定义函数及数据复制进各个线程内
