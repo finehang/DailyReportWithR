@@ -244,7 +244,7 @@ with_go_xinmo <- function(data) {
   data <- data |>
   mutate_all(replace_na, replace = 0) |>
   dplyr::filter(`国家/地区` != "unknown") |>
-  group_by(系统, `国家/地区`) |>
+  group_by(优化, 系统, `国家/地区`) |>
   summarise(
     日期 = as.character(Sys.Date() - 1),
     安装 = sum(应用安装),
@@ -342,8 +342,8 @@ fb_with_gro <- function(data, name) {
     安装 = sum(应用安装),
     点击 = sum(`点击量（全部）`),
     展示 = sum(展示次数),
-    花费 = sum(`花费金额 (USD)`), 
-    购物转化值 = sum(购物转化价值), 
+    花费 = sum(`花费金额 (USD)`),
+    购物转化值 = sum(购物转化价值),
     购买 = sum(购买)
   )
   return(data)
@@ -389,16 +389,8 @@ you <- function(data) {
   mutate_all(replace_na, replace = 0) |>
   mutate(
     产品 =
-      if_else(str_detect(系列名称, "Pop"), "Pop Solitaire",
-        if_else(str_detect(系列名称, "Crazy"), "Crazy",
-          if_else(str_detect(系列名称, "DT13"), "MAX",
-            if_else(str_detect(系列名称, "胜利"), "胜利",
-              if_else(str_detect(系列名称, "MAX"), "MaxMonika",
-                "None"
-              )
-            ),
-          )
-        )
+      if_else(str_detect(广告账户名称, "Pop"), "Pop Solitaire",
+        "None"
       )
   ) |>
   group_by(产品) |>
@@ -416,11 +408,11 @@ you <- function(data) {
   return(data)
 }
 
-hua_shu <- function(data, gro = "group") {
+hua_shu <- function(data) {
   data <- data |>
   mutate_all(replace_na, replace = 0) |>
-  mutate(group = gro) |>
-  group_by(group) |>
+  # mutate(group = gro) |>
+  group_by(产品, 系统) |>
   summarise(
     日期 = as.character(Sys.Date() - 1),
     安装 = sum(as.numeric(应用安装)),
@@ -492,6 +484,24 @@ ji_dao <- function(data) {
     花费 = sum(as.numeric(费用)),
     回收 = sum(as.numeric(转化价值))
   )
+  return(data)
+}
+
+niu <- function(data) {
+  data <- data |>
+  mutate_all(replace_na, replace = 0) |>
+  group_by(产品, 地区) |>
+  summarise(
+    日期 = as.character(Sys.Date() - 1),
+    安装 = sum(as.numeric(应用安装)),
+    点击 = sum(as.numeric(`点击量（全部）`)),
+    展示次数 = sum(as.numeric(展示次数)),
+    花费 = sum(as.numeric(`花费金额 (USD)`)),
+    回收 = sum(as.numeric(购物转化价值)),
+    购买 = sum(as.numeric(购买)),
+    注册 = sum(as.numeric(完成注册))
+  ) |>
+  select(日期, everything())
   return(data)
 }
 
