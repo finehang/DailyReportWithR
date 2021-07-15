@@ -1,5 +1,22 @@
 pacman::p_load("tidyverse", "lubridate", "devtools", "httr", "DBI", "multidplyr", "janitor")
 
+add_col <- tibble(a = 0, b = 0, c = 0, d = 0, e = 0, f = 0)
+
+full_name <- c("开始时间","结束时间","广告账户ID","广告账户名称","广告系列名称","地区","操作系统","安装量","点击量","展示次数","花费","购物转化值","完成注册","购买次数","独立购买人数")
+
+col_fix <- function(data){
+  diff <- full_name |> setdiff(names(data)) 
+  if (length(diff) == 0) {
+    message("no fix")
+  }else{
+    add_col <- add_col[1:length(diff)]
+    colnames(add_col) <- diff
+    data <- bind_cols(data, add_col) |> 
+      select(-contains("..."))
+  }
+  return(data)
+}
+
 rename_me <- function() {
   path <- "C:/Users/fanhang/OneDrive/Work/Report/0在用"
   filenames <- list.files(path)
@@ -113,6 +130,27 @@ no_group <- function(data, gro = "group") {
   return(data)
 }
 
+no_group2 <- function(data, gro = "group", gro2 = "group2") {
+  data <- data |>
+    mutate_all(replace_na, replace = 0) |>
+    mutate(group = gro, group2 = gro2) |>
+    filter(地区 != "unknown") |>
+    group_by(group, group2) |>
+    summarise(
+      日期 = as.character(unique(开始时间)),
+      安装 = sum(as.numeric(安装量)),
+      点击 = sum(as.numeric(点击量)),
+      展示次数 = sum(as.numeric(展示次数)),
+      花费 = sum(as.numeric(花费)),
+      回收 = sum(as.numeric(购物转化值)),
+      完成注册 = sum(as.numeric(完成注册)),
+      购买次数 = sum(as.numeric(购买次数)),
+      独立购买人数 = sum(as.numeric(独立购买人数))
+    ) |>
+    select(日期, group, group2, everything())
+  return(data)
+}
+
 with_geo <- function(data, gro = "Gro") {
   data <- data |>
   mutate_all(replace_na, replace = 0) |>
@@ -131,6 +169,26 @@ with_geo <- function(data, gro = "Gro") {
   return(data)
 }
 
+
+with_os2 <- function(data) {
+  data <- data |>
+  mutate_all(replace_na, replace = 0) |>
+  dplyr::filter(地区 != "unknown") |>
+  mutate(
+    广告系列名称 = toupper(广告系列名称),
+    操作系统 = if_else(str_detect(广告系列名称, "IOS"), "IOS",
+      if_else(str_detect(广告系列名称, "安卓"), "AND",
+        if_else(str_detect(广告系列名称, "_AND"), "AND",
+          if_else(str_detect(广告系列名称, "-AND"), "AND",
+            "PC"
+          )
+        )
+      )
+    )
+  )
+  return(data)
+}
+
 with_os <- function(data) {
   flag <- isTRUE("优化" %in% names(data))
   data <- data |>
@@ -138,7 +196,7 @@ with_os <- function(data) {
   dplyr::filter(地区 != "unknown") |>
   mutate(
     系列名称 = toupper(系列名称),
-    版本 = if_else(str_detect(系列名称, "IOS"), "IOS",
+    操作系统 = if_else(str_detect(系列名称, "IOS"), "IOS",
       if_else(str_detect(系列名称, "安卓"), "AND",
         if_else(str_detect(系列名称, "_AND"), "AND",
           if_else(str_detect(系列名称, "-AND"), "AND",
@@ -232,8 +290,8 @@ zhang_yue <- function(data) {
   mutate(
     日期 = as.character(Sys.Date() - 1),
     千次展示费用 = 花费金额 / 展示次数 * 1000,
-    点击率 = `点击量（全部）` / 展示次数,
-    ROI = 移动应用购物转化价值 / 花费金额,
+    点击率 = 点击 / 展示次数,
+    ROI = 回收 / 花费金额,
     CPI = 花费金额 / 应用安装
   ) |>
   arrange(系统)
@@ -502,6 +560,23 @@ niu <- function(data) {
     注册 = sum(as.numeric(完成注册))
   ) |>
   select(日期, everything())
+  return(data)
+}
+
+xiao_yu <- function(data, gro){
+  data <- data |>
+    mutate_all(replace_na, replace = 0) |>
+    filter(地区 != "unknown") |>
+    group_by(产品) |>
+    summarise(
+      日期 = as.character(unique(开始时间)),
+      安装 = sum(as.numeric(安装量)),
+      点击 = sum(as.numeric(点击量)),
+      展示次数 = sum(as.numeric(展示次数)),
+      花费 = sum(as.numeric(金额)),
+      回收 = sum(as.numeric(购物转化值))
+    ) |>
+    select(日期, everything())
   return(data)
 }
 
